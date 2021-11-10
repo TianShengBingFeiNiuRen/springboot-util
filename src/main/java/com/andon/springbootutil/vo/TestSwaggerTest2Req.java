@@ -18,9 +18,9 @@ import java.io.Serializable;
 public class TestSwaggerTest2Req implements Serializable {
 
     @NonNull
-    @ApiModelProperty(value = "param1", required = true)
+    @ApiModelProperty(value = "参数1", required = true)
     private String param1;
     @NonNull
-    @ApiModelProperty(value = "param2", required = true)
+    @ApiModelProperty(value = "参数2", required = true)
     private String param2;
 }
