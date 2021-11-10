@@ -77,6 +77,12 @@
             <version>0.9.1</version>
         </dependency>
 
+        <!--    web3j    -->
+        <dependency>
+            <groupId>org.web3j</groupId>
+            <artifactId>core</artifactId>
+            <version>4.3.0</version>
+        </dependency>
     </dependencies>
 
     <build>
