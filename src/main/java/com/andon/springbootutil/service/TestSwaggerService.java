@@ -5,7 +5,6 @@ import com.andon.springbootutil.domain.ResponseStandard;
 import com.andon.springbootutil.vo.TestSwaggerTest2Req;
 import com.andon.springbootutil.vo.TestSwaggerTest2Resp;
 import com.andon.springbootutil.vo.TestSwaggerTestResp;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +25,8 @@ public class TestSwaggerService {
     }
 
     public ResponseStandard<TestSwaggerTest2Resp> test2(TestSwaggerTest2Req testSwaggerTest2Req) {
-        @NonNull String param1 = testSwaggerTest2Req.getParam1();
-        @NonNull String param2 = testSwaggerTest2Req.getParam2();
+        String param1 = testSwaggerTest2Req.getParam1();
+        String param2 = testSwaggerTest2Req.getParam2();
         TestSwaggerTest2Resp data = TestSwaggerTest2Resp.builder().param1(param1).param2(param2).build();
         log.info("data:{}", JSONObject.toJSONString(data));
         return ResponseStandard.successResponse(data);
