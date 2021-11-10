@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- 控制台 appender, 几乎是默认的配置 -->
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder charset="UTF-8">
+            <!-- 输出的日志文本格式, 其他的 appender 与之相同 -->
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} %L - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- info 级别的 appender -->
+    <appender name="info" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 日志写入的文件名, 可以是相对目录, 也可以是绝对目录, 如果上级目录不存在会自动创建 -->
+        <file>./logs/info/log-stack.log</file>
+        <!-- 如果是 true, 日志被追加到文件结尾; 如果是 false, 清空现存文件. 默认是true -->
+        <append>true</append>
+        <!-- 日志级别过滤器, 只打 INFO 级别的日志-->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <!-- 下面2个属性表示: 匹配 level 的接受打印, 不匹配的拒绝打印 -->
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <!-- 最常用的滚动策略, 它根据时间来制定滚动策略, 既负责滚动也负责触发滚动 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 设置滚动文件规则, 如果直接使用 %d, 默认格式是 yyyy-MM-dd -->
+            <fileNamePattern>./logs/info/log-stack.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- 保留14天的日志 -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <!-- 定义日志输出格式 -->
+        <encoder charset="UTF-8">
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} %L - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- error 级别的 appender -->
+    <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>./logs/error/log-stack.log</file>
+        <append>true</append>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>./logs/error/log-stack.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- 保留7天的日志 -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <!-- 定义日志输出格式 -->
+        <encoder charset="UTF-8">
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} %L - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+    <!-- error 级别的 appender -->
+    <appender name="debug" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>./logs/debug/log-stack.log</file>
+        <append>true</append>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>./logs/debug/log-stack.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- 保留7天的日志 -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <!-- 定义日志输出格式 -->
+        <encoder charset="UTF-8">
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} %L - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+    <!-- 指定 com.github 下的日志打印级别, appender -->
+    <logger name="com.github" level="debug" additivity="false">
+        <appender-ref ref="stdout"/>
+        <appender-ref ref="info"/>
+        <appender-ref ref="error"/>
+        <appender-ref ref="debug"/>
+
+    </logger>
+
+
+    <root level="info">
+        <appender-ref ref="stdout"/>
+        <appender-ref ref="info"/>
+        <appender-ref ref="error"/>
+    </root>
+
+</configuration>
