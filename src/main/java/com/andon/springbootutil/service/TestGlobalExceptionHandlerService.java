@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 /**
  * @author Andon
  * 2021/11/10
+ * <p>
+ * 测试全局异常处理器
  */
 @Slf4j
 @Service
