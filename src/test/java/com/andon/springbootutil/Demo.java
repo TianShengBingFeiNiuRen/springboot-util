@@ -1,10 +1,8 @@
 package com.andon.springbootutil;
 
 import com.alibaba.fastjson.JSONObject;
-import com.andon.springbootutil.util.AESUtil;
-import com.andon.springbootutil.util.JWTUtil;
-import com.andon.springbootutil.util.RSAUtil;
-import com.andon.springbootutil.util.RandomUtil;
+import com.andon.springbootutil.util.*;
+import com.andon.springbootutil.vo.TestSwaggerTestResp;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
@@ -19,7 +17,16 @@ import java.util.Map;
 public class Demo {
 
     @Test
-    public void test04(){
+    public void test05() {
+        TestSwaggerTestResp param1 = TestSwaggerTestResp.builder().param1("param1").build();
+        TestSwaggerTestResp param2 = DeepCopyUtil.deepCopy(param1);
+        System.out.println(param1==param2);
+        log.info("param1:{}", JSONObject.toJSONString(param1));
+        log.info("param2:{}", JSONObject.toJSONString(param2));
+    }
+
+    @Test
+    public void test04() {
         String content = "test"; //明文内容
         log.info("明文:{}", content);
         System.out.println("AES加密==========");

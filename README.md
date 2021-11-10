@@ -20,3 +20,5 @@
 **CSDN**: [**ExcelUtil引入POI 实现excel的导入导出**](https://blog.csdn.net/weixin_39792935/article/details/105950144).
 
 **CSDN**: [**ScheduledExecutorService 实现定时任务**](https://blog.csdn.net/weixin_39792935/article/details/105357000).
+
+**CSDN**: [**深拷贝工具类DeepCopyUtil**](https://blog.csdn.net/weixin_39792935/article/details/104789142).
