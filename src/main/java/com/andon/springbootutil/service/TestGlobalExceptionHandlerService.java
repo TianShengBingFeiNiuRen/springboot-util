@@ -10,20 +10,20 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-public class TestService {
+public class TestGlobalExceptionHandlerService {
 
-    public void testGlobalExceptionHandler() {
+    public void test() {
         int a = 1 / 0;
     }
 
-    public ResponseStandard<String> testGlobalExceptionHandler2() {
-        ResponseStandard<String> response = ResponseStandard.failureResponse("");
+    public ResponseStandard<String> test2() {
+        ResponseStandard<String> response = ResponseStandard.failureResponse(null);
         try {
             int a = 1 / 0;
         } catch (Exception e) {
             e.printStackTrace();
-            log.error("testGlobalExceptionHandler2 failure!! error:{}", e.getMessage());
-            response.setMessage("testGlobalExceptionHandler2 failure!! error:" + e.getMessage());
+            log.error("TestGlobalExceptionHandlerService test2 failure!! error:{}", e.getMessage());
+            response.setMessage("TestGlobalExceptionHandlerService test2 test2Handler2 failure!! error:" + e.getMessage());
             return response;
         }
         response = ResponseStandard.successResponse("");
