@@ -1,6 +1,7 @@
 package com.andon.springbootutil;
 
 import com.alibaba.fastjson.JSONObject;
+import com.andon.springbootutil.util.AESUtil;
 import com.andon.springbootutil.util.JWTUtil;
 import com.andon.springbootutil.util.RSAUtil;
 import com.andon.springbootutil.util.RandomUtil;
@@ -16,6 +17,37 @@ import java.util.Map;
  */
 @Slf4j
 public class Demo {
+
+    @Test
+    public void test04(){
+        String content = "test"; //明文内容
+        log.info("明文:{}", content);
+        System.out.println("AES加密==========");
+        // AES加密
+        byte[] encrypt = AESUtil.encrypt(content);
+        log.info("密文:{}", encrypt);
+
+        String parseByteToHexStr = AESUtil.parseByteToHexStr(encrypt);
+        log.info("密文--字节数组转换成16进制:{}", parseByteToHexStr);
+        String base64EncodeToString = AESUtil.base64EncodeToString(encrypt);
+        log.info("密文--Base64处理字节数组转换为字符串:{}", base64EncodeToString);
+
+        System.out.println("AES解密==========");
+        // AES解密
+        byte[] parseHexStrToByte = AESUtil.parseHexStrToByte(parseByteToHexStr);
+        log.info("密文--16进制转换成字节数组:{}", parseHexStrToByte);
+        byte[] base64DecodeToByte = AESUtil.base64DecodeToByte(base64EncodeToString);
+        log.info("密文--Base64处理字符串转换为字节数组:{}", base64DecodeToByte);
+
+        byte[] decryptParseHexStrToByte = AESUtil.decrypt(parseHexStrToByte);
+        log.info("解密后的明文--16进制转换成字节数组:{}", decryptParseHexStrToByte);
+        byte[] decryptBase64DecodeToByte = AESUtil.decrypt(base64DecodeToByte);
+        log.info("解密后的明文--Base64处理字符串转换为字节数组:{}", decryptBase64DecodeToByte);
+        String decryptParseHexStrToByteString = new String(decryptParseHexStrToByte, StandardCharsets.UTF_8);
+        log.info("明文--字节数组转换成16进制:{}", decryptParseHexStrToByteString);
+        String decryptBase64DecodeToByteString = new String(decryptBase64DecodeToByte, StandardCharsets.UTF_8);
+        log.info("明文--Base64处理字节数组转换为字符串:{}", decryptBase64DecodeToByteString);
+    }
 
     @Test
     public void test03() {
