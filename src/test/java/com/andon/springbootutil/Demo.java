@@ -70,6 +70,13 @@ public class Demo {
         log.info("now1:{}", now1);
         long l = now1.toEpochMilli();
         log.info("l:{}", l);
+        // 时间戳转时间
+        long timestamp = System.currentTimeMillis();
+        String time = dateTimeFormatter.format(LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneId.systemDefault()));
+        String time2 = dateTimeFormatter.format(LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneId.of("UTC+0")));
+        log.info("timestamp:{}", timestamp);
+        log.info("time:{}", time);
+        log.info("time2:{}", time2);
     }
 
     @Test
