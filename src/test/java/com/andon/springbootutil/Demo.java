@@ -6,7 +6,9 @@ import com.andon.springbootutil.vo.TestSwaggerTestResp;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -17,10 +19,35 @@ import java.util.Map;
 public class Demo {
 
     @Test
+    public void test06() {
+        String url = "http://127.0.0.1:8080/swagger/test";
+        Map<String, String> params = new HashMap<>();
+        params.put("param1", "hello");
+        params.put("param2", "world");
+        String response = null;
+        try {
+            response = HttpClientUtil.doGet(url, params);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        log.info("response:{}", response);
+
+        String url2 = "http://127.0.0.1:8080/swagger/test2";
+        String json = JSONObject.toJSONString(params);
+        String response2 = null;
+        try {
+            response2 = HttpClientUtil.doPostJson(url2, json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        log.info("response2:{}", response2);
+    }
+
+    @Test
     public void test05() {
         TestSwaggerTestResp param1 = TestSwaggerTestResp.builder().param1("param1").build();
         TestSwaggerTestResp param2 = DeepCopyUtil.deepCopy(param1);
-        System.out.println(param1==param2);
+        System.out.println(param1 == param2);
         log.info("param1:{}", JSONObject.toJSONString(param1));
         log.info("param2:{}", JSONObject.toJSONString(param2));
     }
