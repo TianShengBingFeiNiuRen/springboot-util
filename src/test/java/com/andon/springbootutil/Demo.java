@@ -8,6 +8,11 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,6 +22,52 @@ import java.util.Map;
  */
 @Slf4j
 public class Demo {
+
+    @Test
+    public void test09() {
+        String str = "数据库";
+        String pingYin = PinYin4JUtil.getPingYin(str);
+        String pinYinHeadChar = PinYin4JUtil.getPinYinHeadChar(str);
+        log.info("pingYin:{}", pingYin);
+        log.info("pinYinHeadChar:{}", pinYinHeadChar);
+    }
+
+    @Test
+    public void test08() {
+        long timeMillis = System.currentTimeMillis();
+        String format = TimeUtil.FORMAT.get().format(System.currentTimeMillis());
+        log.info("timeMillis:{}", timeMillis);
+        log.info("format:{}", format);
+    }
+
+    @Test
+    public void test07() {
+        // ZoneId代表的是时区，获取系统时区：
+        ZoneId zoneId = ZoneId.systemDefault();
+        log.info("zoneId:{}", zoneId.toString());
+        // 东八区
+        ZoneId zoneIdUTC8 = ZoneId.of("UTC+8");
+        log.info("zoneIdUTC8:{}", zoneIdUTC8);
+        // 0时区
+        LocalDate now = LocalDate.now();
+        log.info("now:{}", now);
+        // 东八区
+        LocalDate nowUTC8 = LocalDate.now(ZoneId.of("UTC+8"));
+        log.info("nowUTC8:{}", nowUTC8);
+        // DateTimeFormatter 时间格式化成String
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String format = dateTimeFormatter.format(LocalDateTime.now(ZoneId.of("UTC+0")));
+        String format2 = dateTimeFormatter.format(LocalDateTime.now(ZoneId.of("UTC+8")));
+        log.info("format:{}", format);
+        log.info("format2:{}", format2);
+        // 时间戳
+        Instant now1 = Instant.now();
+        log.info("now1:{}", now1);
+        now1.atZone(ZoneId.of("UTC+8"));
+        log.info("now1:{}", now1);
+        long l = now1.toEpochMilli();
+        log.info("l:{}", l);
+    }
 
     @Test
     public void test06() {
