@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,6 +39,8 @@ public class Demo {
         String format = TimeUtil.FORMAT.get().format(System.currentTimeMillis());
         log.info("timeMillis:{}", timeMillis);
         log.info("format:{}", format);
+        String week = TimeUtil.getWeek(new Date());
+        log.info("week:{}", week);
     }
 
     @Test
