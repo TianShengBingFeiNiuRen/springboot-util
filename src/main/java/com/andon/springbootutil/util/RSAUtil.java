@@ -10,7 +10,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,7 +27,6 @@ public class RSAUtil {
     public static final String KEY = "Andon"; //自定义Andon作为随机数
     public static final String PUBLIC_KEY = "public_key"; //公钥KEY
     public static final String PRIVATE_KEY = "private_key"; //私钥KEY
-    public static final ThreadLocal<SimpleDateFormat> FORMAT_DAY = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd"));
     private static final int KEY_SIZE = 2048; //密钥长度
     private static final int MAX_ENCRYPT_BLOCK = 245; //RSA加密明文大小
     private static final int MAX_DECRYPT_BLOCK = 256; //RSA解密密文大小
@@ -36,12 +34,12 @@ public class RSAUtil {
     /**
      * 生成密钥对
      */
-    private static void generateKeyPair() {
+    public static void generateKeyPair(String key) {
         try {
             // 创建RSA密钥对的生成器实例
             KeyPairGenerator rsa = KeyPairGenerator.getInstance("RSA");
             // 由自定义的key+时间作为随机数初始化2048位的密钥对生成器
-            SecureRandom secureRandom = new SecureRandom((KEY + FORMAT_DAY.get().format(System.currentTimeMillis())).getBytes(StandardCharsets.UTF_8));
+            SecureRandom secureRandom = new SecureRandom((key + System.currentTimeMillis()).getBytes(StandardCharsets.UTF_8));
             rsa.initialize(KEY_SIZE, secureRandom);
             // 生成密钥对
             KeyPair keyPair = rsa.generateKeyPair();
@@ -70,7 +68,7 @@ public class RSAUtil {
     public static String getRSAPublicKey() {
         String publicKeyStr = RSAUtil.keyPairMap.get(PUBLIC_KEY);
         if (ObjectUtils.isEmpty(publicKeyStr)) {
-            RSAUtil.generateKeyPair();
+            RSAUtil.generateKeyPair(KEY);
             publicKeyStr = RSAUtil.keyPairMap.get(PUBLIC_KEY);
         }
         return publicKeyStr;
@@ -82,7 +80,7 @@ public class RSAUtil {
     public static String getRSAPrivateKey() {
         String privateStr = RSAUtil.keyPairMap.get(PRIVATE_KEY);
         if (ObjectUtils.isEmpty(privateStr)) {
-            RSAUtil.generateKeyPair();
+            RSAUtil.generateKeyPair(KEY);
             privateStr = RSAUtil.keyPairMap.get(PRIVATE_KEY);
         }
         return privateStr;
@@ -98,7 +96,7 @@ public class RSAUtil {
             String publicKeyStr = keyPairMap.get(PUBLIC_KEY);
             if (ObjectUtils.isEmpty(publicKeyStr)) {
                 // 生成公钥
-                generateKeyPair();
+                generateKeyPair(KEY);
                 publicKeyStr = keyPairMap.get(PUBLIC_KEY);
             }
             byte[] publicKeyByte = RSAUtil.base64DecodeToByte(publicKeyStr);
@@ -149,7 +147,7 @@ public class RSAUtil {
             String privateKeyStr = keyPairMap.get(PRIVATE_KEY);
             if (ObjectUtils.isEmpty(privateKeyStr)) {
                 // 生成私钥
-                generateKeyPair();
+                generateKeyPair(KEY);
                 privateKeyStr = keyPairMap.get(PRIVATE_KEY);
             }
             byte[] privateKeyByte = RSAUtil.base64DecodeToByte(privateKeyStr);
