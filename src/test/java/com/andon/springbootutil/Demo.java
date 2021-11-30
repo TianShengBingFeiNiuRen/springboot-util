@@ -16,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author Andon
@@ -23,6 +24,30 @@ import java.util.Map;
  */
 @Slf4j
 public class Demo {
+
+    @Test
+    public void test12() {
+        UUID uuid = UUID.randomUUID();
+        log.info("uuid:{}", uuid.toString());
+        log.info("length:{}", uuid.toString().length());
+    }
+
+    @Test
+    public void test11() {
+        String str = "08bf2ad8b22ec263e9d6c9055c1591157fc6b064";
+        log.info("length:{}", str.length());
+    }
+
+    @Test
+    public void test10() {
+        LocalDate now = LocalDate.now();
+        log.info("now:{}", now.toString());
+        log.info("year:{}", now.getYear());
+        String dateStartStr = LocalDate.now().getYear() + "-01-01";
+        java.sql.Date date = java.sql.Date.valueOf(dateStartStr);
+        log.info("dateStartStr:{}", dateStartStr);
+        log.info("date:{}", date);
+    }
 
     @Test
     public void test09() {
