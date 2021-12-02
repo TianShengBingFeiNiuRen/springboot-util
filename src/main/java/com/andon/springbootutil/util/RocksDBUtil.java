@@ -29,11 +29,9 @@ public class RocksDBUtil {
             log.info("osName:{}", osName);
             String rocksDBPath; //RocksDB文件目录
             if (osName.toLowerCase().contains("windows")) {
-                // windows
-                rocksDBPath = "D:\\RocksDB";
+                rocksDBPath = "D:\\RocksDB"; // 指定windows系统下RocksDB文件目录
             } else {
-                // linux
-                rocksDBPath = "/usr/local/rocksdb";
+                rocksDBPath = "/usr/local/rocksdb"; // 指定linux系统下RocksDB文件目录
             }
             RocksDB.loadLibrary();
             Options options = new Options();
