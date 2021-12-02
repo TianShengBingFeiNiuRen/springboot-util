@@ -30,7 +30,7 @@ public class RocksDBUtil {
                 // windows
                 rocksDBPath = "D:\\RocksDB";
             } else {
-                // linux版本
+                // linux
                 rocksDBPath = "/usr/local/rocksdb";
             }
             RocksDB.loadLibrary();
