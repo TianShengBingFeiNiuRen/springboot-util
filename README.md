@@ -1,6 +1,8 @@
 # spring-boot-util
 工具类合集
 
+**CSDN**: [**SpringBoot 整合 RocksDB**](https://editor.csdn.net/md?not_checkout=1&articleId=121684704).
+
 **CSDN**: [**SpringBoot 自定义全局异常处理器**](https://blog.csdn.net/weixin_39792935/article/details/121249071).
 
 **CSDN**: [**SpringBoot 整合 Swagger**](https://blog.csdn.net/weixin_39792935/article/details/116154393).
