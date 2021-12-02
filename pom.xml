@@ -117,6 +117,13 @@
             <version>1.4.7</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.rocksdb/rocksdbjni -->
+        <dependency>
+            <groupId>org.rocksdb</groupId>
+            <artifactId>rocksdbjni</artifactId>
+            <version>6.26.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>

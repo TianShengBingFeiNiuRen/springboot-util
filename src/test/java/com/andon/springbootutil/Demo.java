@@ -5,9 +5,12 @@ import com.andon.springbootutil.util.*;
 import com.andon.springbootutil.vo.TestSwaggerTestResp;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
+import org.rocksdb.RocksDBException;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,10 +29,67 @@ import java.util.UUID;
 public class Demo {
 
     @Test
+    public void test15() {
+        Map<String, String> all = RocksDBUtil.getAll();
+        log.info("all:{}", JSONObject.toJSONString(all));
+    }
+
+    @Test
+    public void test14() throws RocksDBException {
+        String key = "hello";
+        String value = RocksDBUtil.get(key);
+        String key2 = "java";
+        String value2 = RocksDBUtil.get(key2);
+        log.info("key:{} value:{}", key, value);
+        log.info("key2:{} value2:{}", key2, value2);
+    }
+
+    @Test
+    public void test13() throws RocksDBException {
+        RocksDBUtil.put("hello", "world");
+        RocksDBUtil.put("java", "springboot");
+    }
+
+    @Test
     public void test12() {
         UUID uuid = UUID.randomUUID();
         log.info("uuid:{}", uuid.toString());
         log.info("length:{}", uuid.toString().length());
+        String abc = getSHA256StrJava("abc");
+        log.info("abc:{}", abc);
+    }
+
+    /**
+     * 利用java原生的摘要实现SHA256加密
+     */
+    public static String getSHA256StrJava(String str) {
+        MessageDigest messageDigest;
+        String encodeStr = "";
+        try {
+            messageDigest = MessageDigest.getInstance("SHA-256");
+            messageDigest.update(str.getBytes(StandardCharsets.UTF_8));
+            encodeStr = byte2Hex(messageDigest.digest());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return encodeStr;
+    }
+
+    /**
+     * 将byte转为16进制
+     */
+    private static String byte2Hex(byte[] bytes) {
+        StringBuilder stringBuffer = new StringBuilder();
+        String temp = null;
+        for (byte aByte : bytes) {
+            temp = Integer.toHexString(aByte & 0xFF);
+            if (temp.length() == 1) {
+                //1得到一位的进行补0操作
+                stringBuffer.append("0");
+            }
+            stringBuffer.append(temp);
+        }
+        return stringBuffer.toString();
     }
 
     @Test
