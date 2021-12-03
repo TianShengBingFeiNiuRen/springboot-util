@@ -23,13 +23,12 @@ public class SecurityFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-        log.info("httpServletRequest method:{} uri:{}", httpServletRequest.getMethod(), httpServletRequest.getRequestURI());
+        log.info("httpServletRequest remoteHost:{} method:{} uri:{}", httpServletRequest.getRemoteHost(), httpServletRequest.getMethod(), httpServletRequest.getRequestURI());
         if (httpServletRequest.getRequestURI().equals("/filter")) {
             httpServletRequest.setAttribute("code", 403);
             httpServletRequest.setAttribute("message", "没有权限!!");
             // 请求转发到自定义403接口处理响应
             httpServletRequest.getRequestDispatcher("/403").forward(servletRequest, servletResponse);
-
         } else {
             filterChain.doFilter(servletRequest, servletResponse);
         }
