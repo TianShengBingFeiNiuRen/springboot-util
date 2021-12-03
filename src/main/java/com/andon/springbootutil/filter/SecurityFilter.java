@@ -23,7 +23,7 @@ public class SecurityFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-        log.info("httpServletRequest remoteHost:{} method:{} uri:{}", httpServletRequest.getRemoteHost(), httpServletRequest.getMethod(), httpServletRequest.getRequestURI());
+        log.info("remoteHost:{} method:{} uri:{}", httpServletRequest.getRemoteHost(), httpServletRequest.getMethod(), httpServletRequest.getRequestURI());
         if (httpServletRequest.getRequestURI().equals("/filter")) {
             httpServletRequest.setAttribute("code", 403);
             httpServletRequest.setAttribute("message", "没有权限!!");
