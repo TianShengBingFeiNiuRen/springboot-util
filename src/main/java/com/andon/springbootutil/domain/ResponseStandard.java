@@ -24,7 +24,7 @@ public class ResponseStandard<T> implements Serializable {
 
     public static <T> ResponseStandard<T> successResponse(T t) {
         ResponseStandard<T> response = new ResponseStandard<>();
-        response.setCode(200);
+        response.setCode(0);
         response.setMessage("success!!");
         response.setData(t);
         response.setTotal(0);
