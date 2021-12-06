@@ -27,9 +27,10 @@ public class FilterController {
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
             int code = (int) request.getAttribute("code");
             String message = String.valueOf(request.getAttribute("message"));
+            String uri = String.valueOf(request.getAttribute("uri"));
             response.setCode(code);
             response.setMessage(message);
-            log.warn("remoteHost:{} method:{} uri:{}", request.getRemoteHost(), request.getMethod(), request.getRequestURI());
+            log.warn("remoteHost:{} method:{} uri:{}", request.getRemoteHost(), request.getMethod(), uri);
         } catch (Exception e) {
             e.printStackTrace();
         }

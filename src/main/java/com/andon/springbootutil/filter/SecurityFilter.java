@@ -27,6 +27,7 @@ public class SecurityFilter implements Filter {
         if (httpServletRequest.getRequestURI().equals("/filter")) {
             httpServletRequest.setAttribute("code", 403);
             httpServletRequest.setAttribute("message", "没有权限!!");
+            httpServletRequest.setAttribute("uri", httpServletRequest.getRequestURI());
             // 请求转发到自定义403接口处理响应
             httpServletRequest.getRequestDispatcher("/403").forward(servletRequest, servletResponse);
         } else {
