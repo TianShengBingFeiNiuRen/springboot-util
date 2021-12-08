@@ -3,6 +3,7 @@ package com.andon.springbootutil;
 import com.alibaba.fastjson.JSONObject;
 import com.andon.springbootutil.util.*;
 import com.andon.springbootutil.vo.TestSwaggerTestResp;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.rocksdb.RocksDBException;
@@ -16,10 +17,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.function.Supplier;
 
 /**
  * @author Andon
@@ -27,6 +27,132 @@ import java.util.UUID;
  */
 @Slf4j
 public class Demo {
+
+    @Test
+    public void test22() {
+        int processors = Runtime.getRuntime().availableProcessors();
+        log.info("processors:{}", processors);
+    }
+
+    @Test
+    public void test21() {
+        List<String> list = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            list.add(Thread.currentThread().getName() + "_" + i);
+        }
+        List<List<String>> partition = Lists.partition(list, 10);
+        log.info("partition:{}", JSONObject.toJSONString(partition));
+    }
+
+    @Test
+    public void test20() throws InterruptedException, ExecutionException {
+        ExecutorService executorService = Executors.newFixedThreadPool(5);
+        Set<Callable<Long>> callableSet = new HashSet<>();
+        for (int i = 0; i < 10; i++) {
+            callableSet.add(new Callable<Long>() {
+                @Override
+                public Long call() throws Exception {
+                    Thread.sleep(2000);
+                    long id = Thread.currentThread().getId();
+                    log.info("call start!! id:{}", id);
+                    return id;
+                }
+            });
+        }
+        log.info("callableSet.size:{}", callableSet.size());
+        List<Future<Long>> futures = executorService.invokeAll(callableSet);
+        log.info("Thread.currentThread().getId():{} futures.size:{}", Thread.currentThread().getId(), futures.size());
+        List<Long> endList = new ArrayList<>();
+        for (Future<Long> future : futures) {
+            endList.add(future.get());
+        }
+        log.info("Thread.currentThread().getId():{} endList:{}", Thread.currentThread().getId(), endList);
+        log.info("Thread.currentThread().getId():{} endList.size:{}", Thread.currentThread().getId(), endList.size());
+    }
+
+    @Test
+    public void test19() throws ExecutionException, InterruptedException {
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        Future<Object> future = executorService.submit(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                log.info("call start!!");
+                Thread.sleep(3000);
+                return "call end!!";
+            }
+        });
+        log.info("isDone:{}", future.isDone());
+        Object o = future.get();
+        log.info("o:{}", o);
+        log.info("isDone:{}", future.isDone());
+    }
+
+    @Test
+    public void test18() {
+        System.out.println("main函数开始执行");
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        CompletableFuture<Integer> future = CompletableFuture.supplyAsync(new Supplier<Integer>() {
+            @Override
+            public Integer get() {
+                System.out.println("===task start===");
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("===task finish===");
+                return 3;
+            }
+        }, executor);
+        future.thenAccept(System.out::println);
+        System.out.println("main函数执行结束");
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void test17() throws IOException, ExecutionException, InterruptedException {
+        System.out.println("main函数开始执行");
+
+        ExecutorService executor = Executors.newFixedThreadPool(1);
+        Future<Integer> future = executor.submit(new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+
+                System.out.println("===task start===");
+                Thread.sleep(5000);
+                System.out.println("===task finish===");
+                return 3;
+            }
+        });
+        //这里需要返回值时会阻塞主线程，如果不需要返回值使用是OK的。倒也还能接收
+        Integer result = future.get();
+        log.info("result:{}", result);
+        System.out.println("main函数执行结束");
+    }
+
+    @Test
+    public void test16() {
+        System.out.println("main函数开始执行");
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("===task start===");
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("===task finish===");
+            }
+        });
+
+        thread.start();
+        System.out.println("main函数执行结束");
+    }
 
     @Test
     public void test15() {
