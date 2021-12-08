@@ -1,4 +1,4 @@
-package com.andon.springbootutil.util;
+package com.andon.springbootutil.config;
 
 import com.andon.springbootutil.domain.ResponseStandard;
 import lombok.extern.slf4j.Slf4j;
