@@ -2,6 +2,7 @@ package com.andon.springbootutil.aop;
 
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
@@ -33,16 +34,18 @@ public class DemoAspect {
      * 前置通知，关注点执行前运行的方法
      */
     @Before("pointCut()")
-    public void before() {
-        log.info("before [{}-{}] 前置通知!!", Thread.currentThread().getName(), Thread.currentThread().getId());
+    public void before(JoinPoint joinPoint) {
+        Object[] args = joinPoint.getArgs();
+        log.info("before [{}-{}] 前置通知!! args:{}", Thread.currentThread().getName(), Thread.currentThread().getId(), JSONObject.toJSONString(args));
     }
 
     /**
      * 后置通知，不论一个方法是如何结束的，最终通知都会运行
      */
     @After("pointCut()")
-    public void after() {
-        log.info("after [{}-{}] 后置通知!!", Thread.currentThread().getName(), Thread.currentThread().getId());
+    public void after(JoinPoint joinPoint) {
+        Object[] args = joinPoint.getArgs();
+        log.info("after [{}-{}] 后置通知!! args:{}", Thread.currentThread().getName(), Thread.currentThread().getId(), JSONObject.toJSONString(args));
     }
 
     /**
@@ -50,8 +53,9 @@ public class DemoAspect {
      * returning的赋值的名字,必须跟通知方法中参数的名字保持一致
      */
     @AfterReturning(value = "pointCut()", returning = "value")
-    public Object afterReturning(Object value) {
-        log.info("afterReturning [{}-{}] 返回后通知!! value:{}", Thread.currentThread().getName(), Thread.currentThread().getId(), value);
+    public Object afterReturning(JoinPoint joinPoint, Object value) {
+        Object[] args = joinPoint.getArgs();
+        log.info("afterReturning [{}-{}] 返回后通知!! args:{} value:{}", Thread.currentThread().getName(), Thread.currentThread().getId(), JSONObject.toJSONString(args), value);
         return value;
     }
 
@@ -61,8 +65,9 @@ public class DemoAspect {
      * 那我们就需要使用throwing属性声明响应
      */
     @AfterThrowing(value = "pointCut()", throwing = "exception")
-    public void afterThrowing(Exception exception) {
-        log.info("afterThrowing [{}-{}] 异常通知!! error:{}", Thread.currentThread().getName(), Thread.currentThread().getId(), exception.getMessage());
+    public void afterThrowing(JoinPoint joinPoint, Exception exception) {
+        Object[] args = joinPoint.getArgs();
+        log.info("afterThrowing [{}-{}] 异常通知!! args:{} error:{}", Thread.currentThread().getName(), Thread.currentThread().getId(), JSONObject.toJSONString(args), exception.getMessage());
     }
 
     /**
