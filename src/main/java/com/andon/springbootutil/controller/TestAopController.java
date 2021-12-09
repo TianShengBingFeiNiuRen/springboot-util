@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/aop")
 public class TestAopController {
 
-    @DemoAnnotation
+    @DemoAnnotation(testValue = "test!!")
     @ApiOperation("测试")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "value", value = "值", required = true)

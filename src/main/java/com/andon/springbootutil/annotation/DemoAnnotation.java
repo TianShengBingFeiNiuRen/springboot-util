@@ -12,4 +12,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME) //注解声明周期
 @Documented //可以被工具文档化
 public @interface DemoAnnotation {
+
+    public String testValue() default "testValue";
 }

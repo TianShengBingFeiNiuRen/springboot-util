@@ -1,6 +1,7 @@
 package com.andon.springbootutil.aop;
 
 import com.alibaba.fastjson.JSONObject;
+import com.andon.springbootutil.annotation.DemoAnnotation;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -32,11 +33,13 @@ public class DemoAspect {
 
     /**
      * 前置通知，关注点执行前运行的方法
+     * && @annotation与参数上的注解参数名对应，则可以获取被增强方法上注解的属性
      */
-    @Before("pointCut()")
-    public void before(JoinPoint joinPoint) {
+    @Before("pointCut() && @annotation(demoAnnotation)")
+    public void before(JoinPoint joinPoint, DemoAnnotation demoAnnotation) {
+        String testValue = demoAnnotation.testValue();
         Object[] args = joinPoint.getArgs();
-        log.info("before [{}-{}] 前置通知!! args:{}", Thread.currentThread().getName(), Thread.currentThread().getId(), JSONObject.toJSONString(args));
+        log.info("before [{}-{}] 前置通知!! args:{} testValue:{}", Thread.currentThread().getName(), Thread.currentThread().getId(), JSONObject.toJSONString(args), testValue);
     }
 
     /**
