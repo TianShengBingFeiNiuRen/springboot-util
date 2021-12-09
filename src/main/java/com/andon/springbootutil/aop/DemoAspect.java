@@ -55,7 +55,7 @@ public class DemoAspect {
     @AfterReturning(value = "pointCut()", returning = "returnValue")
     public Object afterReturning(JoinPoint joinPoint, Object returnValue) {
         Object[] args = joinPoint.getArgs();
-        log.info("afterReturning [{}-{}] 返回后通知!! args:{} returnValue:{}", Thread.currentThread().getName(), Thread.currentThread().getId(), JSONObject.toJSONString(args), returnValue);
+        log.info("afterReturning [{}-{}] 返回后通知!! args:{} returnValue:{}", Thread.currentThread().getName(), Thread.currentThread().getId(), JSONObject.toJSONString(args), JSONObject.toJSONString(returnValue));
         return returnValue;
     }
 
