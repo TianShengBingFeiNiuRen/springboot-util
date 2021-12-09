@@ -50,7 +50,7 @@ public class DemoAspect {
 
     /**
      * 后置通知，获取方法的返回值
-     * returning赋值的参数，用来接收被增强的任意类型的返回值
+     * returning赋值的参数，用来接收被增强方法的任意类型的返回值
      */
     @AfterReturning(value = "pointCut()", returning = "returnValue")
     public Object afterReturning(JoinPoint joinPoint, Object returnValue) {
