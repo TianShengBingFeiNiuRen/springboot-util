@@ -13,5 +13,5 @@ import java.lang.annotation.*;
 @Documented //可以被工具文档化
 public @interface DemoAnnotation {
 
-    public String testValue() default "testValue";
+    String testValue() default "testValue";
 }
