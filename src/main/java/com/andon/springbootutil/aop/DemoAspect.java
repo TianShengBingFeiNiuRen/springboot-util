@@ -50,13 +50,13 @@ public class DemoAspect {
 
     /**
      * 后置通知，获取方法的返回值
-     * returning的赋值的名字,必须跟通知方法中参数的名字保持一致
+     * returning的赋值的参数，用来接收被增强的任意类型的返回值
      */
-    @AfterReturning(value = "pointCut()", returning = "value")
-    public Object afterReturning(JoinPoint joinPoint, Object value) {
+    @AfterReturning(value = "pointCut()", returning = "returnValue")
+    public Object afterReturning(JoinPoint joinPoint, Object returnValue) {
         Object[] args = joinPoint.getArgs();
-        log.info("afterReturning [{}-{}] 返回后通知!! args:{} value:{}", Thread.currentThread().getName(), Thread.currentThread().getId(), JSONObject.toJSONString(args), value);
-        return value;
+        log.info("afterReturning [{}-{}] 返回后通知!! args:{} returnValue:{}", Thread.currentThread().getName(), Thread.currentThread().getId(), JSONObject.toJSONString(args), returnValue);
+        return returnValue;
     }
 
     /**
