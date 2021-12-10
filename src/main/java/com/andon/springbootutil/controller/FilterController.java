@@ -30,7 +30,7 @@ public class FilterController {
             String uri = String.valueOf(request.getAttribute("uri"));
             response.setCode(code);
             response.setMessage(message);
-            log.warn("remoteHost:{} method:{} uri:{}", request.getRemoteHost(), request.getMethod(), uri);
+            log.warn("X-Real-IP:{} remoteHost:{} method:{} uri:{}", request.getHeader("X-Real-IP"), request.getRemoteHost(), request.getMethod(), uri);
         } catch (Exception e) {
             e.printStackTrace();
         }
