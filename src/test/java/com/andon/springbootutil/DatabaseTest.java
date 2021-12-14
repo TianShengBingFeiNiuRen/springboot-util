@@ -1,16 +1,18 @@
 package com.andon.springbootutil;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -27,6 +29,42 @@ public class DatabaseTest {
 
     @Resource
     private ThreadPoolExecutor globalExecutorService;
+    @Resource
+    private RestTemplate restTemplate;
+
+    @Test
+    public void test05() {
+        Map<String, Object> param = new HashMap<>();
+        param.put("param1", "hello");
+        param.put("param2", "world");
+        ResponseEntity<JSONObject> responseEntity = restTemplate.postForEntity("http://localhost:8080/aop/test3", param, JSONObject.class);
+        HttpStatus statusCode = responseEntity.getStatusCode();
+        int statusCodeValue = responseEntity.getStatusCodeValue();
+        HttpHeaders headers = responseEntity.getHeaders();
+        JSONObject body = responseEntity.getBody();
+        log.info("statusCode:{}", statusCode);
+        log.info("statusCodeValue:{}", statusCodeValue);
+        log.info("headers:{}", JSONObject.toJSONString(headers));
+        log.info("body:{}", body);
+        log.info("responseEntity:{}", JSONObject.toJSONString(responseEntity));
+    }
+
+    @Test
+    public void test04() {
+        Map<String, Object> param = new HashMap<>();
+        param.put("value", "hello world");
+        ResponseEntity<String> responseEntity = restTemplate.getForEntity("http://localhost:8080/aop/test?value={value}", String.class, param);
+//        ResponseEntity<String> responseEntity = restTemplate.getForEntity("http://localhost:8080/aop/test?value={1}", String.class, "hello world");
+        HttpStatus statusCode = responseEntity.getStatusCode();
+        int statusCodeValue = responseEntity.getStatusCodeValue();
+        HttpHeaders headers = responseEntity.getHeaders();
+        String body = responseEntity.getBody();
+        log.info("statusCode:{}", statusCode);
+        log.info("statusCodeValue:{}", statusCodeValue);
+        log.info("headers:{}", JSONObject.toJSONString(headers));
+        log.info("body:{}", body);
+        log.info("responseEntity:{}", JSONObject.toJSONString(responseEntity));
+    }
 
     @Test
     public void test03() throws InterruptedException, ExecutionException {
