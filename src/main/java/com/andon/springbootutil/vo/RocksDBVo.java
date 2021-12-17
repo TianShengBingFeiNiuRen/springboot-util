@@ -18,6 +18,9 @@ import java.io.Serializable;
 public class RocksDBVo implements Serializable {
 
     @NonNull
+    @ApiModelProperty(value = "列族", required = true)
+    private String cfName = "default";
+    @NonNull
     @ApiModelProperty(value = "键", required = true)
     private String key;
     @ApiModelProperty(value = "值", required = true)

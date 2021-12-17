@@ -6,7 +6,6 @@ import com.andon.springbootutil.vo.TestSwaggerTestResp;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
-import org.rocksdb.RocksDBException;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -27,6 +26,14 @@ import java.util.function.Supplier;
  */
 @Slf4j
 public class Demo {
+
+    @Test
+    public void test23() {
+        for (int i = 0; i < 100; i++) {
+            int number = new Random().nextInt(10);
+            log.info("number:{}", number);
+        }
+    }
 
     @Test
     public void test22() {
@@ -152,28 +159,6 @@ public class Demo {
 
         thread.start();
         System.out.println("main函数执行结束");
-    }
-
-    @Test
-    public void test15() {
-        Map<String, String> all = RocksDBUtil.getAll();
-        log.info("all:{}", JSONObject.toJSONString(all));
-    }
-
-    @Test
-    public void test14() throws RocksDBException {
-        String key = "hello";
-        String value = RocksDBUtil.get(key);
-        String key2 = "java";
-        String value2 = RocksDBUtil.get(key2);
-        log.info("key:{} value:{}", key, value);
-        log.info("key2:{} value2:{}", key2, value2);
-    }
-
-    @Test
-    public void test13() throws RocksDBException {
-        RocksDBUtil.put("hello", "world");
-        RocksDBUtil.put("java", "springboot");
     }
 
     @Test

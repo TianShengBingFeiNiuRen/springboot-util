@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author Andon
@@ -19,6 +21,7 @@ import java.util.Map;
 public class RocksDBUtil {
 
     private static RocksDB rocksDB;
+    public static ConcurrentMap<String, ColumnFamilyHandle> columnFamilyHandleMap = new ConcurrentHashMap<>(); //数据库列族(表)集合
 
     /*
       初始化 RocksDB
@@ -36,8 +39,26 @@ public class RocksDBUtil {
             RocksDB.loadLibrary();
             Options options = new Options();
             options.setCreateIfMissing(true); //如果数据库不存在则创建
-            rocksDB = RocksDB.open(options, rocksDBPath);
+            List<byte[]> cfArr = RocksDB.listColumnFamilies(options, rocksDBPath); // 初始化所有已存在列族
+            List<ColumnFamilyDescriptor> columnFamilyDescriptors = new ArrayList<>(); //ColumnFamilyDescriptor集合
+            if (cfArr.size() > 0) {
+                for (byte[] cf : cfArr) {
+                    columnFamilyDescriptors.add(new ColumnFamilyDescriptor(cf, new ColumnFamilyOptions()));
+                }
+            } else {
+                columnFamilyDescriptors.add(new ColumnFamilyDescriptor(RocksDB.DEFAULT_COLUMN_FAMILY, new ColumnFamilyOptions()));
+            }
+            DBOptions dbOptions = new DBOptions();
+            dbOptions.setCreateIfMissing(true);
+            List<ColumnFamilyHandle> columnFamilyHandles = new ArrayList<>(); //ColumnFamilyHandle集合
+            rocksDB = RocksDB.open(dbOptions, rocksDBPath, columnFamilyDescriptors, columnFamilyHandles);
+            for (int i = 0; i < columnFamilyDescriptors.size(); i++) {
+                ColumnFamilyHandle columnFamilyHandle = columnFamilyHandles.get(i);
+                String cfName = new String(columnFamilyDescriptors.get(i).getName());
+                columnFamilyHandleMap.put(cfName, columnFamilyHandle);
+            }
             log.info("RocksDB init success!! path:{}", rocksDBPath);
+            log.info("cfNames:{}", columnFamilyHandleMap.keySet());
         } catch (Exception e) {
             log.info("RocksDB init failure!! error:{}", e.getMessage());
             e.printStackTrace();
@@ -45,20 +66,50 @@ public class RocksDBUtil {
     }
 
     /**
-     * 增
+     * 列族，创建（如果不存在）
      */
-    public static void put(String key, String value) throws RocksDBException {
-        rocksDB.put(key.getBytes(), value.getBytes());
+    public static ColumnFamilyHandle cfAddIfNotExist(String cfName) throws RocksDBException {
+        ColumnFamilyHandle columnFamilyHandle;
+        if (!columnFamilyHandleMap.containsKey(cfName)) {
+            columnFamilyHandle = rocksDB.createColumnFamily(new ColumnFamilyDescriptor(cfName.getBytes(), new ColumnFamilyOptions()));
+            columnFamilyHandleMap.put(cfName, columnFamilyHandle);
+            log.info("cfAddIfNotExist success!! cfName:{}", cfName);
+        } else {
+            columnFamilyHandle = columnFamilyHandleMap.get(cfName);
+        }
+        return columnFamilyHandle;
     }
 
     /**
-     * 批量增
+     * 列族，删除（如果存在）
      */
-    public static void batchPut(Map<String, String> map) throws RocksDBException {
+    public static void cfDeleteIfExist(String cfName) throws RocksDBException {
+        if (columnFamilyHandleMap.containsKey(cfName)) {
+            rocksDB.dropColumnFamily(columnFamilyHandleMap.get(cfName));
+            columnFamilyHandleMap.remove(cfName);
+            log.info("cfDeleteIfExist success!! cfName:{}", cfName);
+        } else {
+            log.warn("cfDeleteIfExist containsKey!! cfName:{}", cfName);
+        }
+    }
+
+    /**
+     * 增
+     */
+    public static void put(String cfName, String key, String value) throws RocksDBException {
+        ColumnFamilyHandle columnFamilyHandle = cfAddIfNotExist(cfName); //获取列族Handle
+        rocksDB.put(columnFamilyHandle, key.getBytes(), value.getBytes());
+    }
+
+    /**
+     * 增（批量）
+     */
+    public static void batchPut(String cfName, Map<String, String> map) throws RocksDBException {
+        ColumnFamilyHandle columnFamilyHandle = cfAddIfNotExist(cfName); //获取列族Handle
         WriteOptions writeOptions = new WriteOptions();
         WriteBatch writeBatch = new WriteBatch();
         for (Map.Entry<String, String> entry : map.entrySet()) {
-            writeBatch.put(entry.getKey().getBytes(), entry.getValue().getBytes());
+            writeBatch.put(columnFamilyHandle, entry.getKey().getBytes(), entry.getValue().getBytes());
         }
         rocksDB.write(writeOptions, writeBatch);
     }
@@ -66,28 +117,39 @@ public class RocksDBUtil {
     /**
      * 删
      */
-    public static void delete(String key) throws RocksDBException {
-        rocksDB.delete(key.getBytes());
+    public static void delete(String cfName, String key) throws RocksDBException {
+        ColumnFamilyHandle columnFamilyHandle = cfAddIfNotExist(cfName); //获取列族Handle
+        rocksDB.delete(columnFamilyHandle, key.getBytes());
     }
 
     /**
      * 查
      */
-    public static String get(String key) throws RocksDBException {
-        byte[] bytes = rocksDB.get(key.getBytes());
-        return new String(bytes);
+    public static String get(String cfName, String key) throws RocksDBException {
+        String value = null;
+        ColumnFamilyHandle columnFamilyHandle = cfAddIfNotExist(cfName); //获取列族Handle
+        byte[] bytes = rocksDB.get(columnFamilyHandle, key.getBytes());
+        if (!ObjectUtils.isEmpty(bytes)) {
+            value = new String(bytes);
+        }
+        return value;
     }
 
     /**
-     * 查-多个键值对
+     * 查（多个键值对）
      */
-    public static Map<String, String> multiGetAsList(List<String> keys) throws RocksDBException {
+    public static Map<String, String> multiGetAsList(String cfName, List<String> keys) throws RocksDBException {
         Map<String, String> map = new HashMap<>();
+        ColumnFamilyHandle columnFamilyHandle = cfAddIfNotExist(cfName); //获取列族Handle
+        List<ColumnFamilyHandle> columnFamilyHandles = new ArrayList<>(keys.size() + 1);
         List<byte[]> keyBytes = new ArrayList<>();
         for (String key : keys) {
             keyBytes.add(key.getBytes());
         }
-        List<byte[]> bytes = rocksDB.multiGetAsList(keyBytes);
+        for (int i = 0; i < keys.size(); i++) {
+            columnFamilyHandles.add(columnFamilyHandle);
+        }
+        List<byte[]> bytes = rocksDB.multiGetAsList(columnFamilyHandles, keyBytes);
         for (int i = 0; i < bytes.size(); i++) {
             byte[] valueBytes = bytes.get(i);
             String value = null;
@@ -100,11 +162,12 @@ public class RocksDBUtil {
     }
 
     /**
-     * 查所有键值对
+     * 查（所有键值对）
      */
-    public static Map<String, String> getAll() {
+    public static Map<String, String> getAll(String cfName) throws RocksDBException {
         Map<String, String> map = new HashMap<>();
-        RocksIterator rocksIterator = rocksDB.newIterator();
+        ColumnFamilyHandle columnFamilyHandle = cfAddIfNotExist(cfName); //获取列族Handle
+        RocksIterator rocksIterator = rocksDB.newIterator(columnFamilyHandle);
         for (rocksIterator.seekToFirst(); rocksIterator.isValid(); rocksIterator.next()) {
             map.put(new String(rocksIterator.key()), new String(rocksIterator.value()));
         }
