@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -26,6 +27,32 @@ import java.util.function.Supplier;
  */
 @Slf4j
 public class Demo {
+
+    @Test
+    public void test24() {
+        List<Integer> list = new ArrayList<>(50);
+        for (int i = 0; i < 50; i++) {
+            list.add(i);
+        }
+        Integer length = getCapacity(list);
+        log.info("size:{} length:{}", list.size(), length);
+    }
+
+    public static Integer getCapacity(List<Integer> list) {
+        Integer length = null;
+        Class clazz = list.getClass();
+        Field field;
+        try {
+            field = clazz.getDeclaredField("elementData");
+            field.setAccessible(true);
+            Object[] object = (Object[]) field.get(list);
+            length = object.length;
+            return length;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return length;
+    }
 
     @Test
     public void test23() {
