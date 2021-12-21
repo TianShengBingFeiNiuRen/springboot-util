@@ -1,5 +1,6 @@
 package com.andon.springbootutil.config;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +26,7 @@ public class ExecutorConfig {
         log.info("cpuNum:{}", cpuNum);
         ThreadPoolExecutor executor = new ThreadPoolExecutor(
                 cpuNum, cpuNum * 2, 60, TimeUnit.SECONDS, new ArrayBlockingQueue<>(10));
-        log.info("executor:{}", executor);
+        log.info("executor:{}", JSONObject.toJSONString(executor));
         return executor;
     }
 }
