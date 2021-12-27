@@ -16,12 +16,17 @@
     <!-- 日志最大的历史 10天 -->
     <property name="maxHistory" value="10"/>
 
+    <!-- 彩色日志格式 -->
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%red(%d{yyyy-MM-dd HH:mm:ss}) %green([%thread]) %highlight(%-5level) %boldMagenta(%logger) - %cyan(%msg%n)"/>
+
     <!-- ConsoleAppender 控制台输出日志 -->
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>
                 <!-- 设置日志输出格式 -->
-                %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n
+                <!--  %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n  -->
+                ${CONSOLE_LOG_PATTERN}
             </pattern>
         </encoder>
     </appender>
