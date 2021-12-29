@@ -1,2 +1,7 @@
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
 task:
   time_clear_sector: "18:00:00"
