@@ -20,7 +20,6 @@ import java.util.*;
  * <p>
  * csv文件上传下载
  */
-@SuppressWarnings("DuplicatedCode")
 @Slf4j
 public class CSVUtil {
 
@@ -95,29 +94,33 @@ public class CSVUtil {
             log.error("解析CSV内容失败 error:{} e:{}", e.getMessage(), e);
         } finally {
             //关闭流
-            if (bufferedReader != null) {
-                try {
-                    bufferedReader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (inputStreamReader != null) {
-                try {
-                    inputStreamReader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (fileInputStream != null) {
-                try {
-                    fileInputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            close(bufferedReader, inputStreamReader, fileInputStream);
         }
         return null;
+    }
+
+    private static void close(BufferedReader bufferedReader, InputStreamReader inputStreamReader, FileInputStream fileInputStream) {
+        if (bufferedReader != null) {
+            try {
+                bufferedReader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (inputStreamReader != null) {
+            try {
+                inputStreamReader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (fileInputStream != null) {
+            try {
+                fileInputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -180,27 +183,7 @@ public class CSVUtil {
             log.error("解析CSV内容失败 error:{} e:{}", e.getMessage(), e);
         } finally {
             //关闭流
-            if (bufferedReader != null) {
-                try {
-                    bufferedReader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (inputStreamReader != null) {
-                try {
-                    inputStreamReader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (fileInputStream != null) {
-                try {
-                    fileInputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            close(bufferedReader, inputStreamReader, fileInputStream);
         }
         return null;
     }
