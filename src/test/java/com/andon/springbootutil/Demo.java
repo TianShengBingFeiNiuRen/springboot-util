@@ -5,6 +5,7 @@ import com.andon.springbootutil.util.*;
 import com.andon.springbootutil.vo.TestSwaggerTestResp;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -29,6 +30,54 @@ import java.util.function.Supplier;
 public class Demo {
 
     @Test
+    public void test27(){
+        System.out.println("hello\nworld");
+        System.out.println("============");
+        System.out.println("java\rspringboot");
+    }
+
+    @Test
+    public void test26() {
+        System.out.println();
+        BitSet bitSet1 = new BitSet(10);
+        BitSet bitSet2 = new BitSet(10);
+        log.info("bitSet1:{}", bitSet1);
+        log.info("bitSet2:{}", bitSet2);
+        for (int i = 0; i < 10; i++) {
+            if (i % 2 == 0) {
+                bitSet1.set(i);
+            } else {
+                bitSet2.set(i);
+            }
+        }
+        log.info("set >> bitSet1:{}", bitSet1);
+        log.info("set >> bitSet2:{}", bitSet2);
+
+        BitSet bitSet1Clone1 = (BitSet) bitSet1.clone();
+        log.info("clone >> bitSet1Clone1:{}", bitSet1Clone1);
+        bitSet1Clone1.and(bitSet2);
+        log.info("and >> bitSet1Clone1:{}", bitSet1Clone1);
+
+        BitSet bitSet1Clone2 = (BitSet) bitSet1.clone();
+        log.info("clone >> bitSet1Clone2:{}", bitSet1Clone2);
+        bitSet1Clone2.or(bitSet2);
+        log.info("or >> bitSet1Clone2:{}", bitSet1Clone2);
+
+        BitSet bitSet1Clone3 = (BitSet) bitSet1.clone();
+        log.info("clone >> bitSet1Clone3:{}", bitSet1Clone3);
+        bitSet1Clone3.xor(bitSet2);
+        log.info("xor >> bitSet1Clone3:{}", bitSet1Clone3);
+
+        String str = "hello world";
+        char charAt = str.charAt(1);
+        log.info("charAt:{}", charAt);
+        BitSet bitSet = new BitSet(10);
+        log.info("bitSet:{}", bitSet);
+        bitSet.set(charAt);
+        log.info("bitSet:{}", bitSet);
+    }
+
+    @Test
     public void test24() {
         List<Integer> list = new ArrayList<>(50);
         for (int i = 0; i < 50; i++) {
@@ -40,7 +89,7 @@ public class Demo {
 
     public static Integer getCapacity(List<Integer> list) {
         Integer length = null;
-        Class clazz = list.getClass();
+        val clazz = list.getClass();
         Field field;
         try {
             field = clazz.getDeclaredField("elementData");
