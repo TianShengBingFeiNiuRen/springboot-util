@@ -36,7 +36,7 @@ public class TxtUtil {
             bufferedReader = new BufferedReader(fileReader);
             String read;
             while ((read = bufferedReader.readLine()) != null) {
-                result.append(read).append("\r\n");
+                result.append(read).append(NEW_LINE_SEPARATOR);
             }
         } catch (IOException e) {
             e.printStackTrace();
