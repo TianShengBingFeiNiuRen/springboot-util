@@ -138,15 +138,15 @@ public class RocksDBUtil {
     /**
      * 查（多个键值对）
      */
-    public static Map<String, String> multiGetAsList(String cfName, List<String> keys) throws RocksDBException {
+    public static Map<String, String> multiGetAsMap(String cfName, String[] keys) throws RocksDBException {
         Map<String, String> map = new HashMap<>();
         ColumnFamilyHandle columnFamilyHandle = cfAddIfNotExist(cfName); //获取列族Handle
-        List<ColumnFamilyHandle> columnFamilyHandles = new ArrayList<>(keys.size() + 1);
+        List<ColumnFamilyHandle> columnFamilyHandles = new ArrayList<>(keys.length + 1);
         List<byte[]> keyBytes = new ArrayList<>();
         for (String key : keys) {
             keyBytes.add(key.getBytes());
         }
-        for (int i = 0; i < keys.size(); i++) {
+        for (int i = 0; i < keys.length; i++) {
             columnFamilyHandles.add(columnFamilyHandle);
         }
         List<byte[]> bytes = rocksDB.multiGetAsList(columnFamilyHandles, keyBytes);
@@ -156,7 +156,7 @@ public class RocksDBUtil {
             if (!ObjectUtils.isEmpty(valueBytes)) {
                 value = new String(valueBytes);
             }
-            map.put(keys.get(i), value);
+            map.put(keys[i], value);
         }
         return map;
     }
