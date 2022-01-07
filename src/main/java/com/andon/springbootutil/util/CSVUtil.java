@@ -96,7 +96,7 @@ public class CSVUtil {
             //关闭流
             close(bufferedReader, inputStreamReader, fileInputStream);
         }
-        return null;
+        return new ArrayList<>();
     }
 
     private static void close(BufferedReader bufferedReader, InputStreamReader inputStreamReader, FileInputStream fileInputStream) {
@@ -185,7 +185,7 @@ public class CSVUtil {
             //关闭流
             close(bufferedReader, inputStreamReader, fileInputStream);
         }
-        return null;
+        return new HashMap<>();
     }
 
     /**
