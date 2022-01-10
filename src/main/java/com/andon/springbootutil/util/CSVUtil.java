@@ -6,6 +6,7 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 import org.rocksdb.RocksDBException;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -148,14 +149,15 @@ public class CSVUtil {
                 headerList.add(s);
             }
             RocksDBUtil.put("csv_head", cfName, String.join(",", headerList));
+            Map<String, Integer> colNameIndex = new HashMap<>();
+            for (int i = 0; i < header.size(); i++) {
+                colNameIndex.put(header.get(i), i);
+            }
             String[] colNameArr = combinationID.split(","); //组合ID列名
             List<Integer> colIndex = new ArrayList<>(colNameArr.length + 1); //组合ID列索引
             for (String colName : colNameArr) {
-                for (int i = 0; i < header.size(); i++) {
-                    if (colName.equals(header.get(i))) {
-                        colIndex.add(i);
-                        break;
-                    }
+                if (!ObjectUtils.isEmpty(colNameIndex.get(colName))) {
+                    colIndex.add(colNameIndex.get(colName));
                 }
             }
             int colNum = records.get(0).size(); //通过表头获取列数量
@@ -165,15 +167,15 @@ public class CSVUtil {
                     rowIndex++;
                     continue;
                 }
-                // keyList
-                List<String> key = new ArrayList<>();
                 // 每行的内容
                 List<String> value = new ArrayList<>(colNum + 1);
                 for (int i = 0; i < colNum; i++) {
-                    if (colIndex.contains(i)) {
-                        key.add(record.get(i));
-                    }
                     value.add(record.get(i));
+                }
+                // 每行ID
+                List<String> key = new ArrayList<>();
+                for (Integer index : colIndex) {
+                    key.add(record.get(index));
                 }
                 map.put(String.join(",", key), String.join(",", value));
                 rowIndex++;
@@ -185,7 +187,7 @@ public class CSVUtil {
             //关闭流
             close(bufferedReader, inputStreamReader, fileInputStream);
         }
-        return new HashMap<>();
+        return null;
     }
 
     /**

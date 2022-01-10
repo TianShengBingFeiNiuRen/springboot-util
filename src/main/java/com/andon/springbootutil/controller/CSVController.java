@@ -34,7 +34,7 @@ public class CSVController {
 
     @ApiOperation("下载")
     @GetMapping(value = "/download")
-    public String download(String fileName, String head, String values, HttpServletResponse httpServletResponse) throws IOException {
+    public void download(String fileName, String head, String values, HttpServletResponse httpServletResponse) throws IOException {
         String[] headArr = head.split(",");
         List<String[]> valueList = new ArrayList<>(headArr.length + 1);
         String[] valueArr = values.split("\\|");
@@ -42,7 +42,6 @@ public class CSVController {
             valueList.add(value.split(","));
         }
         File file = CSVUtil.makeTempCSV(fileName, headArr, valueList);
-        CSVUtil.downloadFile(httpServletResponse, file, fileName);
-        return null;
+        boolean b = CSVUtil.downloadFile(httpServletResponse, file, fileName);
     }
 }
