@@ -46,7 +46,9 @@ public class RocksDBController {
     @GetMapping("/cf-all")
     public ResponseStandard<Set<String>> cfAll() {
         Set<String> cfNames = RocksDBUtil.columnFamilyHandleMap.keySet();
-        return ResponseStandard.successResponse(cfNames);
+        ResponseStandard<Set<String>> response = ResponseStandard.successResponse(cfNames);
+        response.setTotal(cfNames.size());
+        return response;
     }
 
     @ApiOperation("增")
