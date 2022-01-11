@@ -30,7 +30,28 @@ import java.util.function.Supplier;
 public class Demo {
 
     @Test
-    public void test27(){
+    public void test28() {
+        List<String> combinationResult = new ArrayList<>();
+        List<String> arrangementResult = new ArrayList<>();
+        String keys = "a,b,c";
+        String[] keyArr = keys.split(",");
+        int num = keyArr.length;
+        long combinationNum = 0;
+        long arrangementNum = 0;
+        for (int i = 0; i < num; i++) {
+            combinationNum += ACUtil.combination(num, i + 1);
+            arrangementNum += ACUtil.arrangement(num, i + 1);
+            combinationResult.addAll(ACUtil.combinationSelect(keyArr, i + 1));
+            arrangementResult.addAll(ACUtil.arrangementSelect(keyArr, i + 1));
+        }
+        log.info("combinationNum:{}", combinationNum);
+        log.info("combinationResult:{}", JSONObject.toJSONString(combinationResult));
+        log.info("arrangementNum:{}", arrangementNum);
+        log.info("arrangementResult:{}", JSONObject.toJSONString(arrangementResult));
+    }
+
+    @Test
+    public void test27() {
         System.out.println("hello\nworld");
         System.out.println("============");
         System.out.println("java\rspringboot");
