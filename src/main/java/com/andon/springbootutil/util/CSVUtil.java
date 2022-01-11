@@ -151,9 +151,13 @@ public class CSVUtil {
             RocksDBUtil.put("csv_head", cfName, String.join(",", headerList));
             Map<String, Integer> colNameIndex = new HashMap<>();
             for (int i = 0; i < header.size(); i++) {
-                colNameIndex.put(header.get(i), i);
+                colNameIndex.put(header.get(i).trim(), i);
             }
+            // 组合ID去空格
             String[] colNameArr = combinationID.split(","); //组合ID列名
+            for (int i = 0; i < colNameArr.length; i++) {
+                colNameArr[i] = colNameArr[i].trim();
+            }
             List<Integer> colIndex = new ArrayList<>(colNameArr.length + 1); //组合ID列索引
             for (String colName : colNameArr) {
                 if (!ObjectUtils.isEmpty(colNameIndex.get(colName))) {
