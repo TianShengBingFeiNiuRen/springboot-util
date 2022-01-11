@@ -37,7 +37,7 @@ public class CSVUtil {
     public static File uploadFile(MultipartFile multipartFile) {
         assert PATH != null;
         // 获取上传路径
-        String path = PATH.getPath() + multipartFile.getOriginalFilename();
+        String path = PATH.getPath() + UUID.randomUUID().toString().replaceAll("-", "") + File.separator + multipartFile.getOriginalFilename();
         try {
             // 通过将给定的路径名字符串转换为抽象路径名来创建新的 File实例
             File file = new File(path);

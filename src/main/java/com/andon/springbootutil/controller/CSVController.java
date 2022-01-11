@@ -29,7 +29,10 @@ public class CSVController {
     public List<List<String>> upload(MultipartFile multipartFile) {
         File file = CSVUtil.uploadFile(multipartFile);
         assert file != null;
-        return CSVUtil.readCSV(file.getPath());
+        List<List<String>> list = CSVUtil.readCSV(file.getPath());
+        boolean delete = file.delete();
+        boolean parentFileDelete = file.getParentFile().delete();
+        return list;
     }
 
     @ApiOperation("下载")
