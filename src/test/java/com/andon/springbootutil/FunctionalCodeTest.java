@@ -14,7 +14,7 @@ import java.util.stream.Stream;
  * @author Andon
  * 2022/2/10
  * <p>
- * 函数式编程测试类
+ * 函数式编程测试
  */
 @Slf4j
 public class FunctionalCodeTest {
