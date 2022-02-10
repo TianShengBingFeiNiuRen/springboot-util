@@ -2,11 +2,13 @@ package com.andon.springbootutil;
 
 import com.alibaba.fastjson.JSONObject;
 import com.andon.springbootutil.util.*;
+import com.andon.springbootutil.vo.RocksDBVo;
 import com.andon.springbootutil.vo.TestSwaggerTestResp;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.junit.Test;
+import org.springframework.beans.BeanUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -28,6 +30,40 @@ import java.util.function.Supplier;
  */
 @Slf4j
 public class Demo {
+
+    @Test
+    public void test31() {
+        RocksDBVo rocksDBVo = RocksDBVo.builder().cfName("test_cf_name").key("test_key").value("test_value").build();
+        RocksDBVo vo = new RocksDBVo();
+        log.info("rocksDBVo:{}", JSONObject.toJSONString(rocksDBVo));
+        log.info("vo:{}", JSONObject.toJSONString(vo));
+        BeanUtils.copyProperties(rocksDBVo, vo);
+        log.info("vo:{}", JSONObject.toJSONString(vo));
+        System.out.println(rocksDBVo == vo);
+    }
+
+    @Test
+    public void test30() {
+        String str = "/andon/query";
+        boolean matches = str.matches("/andon/.*");
+        log.info("matches:{}", matches);
+
+        String substring = str.substring(str.lastIndexOf("/") + 1);
+        log.info("substring:{}", substring);
+    }
+
+    @Test
+    public void test29() {
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            list.add(i);
+        }
+        log.info("list:{}", list);
+        Collections.shuffle(list);
+        log.info("list:{}", list);
+        List<Integer> list1 = list.subList(0, 5);
+        log.info("list1:{}", list1);
+    }
 
     @Test
     public void test28() {
