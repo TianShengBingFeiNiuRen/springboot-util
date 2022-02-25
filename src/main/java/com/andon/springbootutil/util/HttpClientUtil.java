@@ -5,16 +5,23 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
 import org.springframework.util.ObjectUtils;
 
+import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -36,12 +43,28 @@ public class HttpClientUtil {
     // 请求响应超时时间,单位毫秒
     private static final int SOCKET_TIMEOUT = 3 * 60 * 1000;
 
+    // 信任所有证书
+    public static CloseableHttpClient createSSLClientDefault() {
+        try {
+            // 使用 loadTrustMaterial() 方法实现一个信任策略，信任所有证书
+            // 信任所有
+            SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, (x509Certificates, s) -> true).build();
+            //NoopHostnameVerifier类：作为主机名验证工具，实质上关闭了主机名验证，它接受任何有效的SSL会话并匹配到目标主机
+            NoopHostnameVerifier hostnameVerifier = NoopHostnameVerifier.INSTANCE;
+            SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext, hostnameVerifier);
+            return HttpClients.custom().setSSLSocketFactory(sslConnectionSocketFactory).build();
+        } catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
+            e.printStackTrace();
+        }
+        return HttpClients.createDefault();
+    }
+
     /**
      * 发送get请求;带请求头和请求参数
      */
     public static String doGet(String url, Map<String, String> headers, Map<String, String> params) throws Exception {
         // 创建httpClient对象
-        CloseableHttpClient httpClient = HttpClients.createDefault();
+        CloseableHttpClient httpClient = createSSLClientDefault();
 
         // 创建访问地址
         URIBuilder uriBuilder = new URIBuilder(url);
@@ -82,7 +105,7 @@ public class HttpClientUtil {
      */
     public static String doPost(String url, Map<String, String> headers, Map<String, String> params) throws IOException {
         // 创建httpClient对象
-        CloseableHttpClient httpClient = HttpClients.createDefault();
+        CloseableHttpClient httpClient = createSSLClientDefault();
 
         // 创建http对象
         HttpPost httpPost = new HttpPost(url);
@@ -127,7 +150,7 @@ public class HttpClientUtil {
      */
     public static String doPostJson(String url, Map<String, String> headers, String json) throws IOException {
         // 创建httpClient对象
-        CloseableHttpClient httpClient = HttpClients.createDefault();
+        CloseableHttpClient httpClient = createSSLClientDefault();
 
         // 创建http对象
         HttpPost httpPost = new HttpPost(url);
@@ -164,7 +187,7 @@ public class HttpClientUtil {
      * 发送put请求;带请求头和请求参数
      */
     public static String doPut(String url, Map<String, String> headers, Map<String, String> params) throws IOException {
-        CloseableHttpClient httpClient = HttpClients.createDefault();
+        CloseableHttpClient httpClient = createSSLClientDefault();
         HttpPut httpPut = new HttpPut(url);
         RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(CONNECT_TIMEOUT).setSocketTimeout(SOCKET_TIMEOUT).build();
         httpPut.setConfig(requestConfig);
@@ -191,7 +214,7 @@ public class HttpClientUtil {
      * 发送delete请求;带请求头
      */
     public static String doDelete(String url, Map<String, String> headers, Map<String, String> params) throws Exception {
-        CloseableHttpClient httpClient = HttpClients.createDefault();
+        CloseableHttpClient httpClient = createSSLClientDefault();
         URIBuilder uriBuilder = new URIBuilder(url);
         if (!ObjectUtils.isEmpty(params)) {
             params.forEach(uriBuilder::setParameter);
