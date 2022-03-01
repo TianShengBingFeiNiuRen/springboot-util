@@ -1,6 +1,8 @@
 # spring-boot-util
 工具类合集
 
+**CSDN**: [**SpringBoot 事件监听ApplicationEventPublisher**](https://blog.csdn.net/weixin_39792935/article/details/123208052).
+
 **CSDN**: [**Java函数式编程Lambda表达式（函数式接口、Optional、Stream流）**](https://blog.csdn.net/weixin_39792935/article/details/122856344).
 
 **CSDN**: [**SpringBoot 自定义注解+AOP+Redis 实现分布式锁做幂等**](https://blog.csdn.net/weixin_39792935/article/details/122068383).

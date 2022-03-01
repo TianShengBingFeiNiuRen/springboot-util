@@ -27,8 +27,8 @@ public class TestSwaggerController {
 
     @ApiOperation("测试")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "param1", value = "参数1", required = true),
-            @ApiImplicitParam(name = "param2", value = "参数2", required = true),
+            @ApiImplicitParam(name = "param1", value = "参数1", required = true, example = "hello"),
+            @ApiImplicitParam(name = "param2", value = "参数2", required = true, example = "world"),
     })
     @GetMapping(value = "/test")
     public ResponseStandard<TestSwaggerTestResp> test(@RequestParam String param1, @RequestParam String param2) {

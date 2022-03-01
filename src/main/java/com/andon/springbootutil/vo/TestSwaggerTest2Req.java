@@ -1,7 +1,10 @@
 package com.andon.springbootutil.vo;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -17,8 +20,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class TestSwaggerTest2Req implements Serializable {
 
-    @ApiModelProperty(value = "参数1", required = true)
+    @ApiModelProperty(value = "参数1", required = true, example = "java")
     private String param1;
-    @ApiModelProperty(value = "参数2", required = true)
+    @ApiModelProperty(value = "参数2", required = true, example = "mysql")
     private String param2;
 }

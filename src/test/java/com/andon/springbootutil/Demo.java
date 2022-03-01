@@ -4,9 +4,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.andon.springbootutil.util.*;
 import com.andon.springbootutil.vo.RocksDBVo;
 import com.andon.springbootutil.vo.TestSwaggerTestResp;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.junit.Test;
 import org.springframework.beans.BeanUtils;
 
@@ -23,6 +27,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * @author Andon
@@ -30,6 +35,260 @@ import java.util.function.Supplier;
  */
 @Slf4j
 public class Demo {
+
+    @Test
+    public void test43() {
+        String str = "223 3 #d 的 是个很__  EEE=+\uD83C\uDF26";
+        log.info("str:{}", str);
+        String str2 = str.replaceAll("[^a-zA-Z0-9\\u4E00-\\u9FA5]", "");
+        log.info("str2:{}", str2);
+    }
+
+    @Test
+    public void test42() {
+        String[] strings = new String[]{"hello", "world", "java", "python"};
+        List<String> collect = Arrays.stream(strings)
+                .filter(s -> {
+                    return !s.contains("o");
+                })
+                .collect(Collectors.toList());
+        log.info("collect:{}", JSONObject.toJSONString(collect));
+    }
+
+    @Test
+    public void test41() {
+        String tableName = "history_price_600145_xshg";
+        String s = "history_price_";
+        String substring = tableName.substring(s.length());
+        log.info("substring:{}", substring);
+    }
+
+    @Test
+    public void test40() throws IOException {
+        String apiHostPort = "https://61.164.47.197:3443/blockchain";
+        log.info("apiHostPort:{}", apiHostPort);
+        String userRegisterUrl = "/api/v1/user/register";
+        String headerAccessKey = "AuthCode";
+        String headerAccessCode = "test";
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("user_id", "17610835229");
+        String json = JSONObject.toJSONString(jsonObject);
+        Map<String, String> access = new HashMap<>();
+        access.put(headerAccessKey, headerAccessCode);
+        String response = HttpClientUtil.doPostJson(apiHostPort + userRegisterUrl, access, json);
+        log.info("response:{}", response);
+    }
+
+    @Test
+    public void test39() {
+        RocksDBVo rocksDBVo = RocksDBVo.builder().cfName("cfName").key("key").value("value").build();
+        log.info("rocksDBVo:{}", JSONObject.toJSONString(rocksDBVo));
+        Map<String, Object> map = JSONObject.parseObject(JSONObject.toJSONString(rocksDBVo), new com.alibaba.fastjson.TypeReference<Map<String, Object>>() {
+        }.getType());
+        log.info("map:{}", JSONObject.toJSONString(map));
+    }
+
+    @Test
+    public void test38() {
+        long ll = 9223372036854775807L;
+        long year = ll / 60 / 60 / 24 / 365;
+        log.info("{}", year);
+    }
+
+    @Test
+    public void test37() {
+        String s = UUID.randomUUID().toString().replaceAll("-", "");
+        log.info(s);
+    }
+
+    @Test
+    public void test36() {
+        List<String[]> result = new ArrayList<>();
+        String[] strArr = new String[]{"a,s,d", "z,x,c", "-1", "1,2,3", "4,5,6", "-1", "p,o,i"};
+        Arrays.stream(strArr)
+                .filter(value -> !value.equals("-1"))
+                .forEach(value -> result.add(value.split(",")));
+        log.info("result:{}", JSONObject.toJSONString(result));
+    }
+
+    @Test
+    public void test35() {
+        Optional<Schema> schemaOptional = Optional.empty();
+        Schema schema = schemaOptional.orElse(null);
+        log.info("schema:{}", JSONObject.toJSONString(schema));
+
+        schemaOptional = Optional.ofNullable(Schema.builder().isParticipateCompute(true).fieldName("a").dataType(DataType.STRING).build());
+        schema = schemaOptional.orElse(null);
+        log.info("schema:{}", JSONObject.toJSONString(schema));
+    }
+
+    @Test
+    public void test34() {
+        Schema schema1 = Schema.builder().isParticipateCompute(true).fieldName("a").dataType(DataType.STRING).build();
+        Schema schema2 = Schema.builder().isParticipateCompute(false).fieldName("b").dataType(DataType.STRING).build();
+        Schema schema3 = Schema.builder().isParticipateCompute(true).fieldName("c").dataType(DataType.STRING).build();
+        Schema schema4 = Schema.builder().isParticipateCompute(true).fieldName("d").dataType(DataType.STRING).build();
+        List<Schema> list = new ArrayList<>();
+        list.add(schema1);
+        list.add(schema2);
+        list.add(schema3);
+        list.add(schema4);
+        log.info("list:{}", list);
+
+        String json = new String(SerializationUtil.serialize(list));
+        log.info("json:{}", json);
+        List<Schema> schemas = SerializationUtil.deserialize(json.getBytes(), new TypeReference<List<Schema>>() {
+        });
+        log.info("schemas:{}", JSONObject.toJSONString(schemas));
+        List<String> indexs = new ArrayList<>();
+        for (int i = 0; i < schemas.size(); i++) {
+            if (schemas.get(i).isParticipateCompute) {
+                indexs.add(String.valueOf(i));
+            }
+        }
+        log.info("indexs:{}", indexs);
+        long combinationNum = 0;
+        List<String> combinationIndexs = new ArrayList<>();
+        for (int i = 0; i < indexs.size(); i++) {
+            combinationNum += ACUtil.combination(indexs.size(), i + 1);
+            combinationIndexs.addAll(ACUtil.combinationSelect(indexs.toArray(new String[0]), i + 1));
+        }
+        log.info("combinationIndex:{}", JSONObject.toJSONString(combinationIndexs));
+        for (String combinationIndex : combinationIndexs) {
+            String[] indexArr = combinationIndex.split(",");
+            Optional<String> fieldNameOptional = Arrays.stream(indexArr)
+                    .map(index -> schemas.get(Integer.parseInt(index)).getFieldName())
+                    .reduce((s, s2) -> s + "," + s2);
+//            fieldNameOptional.ifPresent(fieldName -> log.info("combinationIndex:{} fieldName:{}", combinationIndex, fieldName));
+            List<String> fieldNames = new ArrayList<>();
+            for (int i = 0; i < indexArr.length; i++) {
+                fieldNames.add(schemas.get(i).getFieldName());
+            }
+            String fieldName = String.join(",", fieldNames);
+            log.info("combinationIndex:{} fieldName:{}", combinationIndex, fieldName);
+        }
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    static class Schema {
+        private Boolean isParticipateCompute; //是否参与计算
+        private String fieldName; //字段名
+        private DataType dataType; //数据类型
+        private String description; //字段描述
+    }
+
+    private enum DataType {
+        STRING, INT, FLOAT, DOUBLE, DECIMAL, TIMESTAMP, BOOLEAN
+    }
+
+    static class SerializationUtil {
+        private final static ObjectMapper mapper = new ObjectMapper();
+
+        static {
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        }
+
+        private SerializationUtil() {
+        }
+
+        /**
+         * 序列化(对象 -> 字节数组)
+         *
+         * @param obj 对象
+         * @return 字节数组
+         */
+        public static <T> byte[] serialize(T obj) {
+            try {
+                return mapper.writeValueAsBytes(obj);
+            } catch (JsonProcessingException e) {
+                log.error("序列化失败: ", e);
+                throw new IllegalStateException(e.getMessage(), e);
+            }
+        }
+
+        /**
+         * 反序列化(字节数组 -> 对象)
+         *
+         * @param data
+         * @param valueTypeRef
+         * @param <T>
+         */
+        public static <T> T deserialize(byte[] data, TypeReference<T> valueTypeRef) {
+            try {
+                return mapper.readValue(data, valueTypeRef);
+            } catch (IOException e) {
+                log.error("反序列化失败: ", e);
+                throw new IllegalStateException(e.getMessage(), e);
+            }
+        }
+
+        /**
+         * 反序列化(字节数组 -> 对象)
+         *
+         * @param data
+         * @param cls
+         * @param <T>
+         */
+        public static <T> T deserialize(byte[] data, Class<T> cls) {
+            try {
+                return mapper.readValue(data, cls);
+            } catch (IOException e) {
+                log.error("反序列化失败: ", e);
+                throw new IllegalStateException(e.getMessage(), e);
+            }
+        }
+
+        /**
+         * 反序列化(字节数组 -> 对象)
+         *
+         * @param jsonStr
+         * @param cls
+         * @param <T>
+         */
+        public static <T> T deserialize(String jsonStr, Class<T> cls) {
+            try {
+                return mapper.readValue(jsonStr, cls);
+            } catch (IOException e) {
+                log.error("反序列化失败: ", e);
+                throw new IllegalStateException(e.getMessage(), e);
+            }
+        }
+    }
+
+    @Test
+    public void test33() {
+        RocksDBVo build = RocksDBVo.builder().cfName("cfName").key("key").value("value").build();
+        log.info("build:{}", JSONObject.toJSONString(build));
+        RocksDBVo rocksDBVo = RocksDBVo.builder().cfName("cfName").value("阿萨德阿萨德").build();
+        log.info("rocksDBVo:{}", JSONObject.toJSONString(rocksDBVo));
+        BeanUtils.copyProperties(rocksDBVo, build);
+        log.info("build:{}", JSONObject.toJSONString(build));
+    }
+
+    @Test
+    public void test32() {
+        String str = "";
+        str = getStr();
+        switch (str) {
+            case "hello":
+                str = "hello";
+                break;
+            case "world":
+                str = "world";
+                break;
+            case "java":
+                str = "java";
+                break;
+        }
+        log.info(str);
+    }
+
+    private String getStr() {
+        return "hello";
+    }
 
     @Test
     public void test31() {
