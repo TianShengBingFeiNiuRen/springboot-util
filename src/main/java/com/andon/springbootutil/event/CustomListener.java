@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class CustomListener implements ApplicationListener<CustomEvent> {
 
     @SneakyThrows
-    @Async //异步
+    @Async("globalExecutorService") //异步，指定线程池
     @Override
     public void onApplicationEvent(CustomEvent event) {
         log.info("CustomListener onApplicationEvent start!! [{}] event.source:{} event.id:{} event.type:{}", Thread.currentThread().getId(), event.getSource(), event.getId(), event.getType());
