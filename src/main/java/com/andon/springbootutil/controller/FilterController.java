@@ -31,9 +31,8 @@ public class FilterController {
             String uri = String.valueOf(request.getAttribute("uri"));
             response.setCode(code);
             response.setMessage(message);
-            String xRealIP = request.getHeader("X-Real-IP");
-            String location = SecurityFilter.queryLocation(xRealIP);
-            log.warn("X-Real-IP:{} location:{} remoteHost:{} method:{} uri:{}", xRealIP, location, request.getRemoteHost(), request.getMethod(), uri);
+            String location = SecurityFilter.queryLocation(request);
+            log.warn("X-Real-IP:{} location:{} remoteHost:{} method:{} uri:{}", request.getHeader("X-Real-IP"), location, request.getRemoteHost(), request.getMethod(), uri);
         } catch (Exception e) {
             e.printStackTrace();
         }
