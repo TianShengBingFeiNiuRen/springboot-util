@@ -1,5 +1,5 @@
 server:
-  port: 8066
+  port: 8866
 spring:
   mvc:
     pathmatch:
