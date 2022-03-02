@@ -1,7 +1,7 @@
 # spring-boot-util
 工具类合集
 
-**CSDN**: [**对象属性转换工具mapstruct**](https://blog.csdn.net/weixin_39792935/article/details/123229542).
+**CSDN**: [**SpringBoot 整合对象属性转换工具mapstruct**](https://blog.csdn.net/weixin_39792935/article/details/123229542).
 
 **CSDN**: [**SpringBoot 事件监听ApplicationEventPublisher**](https://blog.csdn.net/weixin_39792935/article/details/123208052).
 
