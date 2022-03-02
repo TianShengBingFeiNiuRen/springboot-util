@@ -1,6 +1,7 @@
 package com.andon.springbootutil.controller;
 
 import com.andon.springbootutil.domain.ResponseStandard;
+import com.andon.springbootutil.filter.SecurityFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +31,9 @@ public class FilterController {
             String uri = String.valueOf(request.getAttribute("uri"));
             response.setCode(code);
             response.setMessage(message);
-            log.warn("X-Real-IP:{} remoteHost:{} method:{} uri:{}", request.getHeader("X-Real-IP"), request.getRemoteHost(), request.getMethod(), uri);
+            String xRealIP = request.getHeader("X-Real-IP");
+            String location = SecurityFilter.queryLocation(xRealIP);
+            log.warn("X-Real-IP:{} location:{} remoteHost:{} method:{} uri:{}", xRealIP, location, request.getRemoteHost(), request.getMethod(), uri);
         } catch (Exception e) {
             e.printStackTrace();
         }

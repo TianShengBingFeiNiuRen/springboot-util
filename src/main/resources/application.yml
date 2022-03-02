@@ -5,3 +5,6 @@ spring:
 
 task:
   time_clear_sector: "18:00:00"
+
+external-interface:
+  url_remote_address_info: https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php #query=ip地址&resource_id=6006

@@ -37,6 +37,17 @@ import java.util.stream.Collectors;
 public class Demo {
 
     @Test
+    public void test44() throws Exception {
+        String ip = "113.225.172.225";
+        Map<String, String> param = new HashMap<>();
+        param.put("query", ip);
+        param.put("resource_id", "6006");
+        String url_remote_address_info = "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php";
+        String response = HttpClientUtil.doGet(url_remote_address_info, param);
+        log.info("response:{}", response);
+    }
+
+    @Test
     public void test43() {
         String str = "223 3 #d 的 是个很__  EEE=+\uD83C\uDF26";
         log.info("str:{}", str);
