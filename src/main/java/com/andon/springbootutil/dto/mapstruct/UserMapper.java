@@ -1,7 +1,7 @@
-package com.andon.springbootutil.vo.mapstruct;
+package com.andon.springbootutil.dto.mapstruct;
 
 import com.andon.springbootutil.domain.User;
-import com.andon.springbootutil.vo.UserVO;
+import com.andon.springbootutil.dto.UserVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;

@@ -2,8 +2,8 @@ package com.andon.springbootutil;
 
 import com.alibaba.fastjson.JSONObject;
 import com.andon.springbootutil.util.*;
-import com.andon.springbootutil.vo.RocksDBVo;
-import com.andon.springbootutil.vo.TestSwaggerTestResp;
+import com.andon.springbootutil.dto.RocksDBVo;
+import com.andon.springbootutil.dto.TestSwaggerTestResp;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;

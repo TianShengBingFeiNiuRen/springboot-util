@@ -2,9 +2,9 @@ package com.andon.springbootutil.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.andon.springbootutil.domain.ResponseStandard;
-import com.andon.springbootutil.vo.TestSwaggerTest2Req;
-import com.andon.springbootutil.vo.TestSwaggerTest2Resp;
-import com.andon.springbootutil.vo.TestSwaggerTestResp;
+import com.andon.springbootutil.dto.TestSwaggerTest2Req;
+import com.andon.springbootutil.dto.TestSwaggerTest2Resp;
+import com.andon.springbootutil.dto.TestSwaggerTestResp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

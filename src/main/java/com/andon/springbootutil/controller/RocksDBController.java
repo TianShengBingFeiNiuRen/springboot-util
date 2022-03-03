@@ -2,7 +2,7 @@ package com.andon.springbootutil.controller;
 
 import com.andon.springbootutil.domain.ResponseStandard;
 import com.andon.springbootutil.util.RocksDBUtil;
-import com.andon.springbootutil.vo.RocksDBVo;
+import com.andon.springbootutil.dto.RocksDBVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;

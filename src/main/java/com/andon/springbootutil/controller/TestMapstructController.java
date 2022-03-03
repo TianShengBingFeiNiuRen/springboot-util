@@ -2,8 +2,8 @@ package com.andon.springbootutil.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.andon.springbootutil.domain.User;
-import com.andon.springbootutil.vo.UserVO;
-import com.andon.springbootutil.vo.mapstruct.UserMapper;
+import com.andon.springbootutil.dto.UserVO;
+import com.andon.springbootutil.dto.mapstruct.UserMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;

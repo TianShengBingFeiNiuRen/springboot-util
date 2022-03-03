@@ -1,4 +1,4 @@
-package com.andon.springbootutil.vo;
+package com.andon.springbootutil.dto;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

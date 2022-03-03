@@ -1,4 +1,4 @@
-package com.andon.springbootutil.vo;
+package com.andon.springbootutil.dto;
 
 import com.andon.springbootutil.constant.EnumSex;
 import lombok.AllArgsConstructor;
@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * @author Andon

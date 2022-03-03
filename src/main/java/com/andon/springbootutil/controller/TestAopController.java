@@ -2,7 +2,7 @@ package com.andon.springbootutil.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.andon.springbootutil.annotation.DemoAnnotation;
-import com.andon.springbootutil.vo.TestSwaggerTest2Req;
+import com.andon.springbootutil.dto.TestSwaggerTest2Req;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
