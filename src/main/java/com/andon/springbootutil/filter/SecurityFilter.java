@@ -31,15 +31,18 @@ public class SecurityFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         String location = queryLocation(httpServletRequest);
-        log.info("X-Real-IP:{} location:{} remoteHost:{} method:{} uri:{}", httpServletRequest.getHeader("X-Real-IP"), location, httpServletRequest.getRemoteHost(), httpServletRequest.getMethod(), httpServletRequest.getRequestURI());
+        Map<String, String[]> parameterMap = httpServletRequest.getParameterMap();
+        CustomHttpServletRequestWrapper requestWrapper = new CustomHttpServletRequestWrapper(httpServletRequest);
+        String parameterJson = getParameterJson(requestWrapper);
+        log.info("X-Real-IP:{} location:{} remoteHost:{} method:{} uri:{} parameterMap:{} parameterJson:{}", httpServletRequest.getHeader("X-Real-IP"), location, httpServletRequest.getRemoteHost(), httpServletRequest.getMethod(), httpServletRequest.getRequestURI(), JSONObject.toJSONString(parameterMap), parameterJson);
         if (httpServletRequest.getRequestURI().equals("/filter")) {
             httpServletRequest.setAttribute("code", 403);
             httpServletRequest.setAttribute("message", "没有权限!!");
             httpServletRequest.setAttribute("uri", httpServletRequest.getRequestURI());
             // 请求转发到自定义403接口处理响应
-            httpServletRequest.getRequestDispatcher("/403").forward(servletRequest, servletResponse);
+            httpServletRequest.getRequestDispatcher("/403").forward(requestWrapper, servletResponse);
         } else {
-            filterChain.doFilter(servletRequest, servletResponse);
+            filterChain.doFilter(requestWrapper, servletResponse);
         }
     }
 
@@ -67,8 +70,15 @@ public class SecurityFilter implements Filter {
                 }
             }
         } catch (Exception e) {
-            log.error("queryLocation failure!! ip:{} error={}", ip, e.getMessage());
+            log.error("queryLocation failure!! ip:{} error:{}", ip, e.getMessage());
         }
         return location;
+    }
+
+    public static String getParameterJson(CustomHttpServletRequestWrapper requestWrapper) {
+        byte[] body = requestWrapper.getBody();
+        String parameterJson = new String(body);
+        parameterJson = parameterJson.equals("") ? "{}" : parameterJson.replaceAll("\\s", "").replaceAll("\n", "");
+        return parameterJson;
     }
 }

@@ -1,6 +1,8 @@
 package com.andon.springbootutil.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.andon.springbootutil.domain.ResponseStandard;
+import com.andon.springbootutil.filter.CustomHttpServletRequestWrapper;
 import com.andon.springbootutil.filter.SecurityFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,6 +11,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * @author Andon
@@ -28,11 +31,13 @@ public class FilterController {
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
             int code = (int) request.getAttribute("code");
             String message = String.valueOf(request.getAttribute("message"));
-            String uri = String.valueOf(request.getAttribute("uri"));
             response.setCode(code);
             response.setMessage(message);
             String location = SecurityFilter.queryLocation(request);
-            log.warn("X-Real-IP:{} location:{} remoteHost:{} method:{} uri:{}", request.getHeader("X-Real-IP"), location, request.getRemoteHost(), request.getMethod(), uri);
+            Map<String, String[]> parameterMap = request.getParameterMap();
+            CustomHttpServletRequestWrapper requestWrapper = new CustomHttpServletRequestWrapper(request);
+            String parameterJson = SecurityFilter.getParameterJson(requestWrapper);
+            log.warn("X-Real-IP:{} location:{} remoteHost:{} method:{} uri:{} parameterMap:{} parameterJson:{}", request.getHeader("X-Real-IP"), location, request.getRemoteHost(), request.getMethod(), request.getRequestURI(), JSONObject.toJSONString(parameterMap), parameterJson);
         } catch (Exception e) {
             e.printStackTrace();
         }
