@@ -101,9 +101,9 @@ public class RocksDBController {
     public ResponseStandard<List<RocksDBVo>> multiGetAsList(@RequestBody List<RocksDBVo> rocksDBVos) throws RocksDBException {
         List<RocksDBVo> list = new ArrayList<>();
         String cfName = rocksDBVos.get(0).getCfName();
-        String[] keys = new String[rocksDBVos.size()];
-        for (int i = 0; i < rocksDBVos.size(); i++) {
-            keys[i] = rocksDBVos.get(i).getKey();
+        List<String> keys = new ArrayList<>(rocksDBVos.size());
+        for (RocksDBVo rocksDBVo : rocksDBVos) {
+            keys.add(rocksDBVo.getKey());
         }
         Map<String, String> map = RocksDBUtil.multiGetAsMap(cfName, keys);
         for (Map.Entry<String, String> entry : map.entrySet()) {

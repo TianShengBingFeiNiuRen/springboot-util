@@ -41,7 +41,7 @@ public class RocksDBUtil {
             options.setCreateIfMissing(true); //如果数据库不存在则创建
             List<byte[]> cfArr = RocksDB.listColumnFamilies(options, rocksDBPath); // 初始化所有已存在列族
             List<ColumnFamilyDescriptor> columnFamilyDescriptors = new ArrayList<>(); //ColumnFamilyDescriptor集合
-            if (cfArr.size() > 0) {
+            if (!ObjectUtils.isEmpty(cfArr)) {
                 for (byte[] cf : cfArr) {
                     columnFamilyDescriptors.add(new ColumnFamilyDescriptor(cf, new ColumnFamilyOptions()));
                 }
@@ -60,9 +60,12 @@ public class RocksDBUtil {
             log.info("RocksDB init success!! path:{}", rocksDBPath);
             log.info("cfNames:{}", columnFamilyHandleMap.keySet());
         } catch (Exception e) {
-            log.info("RocksDB init failure!! error:{}", e.getMessage());
+            log.error("RocksDB init failure!! error:{}", e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private RocksDBUtil() {
     }
 
     /**
@@ -138,8 +141,34 @@ public class RocksDBUtil {
     /**
      * 查（多个键值对）
      */
-    public static Map<String, String> multiGetAsMap(String cfName, String[] keys) throws RocksDBException {
+    public static Map<String, String> multiGetAsMap(String cfName, List<String> keys) throws RocksDBException {
         Map<String, String> map = new HashMap<>();
+        ColumnFamilyHandle columnFamilyHandle = cfAddIfNotExist(cfName); //获取列族Handle
+        List<ColumnFamilyHandle> columnFamilyHandles = new ArrayList<>(keys.size() + 1);
+        List<byte[]> keyBytes = new ArrayList<>();
+        for (String key : keys) {
+            keyBytes.add(key.getBytes());
+        }
+        for (int i = 0; i < keys.size(); i++) {
+            columnFamilyHandles.add(columnFamilyHandle);
+        }
+        List<byte[]> bytes = rocksDB.multiGetAsList(columnFamilyHandles, keyBytes);
+        for (int i = 0; i < bytes.size(); i++) {
+            byte[] valueBytes = bytes.get(i);
+            String value = null;
+            if (!ObjectUtils.isEmpty(valueBytes)) {
+                value = new String(valueBytes);
+            }
+            map.put(keys.get(i), value);
+        }
+        return map;
+    }
+
+    /**
+     * 查（多个值）
+     */
+    public static String[] multiGetValueAsList(String cfName, String[] keys) throws RocksDBException {
+        String[] valueArr = new String[keys.length];
         ColumnFamilyHandle columnFamilyHandle = cfAddIfNotExist(cfName); //获取列族Handle
         List<ColumnFamilyHandle> columnFamilyHandles = new ArrayList<>(keys.length + 1);
         List<byte[]> keyBytes = new ArrayList<>();
@@ -156,9 +185,9 @@ public class RocksDBUtil {
             if (!ObjectUtils.isEmpty(valueBytes)) {
                 value = new String(valueBytes);
             }
-            map.put(keys[i], value);
+            valueArr[i] = value;
         }
-        return map;
+        return valueArr;
     }
 
     /**
@@ -172,5 +201,33 @@ public class RocksDBUtil {
             map.put(new String(rocksIterator.key()), new String(rocksIterator.value()));
         }
         return map;
+    }
+
+    /**
+     * 查（所有键）
+     */
+    public static List<String> getAllKey(String cfName) throws RocksDBException {
+        List<String> list = new ArrayList<>();
+        ColumnFamilyHandle columnFamilyHandle = cfAddIfNotExist(cfName); //获取列族Handle
+        try (RocksIterator rocksIterator = rocksDB.newIterator(columnFamilyHandle)) {
+            for (rocksIterator.seekToFirst(); rocksIterator.isValid(); rocksIterator.next()) {
+                list.add(new String(rocksIterator.key()));
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 查（所有值）
+     */
+    public static List<String> getAllValue(String cfName) throws RocksDBException {
+        List<String> list = new ArrayList<>();
+        ColumnFamilyHandle columnFamilyHandle = cfAddIfNotExist(cfName); //获取列族Handle
+        try (RocksIterator rocksIterator = rocksDB.newIterator(columnFamilyHandle)) {
+            for (rocksIterator.seekToFirst(); rocksIterator.isValid(); rocksIterator.next()) {
+                list.add(new String(rocksIterator.value()));
+            }
+        }
+        return list;
     }
 }
