@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Andon
@@ -46,23 +43,6 @@ public class TxtUtil {
         return result.toString();
     }
 
-    private static void close(FileReader fileReader, BufferedReader bufferedReader) {
-        if (bufferedReader != null) {
-            try {
-                bufferedReader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        if (fileReader != null) {
-            try {
-                fileReader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     /**
      * 读TXT文件内容
      */
@@ -91,7 +71,7 @@ public class TxtUtil {
      * @param fileName File
      * @param values   表体
      */
-    public static File makeTempTxt(String fileName, List<String> values) throws IOException {
+    public static File makeTempTxt(String fileName, Collection<String> values) throws IOException {
         // 创建文件
         assert PATH != null;
         File file = File.createTempFile(fileName, ".txt", new File(PATH.getPath()));
@@ -132,5 +112,22 @@ public class TxtUtil {
             map.put(keyList.get(i), valueList.get(i));
         }
         return map;
+    }
+
+    private static void close(FileReader fileReader, BufferedReader bufferedReader) {
+        if (bufferedReader != null) {
+            try {
+                bufferedReader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (fileReader != null) {
+            try {
+                fileReader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
