@@ -5,7 +5,6 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
-import org.rocksdb.RocksDBException;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,6 +13,7 @@ import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * @author Andon
@@ -28,6 +28,7 @@ public class CSVUtil {
     private final static String NEW_LINE_SEPARATOR = "\n";
     //上传文件的存储位置
     private final static URL PATH = Thread.currentThread().getContextClassLoader().getResource("");
+    private static final CSVFormat CSV_FORMAT = CSVFormat.DEFAULT.builder().setIgnoreEmptyLines(false).setRecordSeparator(NEW_LINE_SEPARATOR).build();
 
     /**
      * 上传文件
@@ -100,98 +101,84 @@ public class CSVUtil {
         return new ArrayList<>();
     }
 
-    private static void close(BufferedReader bufferedReader, InputStreamReader inputStreamReader, FileInputStream fileInputStream) {
-        if (bufferedReader != null) {
-            try {
-                bufferedReader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        if (inputStreamReader != null) {
-            try {
-                inputStreamReader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        if (fileInputStream != null) {
-            try {
-                fileInputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     /**
      * 读取CSV文件的内容（不含表头）
      *
      * @param filePath 文件存储路径
      */
-    public static Map<String, String> readCSVToMap(String filePath, String combinationID, String cfName) {
-        BufferedReader bufferedReader = null;
-        InputStreamReader inputStreamReader = null;
-        FileInputStream fileInputStream = null;
-        try {
-            fileInputStream = new FileInputStream(filePath);
-            inputStreamReader = new InputStreamReader(fileInputStream);
-            bufferedReader = new BufferedReader(inputStreamReader);
-            CSVParser parser = CSVFormat.DEFAULT.parse(bufferedReader);
-            // 表内容集合，key是组合ID，value是整行数据
-            Map<String, String> map = new HashMap<>();
-            int rowIndex = 0;
-            // 读取文件每行内容
-            List<CSVRecord> records = parser.getRecords();
-            CSVRecord header = records.get(0);
-            List<String> headerList = new ArrayList<>(header.size() + 1);
-            for (String s : header) {
-                headerList.add(s);
-            }
-            RocksDBUtil.put("csv_head", cfName, String.join(",", headerList));
-            Map<String, Integer> colNameIndex = new HashMap<>();
-            for (int i = 0; i < header.size(); i++) {
-                colNameIndex.put(header.get(i).trim(), i);
-            }
-            // 组合ID去空格
-            String[] colNameArr = combinationID.split(","); //组合ID列名
-            for (int i = 0; i < colNameArr.length; i++) {
-                colNameArr[i] = colNameArr[i].trim();
-            }
-            List<Integer> colIndex = new ArrayList<>(colNameArr.length + 1); //组合ID列索引
-            for (String colName : colNameArr) {
-                if (!ObjectUtils.isEmpty(colNameIndex.get(colName))) {
-                    colIndex.add(colNameIndex.get(colName));
+    public static Map<String, String> readCSVToMap(String filePath, String[] indexArr) throws IOException {
+        try (FileInputStream fileInputStream = new FileInputStream(filePath)) {
+            return records(fileInputStream, csvRecords -> {
+                Map<String, String> map = new HashMap<>();
+                //通过首行获取列数量
+                int colNum = csvRecords.get(0).size();
+                for (CSVRecord record : csvRecords) {
+                    // 每行的内容
+                    List<String> value = new ArrayList<>(colNum);
+                    for (int i = 0; i < colNum; i++) {
+                        value.add(record.get(i));
+                    }
+                    // 每行ID
+                    List<String> key = new ArrayList<>(indexArr.length);
+                    for (String index : indexArr) {
+                        key.add(record.get(Integer.parseInt(index)));
+                    }
+                    String id = String.join(",", key);
+                    if (!map.containsKey(id)) {
+                        map.put(id, String.join(",", value));
+                    }
                 }
-            }
-            int colNum = records.get(0).size(); //通过表头获取列数量
-            for (CSVRecord record : records) {
-                // 跳过表头
-                if (rowIndex == 0) {
-                    rowIndex++;
-                    continue;
-                }
-                // 每行的内容
-                List<String> value = new ArrayList<>(colNum + 1);
-                for (int i = 0; i < colNum; i++) {
-                    value.add(record.get(i));
-                }
-                // 每行ID
-                List<String> key = new ArrayList<>();
-                for (Integer index : colIndex) {
-                    key.add(record.get(index));
-                }
-                map.put(String.join(",", key), String.join(",", value));
-                rowIndex++;
-            }
-            return map;
-        } catch (IOException | RocksDBException e) {
-            log.error("解析CSV内容失败 error:{} e:{}", e.getMessage(), e);
-        } finally {
-            //关闭流
-            close(bufferedReader, inputStreamReader, fileInputStream);
+                return map;
+            });
         }
-        return null;
+    }
+
+    /**
+     * 读取CSV文件的内容
+     *
+     * @param filePath 文件路径
+     */
+    public static List<String> readCSVToList(String filePath, String[] indexArr) throws IOException {
+        try (FileInputStream fileInputStream = new FileInputStream(filePath)) {
+            return readCSVToList(fileInputStream, indexArr);
+        }
+    }
+
+    public static List<String> readCSVToList(InputStream inputStream, String[] indexArr) throws IOException {
+        return records(inputStream, csvRecords -> {
+            List<String> values = new ArrayList<>();
+            for (CSVRecord record : csvRecords) {
+                // 每行的内容
+                List<String> value = new ArrayList<>();
+                if (ObjectUtils.isEmpty(indexArr)) {
+                    for (String item : record) {
+                        value.add(item.trim());
+                    }
+                } else {
+                    value = new ArrayList<>(indexArr.length);
+                    for (String index : indexArr) {
+                        value.add(record.get(Integer.parseInt(index)));
+                    }
+                }
+                values.add(String.join(",", value));
+            }
+            return values;
+        });
+    }
+
+    /**
+     * 读取CSV数据条目数
+     *
+     * @param filePath 文件路径
+     * @return 数据条目数
+     */
+    public static long readDataCount(String filePath) {
+        try (FileInputStream fileInputStream = new FileInputStream(filePath)) {
+            return records(fileInputStream, csvRecords -> Long.valueOf(csvRecords.size()));
+        } catch (IOException e) {
+            log.error("解析CSV内容失败 error:{} e:{}", e.getMessage(), e);
+        }
+        return 0;
     }
 
     /**
@@ -205,18 +192,16 @@ public class CSVUtil {
         // 创建文件
         assert PATH != null;
         File file = File.createTempFile(fileName, ".csv", new File(PATH.getPath()));
-        CSVFormat format = CSVFormat.DEFAULT.withRecordSeparator(NEW_LINE_SEPARATOR);
-        BufferedWriter bufferedWriter =
-                new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8));
-        CSVPrinter printer = new CSVPrinter(bufferedWriter, format);
-        // 写入表头
-        printer.printRecord(Arrays.asList(head));
-        // 写入内容
-        for (String[] value : values) {
-            printer.printRecord(Arrays.asList(value));
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
+            CSVPrinter printer = new CSVPrinter(bufferedWriter, CSV_FORMAT);
+            // 写入表头
+            printer.printRecord(Arrays.asList(head));
+            // 写入内容
+            for (String[] value : values) {
+                printer.printRecord(Arrays.asList(value));
+            }
+            printer.close();
         }
-        printer.close();
-        bufferedWriter.close();
         return file;
     }
 
@@ -276,5 +261,40 @@ public class CSVUtil {
             boolean delete = file.delete();
         }
         return false;
+    }
+
+    private static <R> R records(InputStream inputStream, Function<List<CSVRecord>, R> recordsHandler) throws IOException {
+        try (InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);) {
+
+            CSVParser parser = CSV_FORMAT.parse(bufferedReader);
+            // 读取文件每行内容
+            List<CSVRecord> records = parser.getRecords();
+            return recordsHandler.apply(records);
+        }
+    }
+
+    private static void close(BufferedReader bufferedReader, InputStreamReader inputStreamReader, FileInputStream fileInputStream) {
+        if (bufferedReader != null) {
+            try {
+                bufferedReader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (inputStreamReader != null) {
+            try {
+                inputStreamReader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (fileInputStream != null) {
+            try {
+                fileInputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

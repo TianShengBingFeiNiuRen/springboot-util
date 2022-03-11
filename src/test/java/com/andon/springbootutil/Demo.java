@@ -1,9 +1,9 @@
 package com.andon.springbootutil;
 
 import com.alibaba.fastjson.JSONObject;
-import com.andon.springbootutil.util.*;
 import com.andon.springbootutil.dto.RocksDBVo;
 import com.andon.springbootutil.dto.TestSwaggerTestResp;
+import com.andon.springbootutil.util.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -13,6 +13,7 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.beans.BeanUtils;
+import org.springframework.util.Assert;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -35,6 +36,38 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class Demo {
+
+    @Test
+    public void test47() {
+        String string = getString();
+        assert string != null;
+        log.info("string:{}", string);
+    }
+
+    private String getString() {
+        return null;
+    }
+
+    @Test
+    public void test46() {
+        String[] strings = new String[]{"hello"};
+        validate(strings);
+        log.info("strings:{}", JSONObject.toJSONString(strings));
+    }
+
+    private void validate(String[] strings) {
+        Assert.isTrue(strings.length > 1, "元素个数至少需要2个!!");
+    }
+
+    @Test
+    public void test45() {
+        ConcurrentHashMap<String, String> concurrentHashMap = new ConcurrentHashMap<>();
+        concurrentHashMap.put("springboot", "java");
+        concurrentHashMap.put("mysql", "database");
+        log.info("concurrentHashMap:{}", JSONObject.toJSONString(concurrentHashMap));
+        concurrentHashMap.remove("mysql");
+        log.info("concurrentHashMap:{}", JSONObject.toJSONString(concurrentHashMap));
+    }
 
     @Test
     public void test44() throws Exception {
