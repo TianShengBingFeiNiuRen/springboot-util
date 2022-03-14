@@ -20,6 +20,7 @@ import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -36,6 +37,14 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class Demo {
+
+    @Test
+    public void test48() {
+        double dd = 0.345365345;
+        DecimalFormat decimalFormat = new DecimalFormat("#.##%");
+        String format = decimalFormat.format(dd);
+        log.info("format:{}", format);
+    }
 
     @Test
     public void test47() {
