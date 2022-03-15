@@ -21,8 +21,7 @@ public class JsoupTest {
 
     @Test
     public void test01() throws Exception {
-        String ip = "101.68.81.233";
-//        String ip = "183.129.241.197";
+        String ip = "183.129.241.197";
         Map<String, Object> ipInfo = getIpInfoFromHtml(ip);
         log.info("ipInfo:{}", JSONObject.toJSONString(ipInfo));
     }
