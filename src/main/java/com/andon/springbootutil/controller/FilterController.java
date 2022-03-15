@@ -34,10 +34,11 @@ public class FilterController {
             response.setCode(code);
             response.setMessage(message);
             String location = SecurityFilter.queryLocation(request);
+            Map<String, Object> ipInfo = SecurityFilter.getIpInfoFromHtml(request);
             Map<String, String[]> parameterMap = request.getParameterMap();
             CustomHttpServletRequestWrapper requestWrapper = new CustomHttpServletRequestWrapper(request);
             String parameterJson = SecurityFilter.getParameterJson(requestWrapper);
-            log.warn("X-Real-IP:{} location:{} remoteHost:{} method:{} uri:{} parameterMap:{} parameterJson:{}", request.getHeader("X-Real-IP"), location, request.getRemoteHost(), request.getMethod(), request.getRequestURI(), JSONObject.toJSONString(parameterMap), parameterJson);
+            log.warn("X-Real-IP:{} location:{} ipInfo:{} remoteHost:{} method:{} uri:{} parameterMap:{} parameterJson:{}", request.getHeader("X-Real-IP"), location, JSONObject.toJSONString(ipInfo), request.getRemoteHost(), request.getMethod(), request.getRequestURI(), JSONObject.toJSONString(parameterMap), parameterJson);
         } catch (Exception e) {
             e.printStackTrace();
         }
