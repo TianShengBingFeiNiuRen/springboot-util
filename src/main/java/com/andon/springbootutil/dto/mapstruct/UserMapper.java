@@ -17,7 +17,7 @@ public abstract class UserMapper {
 
     @Mappings({
             @Mapping(source = "id", target = "userId"),
-            @Mapping(source = "name", target = "userName"),
+            @Mapping(target = "userName", ignore = true), //不对该字段属性做映射
             @Mapping(source = "age", target = "userAge"), //基本类型-->包装类型
             @Mapping(source = "sex", target = "userSex"), // String-->枚举
             @Mapping(source = "role.name", target = "roleName"), //取自定义类型的属性值
@@ -27,7 +27,7 @@ public abstract class UserMapper {
 
     @Mappings({
             @Mapping(source = "id", target = "userId"),
-            @Mapping(source = "name", target = "userName"),
+            @Mapping(target = "userName", ignore = true),
             @Mapping(source = "age", target = "userAge"),
             @Mapping(source = "sex", target = "userSex"),
             @Mapping(source = "role.name", target = "roleName"),
