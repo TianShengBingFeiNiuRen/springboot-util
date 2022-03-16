@@ -23,6 +23,7 @@ public class UserVO implements Serializable {
     private String userName;
     private Integer userAge;
     private EnumSex userSex;
+    private String userHeight;
     private String roleName;
     private String createTime;
 }

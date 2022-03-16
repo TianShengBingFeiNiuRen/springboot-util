@@ -30,7 +30,7 @@ public class MapstructTest {
     @Test
     public void test02() {
         Role role = Role.builder().id(UUID.randomUUID().toString()).name("asd").build();
-        User user = User.builder().id(UUID.randomUUID().toString()).name("阿萨德").age(18).sex("MALE").createTime(LocalDateTime.now()).build();
+        User user = User.builder().id(UUID.randomUUID().toString()).name("阿萨德").age(18).sex("MALE").height(1.876).createTime(LocalDateTime.now()).build();
         log.info("user:{}", JSONObject.toJSONString(user));
         UserVO userVO = userMapper.toUserVo(user, role);
         log.info("userVO:{}", JSONObject.toJSONString(userVO));
@@ -39,7 +39,7 @@ public class MapstructTest {
     @Test
     public void test01() {
         Role role = Role.builder().id(UUID.randomUUID().toString()).name("asd").build();
-        User user = User.builder().id(UUID.randomUUID().toString()).name("阿萨德").age(18).sex("MALE").role(role).createTime(LocalDateTime.now()).build();
+        User user = User.builder().id(UUID.randomUUID().toString()).name("阿萨德").age(18).sex("MALE").height(1.876).role(role).createTime(LocalDateTime.now()).build();
         log.info("user:{}", JSONObject.toJSONString(user));
         UserVO userVO = userMapper.toUserVo(user);
         log.info("userVO:{}", JSONObject.toJSONString(userVO));
