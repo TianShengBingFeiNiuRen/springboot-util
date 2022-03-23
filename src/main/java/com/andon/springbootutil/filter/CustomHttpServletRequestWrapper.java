@@ -1,30 +1,37 @@
 package com.andon.springbootutil.filter;
 
+import lombok.extern.slf4j.Slf4j;
+
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 
 /**
  * @author Andon
  * 2022/3/11
  */
+@Slf4j
 public class CustomHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
     private byte[] body;
 
-    public CustomHttpServletRequestWrapper(HttpServletRequest request) throws IOException {
+    public CustomHttpServletRequestWrapper(HttpServletRequest request) {
         super(request);
-        StringBuilder sb = new StringBuilder();
-        String line;
-        BufferedReader reader = request.getReader();
-        while ((line = reader.readLine()) != null) {
-            sb.append(line);
+        try {
+            StringBuilder sb = new StringBuilder();
+            String line;
+            BufferedReader reader = request.getReader();
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+            this.body = sb.toString().getBytes();
+        } catch (Exception e) {
+            log.error("CustomHttpServletRequestWrapper failure!! error:{}", e.getMessage());
+            this.body = "".getBytes();
         }
-        this.body = sb.toString().getBytes();
     }
 
     public byte[] getBody() {
