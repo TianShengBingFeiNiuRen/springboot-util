@@ -9,7 +9,7 @@
 
 **CSDN**: [**SpringBoot 自定义注解+AOP+Redis 实现分布式锁做幂等**](https://blog.csdn.net/weixin_39792935/article/details/122068383).
 
-**CSDN**: [**CSVUtil 实现 csv文件上传下载**](https://blog.csdn.net/weixin_39792935/article/details/122055929).
+**CSDN**: [**CSVUtil 实现 csv文件上传下载，判断字符集编码**](https://blog.csdn.net/weixin_39792935/article/details/122055929).
 
 **CSDN**: [**Nginx配置 反向代理+负载均衡+反向代理后请求头设置真实IP**](https://blog.csdn.net/weixin_39792935/article/details/121861762).
 

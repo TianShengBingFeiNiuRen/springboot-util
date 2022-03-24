@@ -48,6 +48,7 @@ public class CSVController {
         for (String value : valueArr) {
             valueList.add(value.split(","));
         }
+        fileName += "_" + System.currentTimeMillis();
         File file = CSVUtil.makeTempCSV(fileName, headArr, valueList);
         boolean b = CSVUtil.downloadFile(httpServletResponse, file, fileName);
     }

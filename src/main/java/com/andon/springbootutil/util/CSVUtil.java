@@ -25,7 +25,7 @@ import java.util.function.Function;
 public class CSVUtil {
 
     //行尾分隔符定义
-    private final static String NEW_LINE_SEPARATOR = "\n";
+    private static final String NEW_LINE_SEPARATOR = java.security.AccessController.doPrivileged(new sun.security.action.GetPropertyAction("line.separator"));
     //上传文件的存储位置
     private final static URL PATH = Thread.currentThread().getContextClassLoader().getResource("");
     private static final CSVFormat CSV_FORMAT = CSVFormat.DEFAULT.builder().setIgnoreEmptyLines(false).setRecordSeparator(NEW_LINE_SEPARATOR).setQuote(null).build();
@@ -60,7 +60,9 @@ public class CSVUtil {
     /**
      * 读取CSV文件的内容
      *
-     * @param filePath 文件存储路径
+     * @param filePath 文件路径
+     * @param indexArr 参与计算的列的组合角标
+     * @return 表内容集合，key是组合ID，value是整行数据
      */
     public static Map<String, String> readCSVToMap(String filePath, String[] indexArr) throws IOException {
         String charset = charset(filePath);
@@ -94,6 +96,8 @@ public class CSVUtil {
      * 读取CSV文件的内容
      *
      * @param filePath 文件路径
+     * @param indexArr 参与计算的列的组合角标
+     * @return 表内容集合，value是参与计算的列的数据
      */
     public static List<String> readCSVToList(String filePath, String[] indexArr) throws IOException {
         String charset = charset(filePath);
@@ -173,7 +177,7 @@ public class CSVUtil {
         try {
             // 设置csv文件下载头信息
             response.setContentType("application/octet-stream");
-            response.addHeader("Content-Disposition", "attachment; filename=" + fileName + ".csv");
+            response.addHeader("Content-Disposition", "attachment; filename=" + new String(fileName.getBytes(StandardCharsets.UTF_8), "ISO8859-1") + ".csv");
             fileInputStream = new FileInputStream(file);
             bufferedInputStream = new BufferedInputStream(fileInputStream);
             os = response.getOutputStream();
