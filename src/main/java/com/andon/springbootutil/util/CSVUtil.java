@@ -28,7 +28,7 @@ public class CSVUtil {
     private final static String NEW_LINE_SEPARATOR = "\n";
     //上传文件的存储位置
     private final static URL PATH = Thread.currentThread().getContextClassLoader().getResource("");
-    private static final CSVFormat CSV_FORMAT = CSVFormat.DEFAULT.builder().setIgnoreEmptyLines(false).setRecordSeparator(NEW_LINE_SEPARATOR).build();
+    private static final CSVFormat CSV_FORMAT = CSVFormat.DEFAULT.builder().setIgnoreEmptyLines(false).setRecordSeparator(NEW_LINE_SEPARATOR).setQuote(null).build();
 
     /**
      * 上传文件
@@ -58,57 +58,14 @@ public class CSVUtil {
     }
 
     /**
-     * 读取CSV文件的内容（不含表头）
-     *
-     * @param filePath 文件存储路径
-     */
-    public static List<List<String>> readCSV(String filePath) {
-        BufferedReader bufferedReader = null;
-        InputStreamReader inputStreamReader = null;
-        FileInputStream fileInputStream = null;
-        try {
-            fileInputStream = new FileInputStream(filePath);
-            inputStreamReader = new InputStreamReader(fileInputStream);
-            bufferedReader = new BufferedReader(inputStreamReader);
-            CSVParser parser = CSVFormat.DEFAULT.parse(bufferedReader);
-            // 表内容集合，外层 List为行的集合，内层 List为字段集合
-            List<List<String>> values = new ArrayList<>();
-            int rowIndex = 0;
-            // 读取文件每行内容
-            List<CSVRecord> records = parser.getRecords();
-            int colNum = records.get(0).size(); //通过表头获取列数量
-            for (CSVRecord record : records) {
-                // 跳过表头
-                if (rowIndex == 0) {
-                    rowIndex++;
-                    continue;
-                }
-                // 每行的内容
-                List<String> value = new ArrayList<>(colNum + 1);
-                for (int i = 0; i < colNum; i++) {
-                    value.add(record.get(i));
-                }
-                values.add(value);
-                rowIndex++;
-            }
-            return values;
-        } catch (IOException e) {
-            log.error("解析CSV内容失败 error:{} e:{}", e.getMessage(), e);
-        } finally {
-            //关闭流
-            close(bufferedReader, inputStreamReader, fileInputStream);
-        }
-        return new ArrayList<>();
-    }
-
-    /**
-     * 读取CSV文件的内容（不含表头）
+     * 读取CSV文件的内容
      *
      * @param filePath 文件存储路径
      */
     public static Map<String, String> readCSVToMap(String filePath, String[] indexArr) throws IOException {
+        String charset = charset(filePath);
         try (FileInputStream fileInputStream = new FileInputStream(filePath)) {
-            return records(fileInputStream, csvRecords -> {
+            return records(fileInputStream, charset, csvRecords -> {
                 Map<String, String> map = new HashMap<>();
                 //通过首行获取列数量
                 int colNum = csvRecords.get(0).size();
@@ -139,31 +96,28 @@ public class CSVUtil {
      * @param filePath 文件路径
      */
     public static List<String> readCSVToList(String filePath, String[] indexArr) throws IOException {
+        String charset = charset(filePath);
         try (FileInputStream fileInputStream = new FileInputStream(filePath)) {
-            return readCSVToList(fileInputStream, indexArr);
-        }
-    }
-
-    public static List<String> readCSVToList(InputStream inputStream, String[] indexArr) throws IOException {
-        return records(inputStream, csvRecords -> {
-            List<String> values = new ArrayList<>();
-            for (CSVRecord record : csvRecords) {
-                // 每行的内容
-                List<String> value = new ArrayList<>();
-                if (ObjectUtils.isEmpty(indexArr)) {
-                    for (String item : record) {
-                        value.add(item.trim());
+            return records(fileInputStream, charset, csvRecords -> {
+                List<String> values = new ArrayList<>();
+                for (CSVRecord record : csvRecords) {
+                    // 每行的内容
+                    List<String> value = new ArrayList<>();
+                    if (ObjectUtils.isEmpty(indexArr)) {
+                        for (String item : record) {
+                            value.add(item.trim());
+                        }
+                    } else {
+                        value = new ArrayList<>(indexArr.length);
+                        for (String index : indexArr) {
+                            value.add(record.get(Integer.parseInt(index)));
+                        }
                     }
-                } else {
-                    value = new ArrayList<>(indexArr.length);
-                    for (String index : indexArr) {
-                        value.add(record.get(Integer.parseInt(index)));
-                    }
+                    values.add(String.join(",", value));
                 }
-                values.add(String.join(",", value));
-            }
-            return values;
-        });
+                return values;
+            });
+        }
     }
 
     /**
@@ -173,8 +127,9 @@ public class CSVUtil {
      * @return 数据条目数
      */
     public static long readDataCount(String filePath) {
+        String charset = charset(filePath);
         try (FileInputStream fileInputStream = new FileInputStream(filePath)) {
-            return records(fileInputStream, csvRecords -> Long.valueOf(csvRecords.size()));
+            return records(fileInputStream, charset, csvRecords -> Long.valueOf(csvRecords.size()));
         } catch (IOException e) {
             log.error("解析CSV内容失败 error:{} e:{}", e.getMessage(), e);
         }
@@ -263,10 +218,9 @@ public class CSVUtil {
         return false;
     }
 
-    private static <R> R records(InputStream inputStream, Function<List<CSVRecord>, R> recordsHandler) throws IOException {
-        try (InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+    private static <R> R records(InputStream inputStream, String charset, Function<List<CSVRecord>, R> recordsHandler) throws IOException {
+        try (InputStreamReader inputStreamReader = new InputStreamReader(inputStream, charset);
              BufferedReader bufferedReader = new BufferedReader(inputStreamReader);) {
-
             CSVParser parser = CSV_FORMAT.parse(bufferedReader);
             // 读取文件每行内容
             List<CSVRecord> records = parser.getRecords();
@@ -274,27 +228,60 @@ public class CSVUtil {
         }
     }
 
-    private static void close(BufferedReader bufferedReader, InputStreamReader inputStreamReader, FileInputStream fileInputStream) {
-        if (bufferedReader != null) {
-            try {
-                bufferedReader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+    /**
+     * 判断文件字符编码
+     */
+    public static String charset(String path) {
+        String charset = "GBK";
+        byte[] first3Bytes = new byte[3];
+        try {
+            boolean checked = false;
+            BufferedInputStream bis = new BufferedInputStream(new FileInputStream(path));
+            bis.mark(0);
+            int read = bis.read(first3Bytes, 0, 3);
+            if (read == -1) {
+                bis.close();
+                return charset; // 文件编码为 ANSI
+            } else if (first3Bytes[0] == (byte) 0xFF && first3Bytes[1] == (byte) 0xFE) {
+                charset = "UTF-16LE"; // 文件编码为 Unicode
+                checked = true;
+            } else if (first3Bytes[0] == (byte) 0xFE && first3Bytes[1] == (byte) 0xFF) {
+                charset = "UTF-16BE"; // 文件编码为 Unicode big endian
+                checked = true;
+            } else if (first3Bytes[0] == (byte) 0xEF && first3Bytes[1] == (byte) 0xBB
+                    && first3Bytes[2] == (byte) 0xBF) {
+                charset = "UTF-8"; // 文件编码为 UTF-8
+                checked = true;
             }
-        }
-        if (inputStreamReader != null) {
-            try {
-                inputStreamReader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            bis.reset();
+            if (!checked) {
+                while ((read = bis.read()) != -1) {
+                    if (read >= 0xF0)
+                        break;
+                    if (0x80 <= read && read <= 0xBF) // 单独出现BF以下的，也算是GBK
+                        break;
+                    if (0xC0 <= read && read <= 0xDF) {
+                        read = bis.read();
+                        if (0x80 > read || read > 0xBF) {
+                            break; // 双字节 (0xC0 - 0xDF),(0x80 - 0xBF),也可能在GB编码内
+                        }
+                    } else if (0xE0 <= read) { // 也有可能出错，但是几率较小
+                        read = bis.read();
+                        if (0x80 <= read && read <= 0xBF) {
+                            read = bis.read();
+                            if (0x80 <= read && read <= 0xBF) {
+                                charset = "UTF-8";
+                            }
+                        }
+                        break;
+                    }
+                }
             }
+            bis.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        if (fileInputStream != null) {
-            try {
-                fileInputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        log.info("--文件-> [{}] 采用的字符集为: [{}]", path, charset);
+        return charset;
     }
 }

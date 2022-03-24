@@ -3,6 +3,7 @@ package com.andon.springbootutil.controller;
 import com.andon.springbootutil.util.CSVUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,7 @@ import java.util.List;
  * @author Andon
  * 2021/12/21
  */
+@Slf4j
 @Api(tags = "CSV")
 @RequestMapping("/csv")
 @RestController
@@ -26,10 +28,12 @@ public class CSVController {
 
     @ApiOperation("上传")
     @PostMapping(value = "/upload")
-    public List<List<String>> upload(MultipartFile multipartFile) {
+    public List<String> upload(MultipartFile multipartFile) throws IOException {
         File file = CSVUtil.uploadFile(multipartFile);
         assert file != null;
-        List<List<String>> list = CSVUtil.readCSV(file.getPath());
+        long count = CSVUtil.readDataCount(file.getPath());
+        log.info("文件-> [{}] count={}", file.getPath(), count);
+        List<String> list = CSVUtil.readCSVToList(file.getPath(), null);
         boolean delete = file.delete();
         boolean parentFileDelete = file.getParentFile().delete();
         return list;
