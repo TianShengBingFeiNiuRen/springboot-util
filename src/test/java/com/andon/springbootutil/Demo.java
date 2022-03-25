@@ -39,6 +39,36 @@ import java.util.stream.Collectors;
 public class Demo {
 
     @Test
+    public void test52() {
+        for (int i = 1; i <= 10; i++) {
+            String stringGenerate = RandomStringUtil.stringGenerate(i, true, false, false);
+            log.info("i={} -> stringGenerate:{} length:{}", i, stringGenerate, stringGenerate.length());
+        }
+    }
+
+    @Test
+    public void test51() {
+        String str = "hello";
+        String substring = str.substring(0, 3);
+        log.info("substring:{}", substring);
+    }
+
+    @Test
+    public void test50() {
+        Integer[] integers = new Integer[]{2, 3};
+        boolean allMatch = Arrays.stream(integers).allMatch(integer -> integer % 2 == 0);
+        boolean anyMatch = Arrays.stream(integers).anyMatch(integer -> integer % 2 == 0);
+        log.info("allMatch:{}", allMatch);
+        log.info("anyMatch:{}", anyMatch);
+    }
+
+    @Test
+    public void test49() {
+        long millis = TimeUnit.MINUTES.toMillis(1);
+        log.info("millis:{}", millis);
+    }
+
+    @Test
     public void test48() {
         double dd = 0.345365345;
         DecimalFormat decimalFormat = new DecimalFormat("#.##%");
@@ -838,7 +868,7 @@ public class Demo {
 
     @Test
     public void test01() {
-        String id = RandomUtil.generateID();
+        String id = RandomStringUtil.generateID();
         log.info("id:{}", id);
     }
 }

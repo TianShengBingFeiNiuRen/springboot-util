@@ -9,30 +9,36 @@ import java.util.Random;
  * @author Andon
  * 2021/11/10
  * <p>
- * 随机字符串Util
+ * 生成字符串 随机数字字母符号Util
  */
-public class RandomUtil {
+public class RandomStringUtil {
 
     public static String generateID() {
         return System.currentTimeMillis() + numGenerate(6);
     }
 
     public static String numGenerate(int length) {
-        if (length == 0) {
-            return "";
-        }
+        length = Math.max(length, 3);
         return String.valueOf((int) ((Math.random() * 9 + 1) * (Math.pow(10, length - 1))));
     }
 
-    public static String stringGenerate(int length) {
+    public static String stringGenerate(int length, boolean number, boolean letter, boolean symbol) {
+        length = Math.max(length, 3);
+        int divisor = ((number ? 1 : 0) + (letter ? 1 : 0) + (symbol ? 1 : 0));
+        divisor = divisor == 0 ? 1 : divisor;
+        int average = length / divisor;
+        boolean complete = length % divisor == 0;
         StringBuilder sb = new StringBuilder();
-        String str1 = "0123456789";
-        String s1 = stringGenerate(str1, length / 3);
-        String str2 = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        String s2 = stringGenerate(str2, length - (length / 3));
-        sb.append(s1);
-        sb.append(s2);
-        List<String> stringList = Arrays.asList(sb.toString().split(""));
+        if (number) {
+            sb.append(stringGenerate("0123456789", average));
+        }
+        if (letter) {
+            sb.append(stringGenerate("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", average = complete ? average : average + 1));
+        }
+        if (symbol) {
+            sb.append(stringGenerate("./*~!@#$%^&?-_=+[]{}", average));
+        }
+        List<String> stringList = Arrays.asList(sb.toString().substring(0, length).split(""));
         Collections.shuffle(stringList);
         sb = new StringBuilder();
         for (String s : stringList) {
