@@ -191,14 +191,21 @@ public class RocksDBUtil {
     }
 
     /**
-     * 查（所有键值对）
+     * 查Limit（键值对）
      */
-    public static Map<String, String> getAll(String cfName) throws RocksDBException {
+    public static Map<String, String> getLimit(String cfName, int limit) throws RocksDBException {
         Map<String, String> map = new HashMap<>();
+        if (limit > 0) {
+            map = new HashMap<>(limit);
+        }
+        int size = 0;
         ColumnFamilyHandle columnFamilyHandle = cfAddIfNotExist(cfName); //获取列族Handle
         RocksIterator rocksIterator = rocksDB.newIterator(columnFamilyHandle);
         for (rocksIterator.seekToFirst(); rocksIterator.isValid(); rocksIterator.next()) {
             map.put(new String(rocksIterator.key()), new String(rocksIterator.value()));
+            if (limit > 0 && ++size == limit) {
+                break;
+            }
         }
         return map;
     }

@@ -39,6 +39,16 @@ import java.util.stream.Collectors;
 public class Demo {
 
     @Test
+    public void test53() {
+        List<String> list = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            list.add(String.valueOf(i));
+        }
+        List<String> subList = list.subList(0, Math.min(list.size(), 3));
+        log.info("subList:{}", JSONObject.toJSONString(subList));
+    }
+
+    @Test
     public void test52() {
         for (int i = 1; i <= 10; i++) {
             String stringGenerate = RandomStringUtil.stringGenerate(i, true, false, false);
@@ -411,21 +421,26 @@ public class Demo {
     public void test28() {
         List<String> combinationResult = new ArrayList<>();
         List<String> arrangementResult = new ArrayList<>();
-        String keys = "a,b,c";
-        String[] keyArr = keys.split(",");
+//        String keys = "a,b,c";
+//        String[] keyArr = keys.split(",");
+        int length = 20;
+        String[] keyArr = new String[length];
+        for (int i = 0; i < length; i++) {
+            keyArr[i] = String.valueOf(i);
+        }
         int num = keyArr.length;
         long combinationNum = 0;
         long arrangementNum = 0;
         for (int i = 0; i < num; i++) {
             combinationNum += ACUtil.combination(num, i + 1);
-            arrangementNum += ACUtil.arrangement(num, i + 1);
+//            arrangementNum += ACUtil.arrangement(num, i + 1);
             combinationResult.addAll(ACUtil.combinationSelect(keyArr, i + 1));
-            arrangementResult.addAll(ACUtil.arrangementSelect(keyArr, i + 1));
+//            arrangementResult.addAll(ACUtil.arrangementSelect(keyArr, i + 1));
         }
         log.info("combinationNum:{}", combinationNum);
-        log.info("combinationResult:{}", JSONObject.toJSONString(combinationResult));
-        log.info("arrangementNum:{}", arrangementNum);
-        log.info("arrangementResult:{}", JSONObject.toJSONString(arrangementResult));
+//        log.info("combinationResult:{}", JSONObject.toJSONString(combinationResult));
+//        log.info("arrangementNum:{}", arrangementNum);
+//        log.info("arrangementResult:{}", JSONObject.toJSONString(arrangementResult));
     }
 
     @Test

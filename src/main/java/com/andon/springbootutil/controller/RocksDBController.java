@@ -1,8 +1,8 @@
 package com.andon.springbootutil.controller;
 
 import com.andon.springbootutil.domain.ResponseStandard;
-import com.andon.springbootutil.util.RocksDBUtil;
 import com.andon.springbootutil.dto.RocksDBVo;
+import com.andon.springbootutil.util.RocksDBUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -115,14 +115,15 @@ public class RocksDBController {
         return response;
     }
 
-    @ApiOperation("查（所有键值对）")
+    @ApiOperation("查Limit（键值对）")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "cfName", value = "列族", required = true),
+            @ApiImplicitParam(name = "limit", value = "限制数量", required = true),
     })
-    @GetMapping("/get-all")
-    public ResponseStandard<List<RocksDBVo>> getAll(String cfName) throws RocksDBException {
+    @GetMapping("/get-limit")
+    public ResponseStandard<List<RocksDBVo>> getLimit(String cfName, int limit) throws RocksDBException {
         List<RocksDBVo> rocksDBVos = new ArrayList<>();
-        Map<String, String> all = RocksDBUtil.getAll(cfName);
+        Map<String, String> all = RocksDBUtil.getLimit(cfName, limit);
         for (Map.Entry<String, String> entry : all.entrySet()) {
             RocksDBVo rocksDBVo = RocksDBVo.builder().cfName(cfName).key(entry.getKey()).value(entry.getValue()).build();
             rocksDBVos.add(rocksDBVo);
