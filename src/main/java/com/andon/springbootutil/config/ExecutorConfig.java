@@ -6,6 +6,7 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.Bean;
 
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -25,7 +26,7 @@ public class ExecutorConfig {
         int cpuNum = Runtime.getRuntime().availableProcessors();
         log.info("cpuNum:{}", cpuNum);
         ThreadPoolExecutor executor = new ThreadPoolExecutor(
-                cpuNum, cpuNum * 2, 60, TimeUnit.SECONDS, new ArrayBlockingQueue<>(10));
+                cpuNum, cpuNum * 2, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
         log.info("executor:{}", JSONObject.toJSONString(executor));
         return executor;
     }
