@@ -19,6 +19,17 @@ import java.util.stream.Stream;
 @Slf4j
 public class FunctionalCodeTest {
 
+    @Test
+    public void functionalInterfaceTest2() {
+        MyFunction<String, Integer> s2i = s -> {
+            log.info("type:{}", s.getClass().getName());
+            return Integer.valueOf(s);
+        };
+        String string = "128";
+        Integer myApply = s2i.myApply(string);
+        log.info("myApply >>> {} type:{}", myApply, myApply.getClass().getName());
+    }
+
     /**
      * 函数式接口测试
      */

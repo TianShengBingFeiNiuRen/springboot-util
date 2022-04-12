@@ -585,7 +585,7 @@ public class Demo {
     }
 
     @Test
-    public void test18() {
+    public void test18() throws InterruptedException {
         System.out.println("main函数开始执行");
         ExecutorService executor = Executors.newFixedThreadPool(2);
         CompletableFuture<Integer> future = CompletableFuture.supplyAsync(new Supplier<Integer>() {
@@ -603,15 +603,11 @@ public class Demo {
         }, executor);
         future.thenAccept(System.out::println);
         System.out.println("main函数执行结束");
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        Thread.sleep(10000);
     }
 
     @Test
-    public void test17() throws IOException, ExecutionException, InterruptedException {
+    public void test17() throws ExecutionException, InterruptedException {
         System.out.println("main函数开始执行");
 
         ExecutorService executor = Executors.newFixedThreadPool(1);
@@ -632,7 +628,7 @@ public class Demo {
     }
 
     @Test
-    public void test16() {
+    public void test16() throws InterruptedException {
         System.out.println("main函数开始执行");
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -649,6 +645,7 @@ public class Demo {
 
         thread.start();
         System.out.println("main函数执行结束");
+//        Thread.sleep(10000);
     }
 
     @Test
