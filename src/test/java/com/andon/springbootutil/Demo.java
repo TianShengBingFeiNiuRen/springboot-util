@@ -45,7 +45,7 @@ public class Demo {
             list.add(String.valueOf(i));
         }
         List<String> subList = list.subList(0, Math.min(list.size(), 3));
-        log.info("subList:{}", JSONObject.toJSONString(subList));
+        log.info("subList:{} ", JSONObject.toJSONString(subList));
     }
 
     @Test
