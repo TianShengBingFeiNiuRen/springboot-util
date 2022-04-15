@@ -3,9 +3,11 @@ server:
   servlet:
     context-path: /spring-boot-util
 spring:
+  profiles:
+    active: dev
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
 
 task:
-  time_clear_sector: "18:00:00"
+  time-clear: "18:00:00"
