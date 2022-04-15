@@ -27,8 +27,8 @@ public class Main implements ApplicationRunner {
     public static final ThreadLocal<SimpleDateFormat> FORMAT_DAY = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd"));
     private ScheduledExecutorService scheduledExecutorService; //定时任务线程池
 
-    @Value("${task.time_clear_sector}")
-    private String time_clear_sector; //任务执行时间
+    @Value("${task.time-clear}")
+    private String timeClear; //任务执行时间
     @Resource
     private TaskService taskService; //定时任务
 
@@ -50,7 +50,7 @@ public class Main implements ApplicationRunner {
 
         // 项目启动后，计算定时任务延时的启动时间
         long currentTimeMillis = System.currentTimeMillis();
-        String taskTime = FORMAT_DAY.get().format(currentTimeMillis) + " " + time_clear_sector;
+        String taskTime = FORMAT_DAY.get().format(currentTimeMillis) + " " + timeClear;
         try {
             long taskTimestamp = FORMAT.get().parse(taskTime).getTime();
             initialDelay = (taskTimestamp - currentTimeMillis) > 0 ? (taskTimestamp - currentTimeMillis) / 1000 : 1;
