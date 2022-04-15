@@ -1,7 +1,7 @@
 server:
   port: 8866
   servlet:
-    context-path: /spring-boot-util
+    context-path: /springboot-util
 spring:
   profiles:
     active: dev

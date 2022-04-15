@@ -1,4 +1,4 @@
-# spring-boot-util
+# springboot-util
 工具类合集
 
 **CSDN**: [**SpringBoot 整合对象属性转换工具mapstruct**](https://blog.csdn.net/weixin_39792935/article/details/123229542).

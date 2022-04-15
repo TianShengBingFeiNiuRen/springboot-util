@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.andon</groupId>
-    <artifactId>spring-boot-util</artifactId>
+    <artifactId>springboot-util</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>spring-boot-util</name>
-    <description>spring-boot-util</description>
+    <name>springboot-util</name>
+    <description>springboot-util</description>
     <properties>
         <java.version>1.8</java.version>
     </properties>
