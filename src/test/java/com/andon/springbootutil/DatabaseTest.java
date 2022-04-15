@@ -1,9 +1,11 @@
 package com.andon.springbootutil;
 
 import com.alibaba.fastjson.JSONObject;
+import com.andon.springbootutil.config.AndonAddConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -27,10 +29,20 @@ import java.util.concurrent.ThreadPoolExecutor;
 @SpringBootTest
 public class DatabaseTest {
 
+    @Value("${env}")
+    private String env;
     @Resource
     private ThreadPoolExecutor globalExecutorService;
     @Resource
     private RestTemplate restTemplate;
+    @Resource
+    private AndonAddConfig andonAddConfig;
+
+    @Test
+    public void test06() {
+        log.info("env:{}", env);
+        log.info("andonAddProperties.getEnable()={} andonAddProperties.getName()={}", andonAddConfig.getEnable(), andonAddConfig.getName());
+    }
 
     @Test
     public void test05() {
