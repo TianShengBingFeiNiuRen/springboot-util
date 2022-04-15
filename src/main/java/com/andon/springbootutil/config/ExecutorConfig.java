@@ -25,7 +25,7 @@ public class ExecutorConfig {
         int cpuNum = Runtime.getRuntime().availableProcessors();
         log.info("cpuNum:{}", cpuNum);
         ThreadPoolExecutor executor = new ThreadPoolExecutor(
-                cpuNum, cpuNum * 2, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+                cpuNum, cpuNum * 2, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>(10000));
         log.info("executor:{}", JSONObject.toJSONString(executor));
         return executor;
     }
