@@ -19,6 +19,7 @@ public class RocksDBVo implements Serializable {
 
     @NonNull
     @ApiModelProperty(value = "列族", required = true)
+    @Builder.Default
     private String cfName = "default";
     @NonNull
     @ApiModelProperty(value = "键", required = true)
