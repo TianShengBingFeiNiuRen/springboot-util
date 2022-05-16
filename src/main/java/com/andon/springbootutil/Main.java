@@ -41,9 +41,6 @@ public class Main implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        for (int i = 0; i < 6; i++) {
-            System.out.println("Run!!");
-        }
 
         long initialDelay = 12 * 60 * 60L; //定时任务延时启动
         long period = 24 * 60 * 60L; //定时任务时间间隔

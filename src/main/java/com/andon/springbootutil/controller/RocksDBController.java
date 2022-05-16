@@ -115,21 +115,43 @@ public class RocksDBController {
         return response;
     }
 
-    @ApiOperation("查Limit（键值对）")
+    @ApiOperation("查所有键值")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "cfName", value = "列族", required = true),
-            @ApiImplicitParam(name = "limit", value = "限制数量", required = true),
     })
-    @GetMapping("/get-limit")
-    public ResponseStandard<List<RocksDBVo>> getLimit(String cfName, int limit) throws RocksDBException {
+    @GetMapping("/get-all")
+    public ResponseStandard<List<RocksDBVo>> getAll(String cfName) throws RocksDBException {
         List<RocksDBVo> rocksDBVos = new ArrayList<>();
-        Map<String, String> all = RocksDBUtil.getLimit(cfName, limit);
+        Map<String, String> all = RocksDBUtil.getAll(cfName);
         for (Map.Entry<String, String> entry : all.entrySet()) {
             RocksDBVo rocksDBVo = RocksDBVo.builder().cfName(cfName).key(entry.getKey()).value(entry.getValue()).build();
             rocksDBVos.add(rocksDBVo);
         }
         ResponseStandard<List<RocksDBVo>> response = ResponseStandard.successResponse(rocksDBVos);
         response.setTotal(rocksDBVos.size());
+        return response;
+    }
+
+    @ApiOperation("分片查（键）")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "cfName", value = "列族", required = true),
+    })
+    @GetMapping("/get-keys")
+    public ResponseStandard<List<String>> getKeysFrom(String cfName) throws RocksDBException {
+        List<String> data = new ArrayList<>();
+        List<String> keys;
+        String lastKey = null;
+        while (true) {
+            keys = RocksDBUtil.getKeysFrom(cfName, lastKey);
+            if (keys.isEmpty()) {
+                break;
+            }
+            lastKey = keys.get(keys.size() - 1);
+            data.addAll(keys);
+            keys.clear();
+        }
+        ResponseStandard<List<String>> response = ResponseStandard.successResponse(data);
+        response.setTotal(data.size());
         return response;
     }
 }

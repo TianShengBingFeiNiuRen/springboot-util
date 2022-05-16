@@ -4,12 +4,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.rocksdb.*;
 import org.springframework.util.ObjectUtils;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * @author Andon
@@ -22,6 +25,7 @@ public class RocksDBUtil {
 
     private static RocksDB rocksDB;
     public static ConcurrentMap<String, ColumnFamilyHandle> columnFamilyHandleMap = new ConcurrentHashMap<>(); //数据库列族(表)集合
+    public static int GET_KEYS_BATCH_SIZE = 100000;
 
     /*
       初始化 RocksDB
@@ -54,7 +58,7 @@ public class RocksDBUtil {
             rocksDB = RocksDB.open(dbOptions, rocksDBPath, columnFamilyDescriptors, columnFamilyHandles);
             for (int i = 0; i < columnFamilyDescriptors.size(); i++) {
                 ColumnFamilyHandle columnFamilyHandle = columnFamilyHandles.get(i);
-                String cfName = new String(columnFamilyDescriptors.get(i).getName());
+                String cfName = new String(columnFamilyDescriptors.get(i).getName(), StandardCharsets.UTF_8);
                 columnFamilyHandleMap.put(cfName, columnFamilyHandle);
             }
             log.info("RocksDB init success!! path:{}", rocksDBPath);
@@ -133,7 +137,7 @@ public class RocksDBUtil {
         ColumnFamilyHandle columnFamilyHandle = cfAddIfNotExist(cfName); //获取列族Handle
         byte[] bytes = rocksDB.get(columnFamilyHandle, key.getBytes());
         if (!ObjectUtils.isEmpty(bytes)) {
-            value = new String(bytes);
+            value = new String(bytes, StandardCharsets.UTF_8);
         }
         return value;
     }
@@ -142,22 +146,17 @@ public class RocksDBUtil {
      * 查（多个键值对）
      */
     public static Map<String, String> multiGetAsMap(String cfName, List<String> keys) throws RocksDBException {
-        Map<String, String> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>(keys.size());
         ColumnFamilyHandle columnFamilyHandle = cfAddIfNotExist(cfName); //获取列族Handle
-        List<ColumnFamilyHandle> columnFamilyHandles = new ArrayList<>(keys.size() + 1);
-        List<byte[]> keyBytes = new ArrayList<>();
-        for (String key : keys) {
-            keyBytes.add(key.getBytes());
-        }
-        for (int i = 0; i < keys.size(); i++) {
-            columnFamilyHandles.add(columnFamilyHandle);
-        }
+        List<ColumnFamilyHandle> columnFamilyHandles;
+        List<byte[]> keyBytes = keys.stream().map(String::getBytes).collect(Collectors.toList());
+        columnFamilyHandles = IntStream.range(0, keys.size()).mapToObj(i -> columnFamilyHandle).collect(Collectors.toList());
         List<byte[]> bytes = rocksDB.multiGetAsList(columnFamilyHandles, keyBytes);
         for (int i = 0; i < bytes.size(); i++) {
             byte[] valueBytes = bytes.get(i);
-            String value = null;
+            String value = "";
             if (!ObjectUtils.isEmpty(valueBytes)) {
-                value = new String(valueBytes);
+                value = new String(valueBytes, StandardCharsets.UTF_8);
             }
             map.put(keys.get(i), value);
         }
@@ -167,47 +166,23 @@ public class RocksDBUtil {
     /**
      * 查（多个值）
      */
-    public static String[] multiGetValueAsList(String cfName, String[] keys) throws RocksDBException {
-        String[] valueArr = new String[keys.length];
+    public static List<String> multiGetValueAsList(String cfName, List<String> keys) throws RocksDBException {
+        List<String> values = new ArrayList<>(keys.size());
         ColumnFamilyHandle columnFamilyHandle = cfAddIfNotExist(cfName); //获取列族Handle
-        List<ColumnFamilyHandle> columnFamilyHandles = new ArrayList<>(keys.length + 1);
-        List<byte[]> keyBytes = new ArrayList<>();
-        for (String key : keys) {
-            keyBytes.add(key.getBytes());
-        }
-        for (int i = 0; i < keys.length; i++) {
+        List<ColumnFamilyHandle> columnFamilyHandles = new ArrayList<>();
+        List<byte[]> keyBytes = keys.stream().map(String::getBytes).collect(Collectors.toList());
+        for (int i = 0; i < keys.size(); i++) {
             columnFamilyHandles.add(columnFamilyHandle);
         }
         List<byte[]> bytes = rocksDB.multiGetAsList(columnFamilyHandles, keyBytes);
-        for (int i = 0; i < bytes.size(); i++) {
-            byte[] valueBytes = bytes.get(i);
-            String value = null;
+        for (byte[] valueBytes : bytes) {
+            String value = "";
             if (!ObjectUtils.isEmpty(valueBytes)) {
-                value = new String(valueBytes);
+                value = new String(valueBytes, StandardCharsets.UTF_8);
             }
-            valueArr[i] = value;
+            values.add(value);
         }
-        return valueArr;
-    }
-
-    /**
-     * 查Limit（键值对）
-     */
-    public static Map<String, String> getLimit(String cfName, int limit) throws RocksDBException {
-        Map<String, String> map = new HashMap<>();
-        if (limit > 0) {
-            map = new HashMap<>(limit);
-        }
-        int size = 0;
-        ColumnFamilyHandle columnFamilyHandle = cfAddIfNotExist(cfName); //获取列族Handle
-        RocksIterator rocksIterator = rocksDB.newIterator(columnFamilyHandle);
-        for (rocksIterator.seekToFirst(); rocksIterator.isValid(); rocksIterator.next()) {
-            map.put(new String(rocksIterator.key()), new String(rocksIterator.value()));
-            if (limit > 0 && ++size == limit) {
-                break;
-            }
-        }
-        return map;
+        return values;
     }
 
     /**
@@ -218,23 +193,46 @@ public class RocksDBUtil {
         ColumnFamilyHandle columnFamilyHandle = cfAddIfNotExist(cfName); //获取列族Handle
         try (RocksIterator rocksIterator = rocksDB.newIterator(columnFamilyHandle)) {
             for (rocksIterator.seekToFirst(); rocksIterator.isValid(); rocksIterator.next()) {
-                list.add(new String(rocksIterator.key()));
+                list.add(new String(rocksIterator.key(), StandardCharsets.UTF_8));
             }
         }
         return list;
     }
 
     /**
-     * 查（所有值）
+     * 分片查（键）
      */
-    public static List<String> getAllValue(String cfName) throws RocksDBException {
-        List<String> list = new ArrayList<>();
-        ColumnFamilyHandle columnFamilyHandle = cfAddIfNotExist(cfName); //获取列族Handle
+    public static List<String> getKeysFrom(String cfName, String lastKey) throws RocksDBException {
+        List<String> list = new ArrayList<>(GET_KEYS_BATCH_SIZE);
+        // 获取列族Handle
+        ColumnFamilyHandle columnFamilyHandle = cfAddIfNotExist(cfName);
         try (RocksIterator rocksIterator = rocksDB.newIterator(columnFamilyHandle)) {
-            for (rocksIterator.seekToFirst(); rocksIterator.isValid(); rocksIterator.next()) {
-                list.add(new String(rocksIterator.value()));
+            if (lastKey != null) {
+                rocksIterator.seek(lastKey.getBytes(StandardCharsets.UTF_8));
+                rocksIterator.next();
+            } else {
+                rocksIterator.seekToFirst();
+            }
+            // 一批次最多 GET_KEYS_BATCH_SIZE 个 key
+            while (rocksIterator.isValid() && list.size() < GET_KEYS_BATCH_SIZE) {
+                list.add(new String(rocksIterator.key(), StandardCharsets.UTF_8));
+                rocksIterator.next();
             }
         }
         return list;
+    }
+
+    /**
+     * 查（所有键值）
+     */
+    public static Map<String, String> getAll(String cfName) throws RocksDBException {
+        Map<String, String> map = new HashMap<>();
+        ColumnFamilyHandle columnFamilyHandle = cfAddIfNotExist(cfName); //获取列族Handle
+        try (RocksIterator rocksIterator = rocksDB.newIterator(columnFamilyHandle)) {
+            for (rocksIterator.seekToFirst(); rocksIterator.isValid(); rocksIterator.next()) {
+                map.put(new String(rocksIterator.key(), StandardCharsets.UTF_8), new String(rocksIterator.value(), StandardCharsets.UTF_8));
+            }
+        }
+        return map;
     }
 }
