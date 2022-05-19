@@ -12,7 +12,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -138,6 +142,49 @@ public class CSVUtil {
             log.error("解析CSV内容失败 error:{} e:{}", e.getMessage(), e);
         }
         return 0;
+    }
+
+    /**
+     * 创建文件
+     */
+    public static File createFile(String... filePath) throws IOException {
+        assert PATH != null;
+        Path path = Paths.get(PATH.getPath().substring(1), filePath);
+        if (!path.getParent().toFile().exists()) {
+            Files.createDirectory(path.getParent());
+        }
+        Files.deleteIfExists(path);
+        Files.createFile(path);
+        return path.toFile();
+    }
+
+    public static void recordIterator(String filePath, Consumer<Iterator<CSVRecord>> recordIteratorHandler) throws IOException {
+        try (FileInputStream fileInputStream = new FileInputStream(filePath)) {
+            recordIterator(fileInputStream, charset(filePath), recordIteratorHandler);
+        }
+    }
+
+    public static void recordIterator(InputStream inputStream, String charset, Consumer<Iterator<CSVRecord>> recordIteratorHandler) throws IOException {
+        try (InputStreamReader inputStreamReader = new InputStreamReader(inputStream, charset);
+             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);) {
+            CSVParser parser = CSV_FORMAT.parse(bufferedReader);
+            recordIteratorHandler.accept(parser.iterator());
+        }
+    }
+
+    /**
+     * 增量写文件
+     */
+    public static void appendContentToFile(File file, List<String[]> values) throws IOException {
+        synchronized (CSVUtil.class) {
+            try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, true), StandardCharsets.UTF_8))) {
+                CSVPrinter printer = new CSVPrinter(bufferedWriter, CSV_FORMAT);
+                for (String[] value : values) {
+                    printer.printRecord(Arrays.asList(value));
+                }
+                printer.close();
+            }
+        }
     }
 
     /**

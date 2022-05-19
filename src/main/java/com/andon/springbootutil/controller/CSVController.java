@@ -1,6 +1,7 @@
 package com.andon.springbootutil.controller;
 
 import com.andon.springbootutil.util.CSVUtil;
+import com.andon.springbootutil.util.FileUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Andon
@@ -29,6 +31,7 @@ public class CSVController {
     @ApiOperation("上传")
     @PostMapping(value = "/upload")
     public List<String> upload(MultipartFile multipartFile) throws IOException {
+        String save = FileUtil.save(multipartFile, UUID.randomUUID().toString(), "HelloWorld.tmp");
         File file = CSVUtil.uploadFile(multipartFile);
         assert file != null;
         long count = CSVUtil.readDataCount(file.getPath());
