@@ -25,7 +25,7 @@ public class FileUtilTest {
         File file = FileUtil.createFile("createFile.csv");
         List<String> header = Collections.singletonList("id,name");
         FileUtil.appendContentToFile(file, header);
-        int row = 5;
+        int row = 8;
         List<CompletableFuture<Void>> futures = new ArrayList<>(row);
         for (int i = 0; i < row; i++) {
             int finalI = i;
@@ -46,7 +46,8 @@ public class FileUtilTest {
     @Test
     public void readFileContentByLine() throws Exception {
         String filePath = "D:\\apps\\file\\createFile.csv";
-        List<String> lines = new ArrayList<>();
+        int batchSize = 5;
+        List<String> lines = new ArrayList<>(batchSize);
         FileUtil.readFileContentByLine(filePath, (bufferedReader) -> {
             String line;
             while (true) {
@@ -56,9 +57,22 @@ public class FileUtilTest {
                     break;
                 }
                 lines.add(line);
+                if (lines.size() == batchSize) {
+                    log.info("lines.size={} lines:{}", lines.size(), JSONObject.toJSONString(lines));
+                    lines.clear();
+                }
+            }
+            if (!lines.isEmpty()) {
+                log.info("lines.size={} lines:{}", lines.size(), JSONObject.toJSONString(lines));
+                lines.clear();
             }
         });
-        log.info("lines:{}", JSONObject.toJSONString(lines));
+    }
+
+    @Test
+    public void readSchemaWithFirstLine() throws Exception {
+        String filePath = "D:\\apps\\file\\createFile.csv";
+        String schema = FileUtil.readSchemaWithFirstLine(filePath);
     }
 
     @Test
@@ -69,7 +83,7 @@ public class FileUtilTest {
 
     @Test
     public void createFileWithContent() throws IOException {
-        int row = 5;
+        int row = 8;
         List<String> lines = new ArrayList<>(row);
         for (int i = 0; i < row; i++) {
             lines.add(i + "," + UUID.randomUUID().toString());

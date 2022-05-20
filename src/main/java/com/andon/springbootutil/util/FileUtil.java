@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 /**
@@ -125,7 +126,7 @@ public class FileUtil {
     }
 
     /**
-     * 读文件
+     * 读大文件
      *
      * @param filePath      文件绝对路径
      * @param contentReader contentReader
@@ -137,6 +138,24 @@ public class FileUtil {
              BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
             contentReader.accept(bufferedReader);
         }
+    }
+
+    /**
+     * 读文件首行
+     *
+     * @param filePath 文件绝对路径
+     */
+    public static String readSchemaWithFirstLine(String filePath) throws Exception {
+        AtomicReference<String> schema = new AtomicReference<>("");
+        readFileContentByLine(filePath, bufferedReader -> {
+            try {
+                schema.set(bufferedReader.readLine());
+            } catch (Exception e) {
+                schema.set("");
+            }
+        });
+        log.info("readSchemaWithFirstLine success!! --文件-> [{}] schema={}", filePath, schema);
+        return schema.get();
     }
 
     /**

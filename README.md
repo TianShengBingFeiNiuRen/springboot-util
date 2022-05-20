@@ -1,6 +1,8 @@
 # springboot-util
 工具类合集
 
+**CSDN**: [**FileUtil 增量写文件、判断字符集编码读大文件等操作**](https://blog.csdn.net/weixin_39792935/article/details/124869872).
+
 **CSDN**: [**SpringBoot 整合对象属性转换工具mapstruct**](https://blog.csdn.net/weixin_39792935/article/details/123229542).
 
 **CSDN**: [**SpringBoot 事件监听ApplicationEventPublisher**](https://blog.csdn.net/weixin_39792935/article/details/123208052).
