@@ -19,16 +19,16 @@ public class SemaphoreTest {
     private static Semaphore semaphore = new Semaphore(permits);
 
     @Test
-    public void semaphore() {
+    public void semaphore() throws Exception {
         int num = 5;
         log.info("有{}个位置可以做核酸", permits);
         log.info("来了{}个人做核酸", num);
 
         List<CompletableFuture<Void>> completableFutures = new ArrayList<>();
         for (int i = 0; i < num; i++) {
+            semaphore.acquire();
             CompletableFuture<Void> completableFuture = CompletableFuture.runAsync(() -> {
                 try {
-                    semaphore.acquire();
                     long stop = (long) (Math.random() * 10 + 1);
                     log.info("{}开始做核酸，耗时{}秒", Thread.currentThread().getName(), stop);
                     Thread.sleep(stop * 1000);
