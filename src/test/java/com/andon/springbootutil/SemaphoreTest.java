@@ -5,8 +5,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.*;
 
 /**
  * @author Andon
@@ -18,6 +17,9 @@ public class SemaphoreTest {
     private static int permits = 3;
     private static Semaphore semaphore = new Semaphore(permits);
 
+    /**
+     * 信号量 测试
+     */
     @Test
     public void semaphore() throws Exception {
         int num = 5;
@@ -43,5 +45,60 @@ public class SemaphoreTest {
         }
         CompletableFuture<Void> completableFuture = CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[0]));
         completableFuture.join();
+    }
+
+    /**
+     * 中断分片线程 测试
+     */
+    @Test
+    public void interruptTest() throws ExecutionException, InterruptedException {
+        List<Thread> threads = new ArrayList<>();
+
+        ExecutorService executorService = Executors.newFixedThreadPool(8);
+        List<Future<?>> futures = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            int finalI = i + 1;
+            Future<?> future = executorService.submit(() -> {
+                Thread thread = Thread.currentThread();
+                threads.add(thread);
+                try {
+                    log.info("[{}] - thread start!! finalI={}", thread.getId(), finalI);
+                    Thread.sleep(finalI * 1000);
+                    threadCheck();
+                    if (finalI == 3) {
+                        throw new Exception("Exception");
+                    }
+                    log.info("[{}] - thread end!! finalI={}", thread.getId(), finalI);
+                } catch (Exception e) {
+                    log.info("[{}] - thread interrupt!!", thread.getId());
+                    interrupt(threads);
+                }
+            });
+            futures.add(future);
+        }
+        for (Future<?> future : futures) {
+            future.get();
+        }
+        log.info("end!!");
+    }
+
+    /**
+     * 线程检查
+     * <p>
+     * 在线程中计划中断的地方执行
+     */
+    public void threadCheck() throws InterruptedException {
+        Thread.sleep(10);
+    }
+
+    /**
+     * 中断线程
+     * <p>
+     * 会在线程检查代码执行时，抛出异常来中断线程
+     */
+    public void interrupt(List<Thread> threads) {
+        for (Thread thread : threads) {
+            thread.interrupt();
+        }
     }
 }
