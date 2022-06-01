@@ -154,4 +154,26 @@ public class RocksDBController {
         response.setTotal(data.size());
         return response;
     }
+
+    @ApiOperation("查（所有键）")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "cfName", value = "列族", required = true),
+    })
+    @GetMapping("/get-all-key")
+    public ResponseStandard<List<String>> getAllKey(String cfName) throws RocksDBException {
+        List<String> allKey = RocksDBUtil.getAllKey(cfName);
+        ResponseStandard<List<String>> response = ResponseStandard.successResponse(allKey);
+        response.setTotal(allKey.size());
+        return response;
+    }
+
+    @ApiOperation("查总条数")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "cfName", value = "列族", required = true),
+    })
+    @GetMapping("/get-count")
+    public ResponseStandard<Integer> getCount(String cfName) throws RocksDBException {
+        int count = RocksDBUtil.getCount(cfName);
+        return ResponseStandard.successResponse(count);
+    }
 }

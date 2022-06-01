@@ -235,4 +235,18 @@ public class RocksDBUtil {
         }
         return map;
     }
+
+    /**
+     * 查总条数
+     */
+    public static int getCount(String cfName) throws RocksDBException {
+        int count = 0;
+        ColumnFamilyHandle columnFamilyHandle = cfAddIfNotExist(cfName); //获取列族Handle
+        try (RocksIterator rocksIterator = rocksDB.newIterator(columnFamilyHandle)) {
+            for (rocksIterator.seekToFirst(); rocksIterator.isValid(); rocksIterator.next()) {
+                count++;
+            }
+        }
+        return count;
+    }
 }
