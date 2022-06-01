@@ -39,6 +39,13 @@ import java.util.stream.Collectors;
 public class Demo {
 
     @Test
+    public void test54() {
+        List<String> list = Arrays.asList("hello", "world", "java", "hello", "springboot");
+        Map<String, String> map = list.stream().collect(Collectors.toMap(s -> s, s -> s, (s, s2) -> s));
+        log.info("map:{}", JSONObject.toJSONString(map));
+    }
+
+    @Test
     public void test53() {
         List<String> list = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
