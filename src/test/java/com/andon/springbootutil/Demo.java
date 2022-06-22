@@ -39,6 +39,22 @@ import java.util.stream.Collectors;
 public class Demo {
 
     @Test
+    public void test56() {
+        List<String> list = new ArrayList<>();
+        Map<String, String> map = list.stream().collect(Collectors.toMap(s -> s, s -> s, (s, s2) -> s));
+        log.info("{}", JSONObject.toJSONString(list));
+        log.info("{}", JSONObject.toJSONString(map));
+    }
+
+    @Test
+    public void test55() {
+        int notDistinguish = 100;
+        List<String> list = Arrays.asList("1", "2", "3", "4", "5");
+        List<String> list1 = list.subList(0, Math.min(notDistinguish, list.size()));
+        log.info("{}", list1);
+    }
+
+    @Test
     public void test54() {
         List<String> list = Arrays.asList("hello", "world", "java", "hello", "springboot");
         Map<String, String> map = list.stream().collect(Collectors.toMap(s -> s, s -> s, (s, s2) -> s));
@@ -836,37 +852,17 @@ public class Demo {
 
     @Test
     public void test03() {
-        String content = "test"; //明文内容
-        log.info("明文:{}", content);
-        String rsaPublicKey = RSAUtil.getRSAPublicKey();
-        log.info("rsaPublicKey:{}", rsaPublicKey);
-        String rsaPrivateKey = RSAUtil.getRSAPrivateKey();
-        log.info("rsaPrivateKey:{}", rsaPrivateKey);
-        System.out.println("RSA加密==========");
-        // RSA加密
-        byte[] encrypt = RSAUtil.publicEncrypt(content);
-        log.info("密文:{}", encrypt);
+        RSAUtil.RsaKeyPair rsaKeyPair = RSAUtil.generateKeyPair(null);
+        log.info("publicKey:{}", rsaKeyPair.publicKey);
+        log.info("privateKey:{}", rsaKeyPair.privateKey);
 
-        String parseByteToHexStr = RSAUtil.parseByteToHexStr(encrypt);
-        log.info("密文--字节数组转换成16进制:{}", parseByteToHexStr);
-        String base64EncodeToString = RSAUtil.base64EncodeToString(encrypt);
-        log.info("密文--Base64处理字节数组转为字符串:{}", base64EncodeToString);
-
-        System.out.println("RSA解密==========");
-        // RSA解密
-        byte[] parseHexStrToByte = RSAUtil.parseHexStrToByte(parseByteToHexStr);
-        log.info("密文--16进制转换成字节数组:{}", parseHexStrToByte);
-        byte[] base64DecodeToByte = RSAUtil.base64DecodeToByte(base64EncodeToString);
-        log.info("密文--Base64处理字符串转换为字节数组:{}", base64DecodeToByte);
-
-        byte[] decryptParseHexStrToByte = RSAUtil.privateDecrypt(parseHexStrToByte);
-        log.info("解密后的明文--16进制转换成字节数组:{}", decryptParseHexStrToByte);
-        byte[] decryptBase64DecodeToByte = RSAUtil.privateDecrypt(base64DecodeToByte);
-        log.info("解密后的明文--Base64处理字符串转换为字节数组:{}", decryptBase64DecodeToByte);
-        String decryptParseHexStrToByteString = new String(decryptParseHexStrToByte, StandardCharsets.UTF_8);
-        log.info("明文--字节数组转换成16进制:{}", decryptParseHexStrToByteString);
-        String decryptBase64DecodeToByteString = new String(decryptBase64DecodeToByte, StandardCharsets.UTF_8);
-        log.info("明文--Base64处理字节数组转换为字符串:{}", decryptBase64DecodeToByteString);
+        String data = "hello world";
+//        String data = rsaKeyPair.publicKey;
+        String encrypt = RSAUtil.publicEncrypt(data, rsaKeyPair.publicKey);
+        String decrypt = RSAUtil.privateDecrypt(encrypt, rsaKeyPair.privateKey);
+        log.info("data:{}", data);
+        log.info("encrypt:{}", encrypt);
+        log.info("decrypt:{}", decrypt);
     }
 
     @Test
@@ -889,5 +885,10 @@ public class Demo {
     public void test01() {
         String id = RandomStringUtil.generateID();
         log.info("id:{}", id);
+    }
+
+    public static void main(String[] args) {
+        log.info("{}", args[0]);
+        log.info("{}", args[1]);
     }
 }
