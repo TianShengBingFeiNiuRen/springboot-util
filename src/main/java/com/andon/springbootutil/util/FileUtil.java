@@ -32,6 +32,7 @@ public class FileUtil {
                 fileRootPath = "/usr/local/apps/file"; // 指定linux系统下RocksDB文件目录
             }
             rootFilePath = Paths.get(fileRootPath);
+//            rootFilePath = Paths.get(System.getProperty("user.dir"));
             if (!Files.exists(rootFilePath)) {
                 Files.createDirectories(rootFilePath);
             }
@@ -40,6 +41,23 @@ public class FileUtil {
             log.error("FileUtil init failure!! error:{}", e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 获取绝对路径 Path
+     *
+     * @param fileNamePath 文件名称路径
+     */
+    public static Path getRootFilePath(String... fileNamePath) throws IOException {
+        Path path = Paths.get(rootFilePath.toAbsolutePath().toString(), fileNamePath);
+        if (!Files.exists(path.getParent())) {
+            Files.createDirectories(path.getParent());
+            Files.createFile(path);
+        }
+        if (!Files.exists(path)) {
+            Files.createFile(path);
+        }
+        return path;
     }
 
     /**
@@ -93,10 +111,10 @@ public class FileUtil {
     /**
      * 根据内容创建文件
      *
-     * @param fileName 文件名称
      * @param lines    文件内容
+     * @param fileName 文件名称
      */
-    public static File createFileWithContent(String fileName, List<String> lines) throws IOException {
+    public static File createFileWithContent(List<String> lines, String... fileName) throws IOException {
         File file = createFile(fileName);
         try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
             for (String line : lines) {
@@ -145,17 +163,17 @@ public class FileUtil {
      *
      * @param filePath 文件绝对路径
      */
-    public static String readSchemaWithFirstLine(String filePath) throws Exception {
-        AtomicReference<String> schema = new AtomicReference<>("");
+    public static String readFirstLine(String filePath) throws Exception {
+        AtomicReference<String> firstLine = new AtomicReference<>("");
         readFileContentByLine(filePath, bufferedReader -> {
             try {
-                schema.set(bufferedReader.readLine());
+                firstLine.set(bufferedReader.readLine());
             } catch (Exception e) {
-                schema.set("");
+                firstLine.set("");
             }
         });
-        log.info("readSchemaWithFirstLine success!! --文件-> [{}] schema={}", filePath, schema);
-        return schema.get();
+        log.info("readFirstLine success!! --文件-> [{}] schema={}", filePath, firstLine);
+        return firstLine.get();
     }
 
     /**

@@ -134,7 +134,7 @@ public class FileUtilTest {
     @Test
     public void readSchemaWithFirstLine() throws Exception {
         String filePath = "D:\\apps\\file\\createFile.csv";
-        String schema = FileUtil.readSchemaWithFirstLine(filePath);
+        String firstLine = FileUtil.readFirstLine(filePath);
     }
 
     @Test
@@ -150,7 +150,7 @@ public class FileUtilTest {
         for (int i = 0; i < row; i++) {
             lines.add(i + "," + UUID.randomUUID().toString());
         }
-        File fileWithContent = FileUtil.createFileWithContent("createFileWithContent.tmp", lines);
+        File fileWithContent = FileUtil.createFileWithContent(lines, "createFileWithContent.tmp");
     }
 
     @Test
