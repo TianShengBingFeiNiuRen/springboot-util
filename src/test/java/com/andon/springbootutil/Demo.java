@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -37,6 +39,54 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class Demo {
+
+    @Test
+    public void test58() {
+        Pair pair1 = Pair.builder().key("a").value("1").build();
+        Pair pair2 = Pair.builder().key("z").value("987").build();
+        Pair pair3 = Pair.builder().key("z").value("456").build();
+        Pair pair4 = Pair.builder().key("a").value("3").build();
+        Pair pair5 = Pair.builder().key("a").value("2").build();
+        List<Pair> list = new ArrayList<>();
+        list.add(pair1);
+        list.add(pair2);
+        list.add(pair3);
+        list.add(pair4);
+        list.add(pair5);
+        log.info("{}", JSONObject.toJSONString(list));
+        Map<String, List<Pair>> listMap = list.stream().collect(Collectors.groupingBy(Pair::getKey));
+        log.info("{}", JSONObject.toJSONString(listMap));
+        Map<String, List<String>> collect = list.stream().collect(Collectors.groupingBy(Pair::getKey, Collectors.mapping(Pair::getValue, Collectors.toList())));
+        log.info("{}", JSONObject.toJSONString(collect));
+        Map<String, Pair> map = list.stream().collect(Collectors.toMap(Pair::getKey, pair -> pair, (s, s2) -> s));
+        log.info("{}", JSONObject.toJSONString(map));
+        boolean allMatch = list.stream().map(Pair::getKey).allMatch(s -> s.equals("a"));
+        log.info("{}", allMatch);
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    static class Pair {
+        private String key;
+        private String value;
+    }
+
+    @Test
+    public void test57() {
+        Map<String, String> linkedHashMap = new LinkedHashMap<>();
+        linkedHashMap.put("hello", "1");
+        linkedHashMap.put("java", "2");
+        linkedHashMap.put("springboot", "3");
+        log.info("{}", JSONObject.toJSONString(linkedHashMap));
+
+        Map<String, String> hashMap = new HashMap<>();
+        hashMap.put("hello", "1");
+        hashMap.put("java", "2");
+        hashMap.put("springboot", "3");
+        log.info("{}", JSONObject.toJSONString(hashMap));
+    }
 
     @Test
     public void test56() {
