@@ -19,7 +19,7 @@ import java.util.Collections;
 @Service
 public class RsaKey {
 
-    private String[] rsaPublicKeyFileName = new String[]{"conf", "rasPublicKey.txt"};
+    private String[] rsaPublicKeyFileName = new String[]{"conf", "rsaPublicKey.txt"};
     private String[] rsaPrivateKeyFileName = new String[]{"conf", "rsaPrivateKey.txt"};
 
     public static String rsaPublicKey;
