@@ -14,8 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -39,6 +37,51 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class Demo {
+
+    @Test
+    public void test60() {
+        String stringGenerate = RandomStringUtil.stringGenerate(10, true, true, true);
+        log.info("stringGenerate:{}", stringGenerate);
+    }
+
+    @Test
+    public void test59() {
+        List<DateVO> dateVOS = new ArrayList<>();
+        DateVO date1 = new DateVO();
+        date1.setKey(UUID.randomUUID().toString());
+        date1.setDate(new Date(1656606030000L));
+        DateVO date2 = new DateVO();
+        date2.setKey(UUID.randomUUID().toString());
+        date2.setDate(new Date(1657815630000L));
+        DateVO date3 = new DateVO();
+        date3.setKey(UUID.randomUUID().toString());
+        date3.setDate(new Date(1657814430000L));
+
+        dateVOS.add(date1);
+        dateVOS.add(date2);
+        dateVOS.add(date3);
+        log.info("dateVOS:{}", dateVOS);
+
+        dateVOS.sort(Comparator.comparing(DateVO::getDate).reversed());
+        log.info("dateVOS:{}", dateVOS);
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    static class DateVO {
+        private String key;
+        private Date date;
+
+        @Override
+        public String toString() {
+            return "DateVO{" +
+                    "key='" + key + '\'' +
+                    ", date=" + TimeUtil.FORMAT.get().format(date) +
+                    '}';
+        }
+    }
 
     @Test
     public void test58() {
