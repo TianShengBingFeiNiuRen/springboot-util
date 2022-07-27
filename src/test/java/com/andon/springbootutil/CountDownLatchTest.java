@@ -22,16 +22,17 @@ public class CountDownLatchTest {
         int num = 5;
         CountDownLatch latch = new CountDownLatch(num);
         for (int i = 0; i < num; i++) {
+            int finalI = i;
             executorService.submit(() -> {
                 long sleep = (long) (Math.random() * 10 + 1);
-                log.info("sleep:{} start!!", sleep);
+                log.info("i:{} sleep:{} start!!", finalI, sleep);
                 try {
                     TimeUnit.SECONDS.sleep(sleep);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 latch.countDown();
-                log.info("sleep:{} end!!", sleep);
+                log.info("i:{} sleep:{} end!!", finalI, sleep);
             });
         }
         log.info("latch await start!!");
