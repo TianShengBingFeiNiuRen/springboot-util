@@ -5,7 +5,6 @@ import com.andon.springbootutil.util.RSAUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import java.nio.file.Path;
@@ -19,8 +18,8 @@ import java.util.Collections;
 @Service
 public class RsaKey {
 
-    private String[] rsaPublicKeyFileName = new String[]{"conf", "rsaPublicKey.txt"};
-    private String[] rsaPrivateKeyFileName = new String[]{"conf", "rsaPrivateKey.txt"};
+    private final String[] rsaPublicKeyFileName = new String[]{"conf", "rsaPublicKey.txt"};
+    private final String[] rsaPrivateKeyFileName = new String[]{"conf", "rsaPrivateKey.txt"};
 
     public static String rsaPublicKey;
     public static String rsaPrivateKey;
