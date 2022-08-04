@@ -33,6 +33,15 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * 捕获参数校验异常
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseStandard<Object> exception(IllegalArgumentException e, HttpServletRequest request) {
+        log.warn("request warn!! method:{} uri:{} error:{}", request.getMethod(), request.getRequestURI(), e.getMessage());
+        return ResponseStandard.builder().code(-1).message(e.getMessage()).build();
+    }
+
+    /**
      * 捕获Exception异常,并自定义返回数据
      */
     @ExceptionHandler(Exception.class)

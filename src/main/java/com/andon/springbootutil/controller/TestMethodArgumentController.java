@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
@@ -70,6 +70,7 @@ public class TestMethodArgumentController {
 
     @PostMapping("/method-argument")
     public ResponseStandard<JsonFormatVO> methodArgument(@RequestBody @Valid JsonFormatVO jsonFormatVO) {
+        Assert.isTrue(jsonFormatVO.getJsonFormatVO2().key.equals("java"), "IllegalArgument：key");
         return ResponseStandard.successResponse(jsonFormatVO);
     }
 }
