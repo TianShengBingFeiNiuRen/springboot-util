@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 /**
  * @author Andon
  * 2022/6/8
@@ -22,5 +24,12 @@ public class TestController {
         String s = testService.log();
         log.info("{}", s);
         return s;
+    }
+
+    @GetMapping(value = "/test/getID")
+    public String getID() {
+        String id = UUID.randomUUID().toString();
+        log.info("{}", id);
+        return id;
     }
 }
