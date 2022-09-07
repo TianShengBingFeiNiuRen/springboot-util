@@ -53,6 +53,6 @@ public class CSVController {
         }
         fileName += "_" + System.currentTimeMillis();
         File file = CSVUtil.makeTempCSV(fileName, headArr, valueList);
-        boolean b = CSVUtil.downloadFile(httpServletResponse, file, fileName);
+        boolean b = FileUtil.downloadFile(httpServletResponse, file, fileName+".csv");
     }
 }

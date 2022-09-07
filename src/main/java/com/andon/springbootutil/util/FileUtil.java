@@ -206,7 +206,7 @@ public class FileUtil {
         try {
             // 设置csv文件下载头信息
             response.setContentType("application/octet-stream");
-            response.addHeader("Content-Disposition", "attachment; filename=" + new String(fileName.getBytes(StandardCharsets.UTF_8), "ISO8859-1") + ".csv");
+            response.addHeader("Content-Disposition", "attachment; filename=" + new String(fileName.getBytes(StandardCharsets.UTF_8), "ISO8859-1"));
             fileInputStream = new FileInputStream(file);
             bufferedInputStream = new BufferedInputStream(fileInputStream);
             os = response.getOutputStream();

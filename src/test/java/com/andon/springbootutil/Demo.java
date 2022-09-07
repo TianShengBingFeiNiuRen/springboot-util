@@ -31,12 +31,81 @@ import java.util.concurrent.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
+
 /**
  * @author Andon
  * 2021/11/10
  */
 @Slf4j
 public class Demo {
+
+    @Test
+    public void test64() throws JsonProcessingException {
+        String str = "{\"key\":\"spring\",\"name\":\"java\"}";
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        Pair pair = mapper.readValue(str, Pair.class);
+        log.info("{}", pair.getKey());
+        log.info("{}", pair.getValue());
+        log.info("pair:{}", JSONObject.toJSONString(pair));
+
+        Pair pair2 = mapper.readValue(str, new TypeReference<Pair>() {
+        });
+        log.info("{}", pair2.getKey());
+        log.info("{}", pair2.getValue());
+        log.info("pair:{}", JSONObject.toJSONString(pair2));
+
+        Pair pair3 = JSONObject.parseObject(str, new com.alibaba.fastjson.TypeReference<Pair>() {
+        }.getType());
+        log.info("{}", pair3.getKey());
+        log.info("{}", pair3.getValue());
+        log.info("pair:{}", JSONObject.toJSONString(pair3));
+    }
+
+    @Test
+    public void test63() {
+        Pair pair1 = Pair.builder().key("asd").value("1").build();
+        Pair pair2 = Pair.builder().key("qwe").value("2").build();
+        Pair pair3 = Pair.builder().key("asd").value("4").build();
+        Pair pair4 = Pair.builder().key("zxc").value("3").build();
+        List<Pair> list = new ArrayList<>();
+        list.add(pair1);
+        list.add(pair2);
+        list.add(pair3);
+        list.add(pair4);
+
+        List<String> collect = list.stream().map(Pair::getKey).distinct().collect(Collectors.toList());
+        log.info("list:{}", JSONObject.toJSONString(list));
+        log.info("collect:{}", JSONObject.toJSONString(collect));
+    }
+
+    @Test
+    public void test62() {
+        List<String> list = new ArrayList<>();
+        list.add("asd");
+        list.add("qwe");
+        list.add("jkl");
+        Set<String> set = new HashSet<>();
+        set.add("qwe");
+        set.add("jkl");
+        log.info("list:{}", list);
+        log.info("set:{}", set);
+
+        list.retainAll(set);
+        log.info("list:{}", list);
+    }
+
+    @Test
+    public void test61() {
+        List<String> list = Arrays.asList("asd,zxc,qwe", "asd,rty,uio");
+        List<String> datasetIds = list.stream()
+                .map(s -> s.split(","))
+                .flatMap(Arrays::stream)
+                .distinct()
+                .collect(Collectors.toList());
+        log.info("datasetIds:{}", JSONObject.toJSONString(datasetIds));
+    }
 
     @Test
     public void test60() {
@@ -397,7 +466,7 @@ public class Demo {
         private final static ObjectMapper mapper = new ObjectMapper();
 
         static {
-            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            mapper.configure(FAIL_ON_UNKNOWN_PROPERTIES, false);
         }
 
         private SerializationUtil() {

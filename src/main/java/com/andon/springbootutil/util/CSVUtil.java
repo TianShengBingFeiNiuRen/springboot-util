@@ -8,7 +8,6 @@ import org.apache.commons.csv.CSVRecord;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -209,64 +208,6 @@ public class CSVUtil {
             printer.close();
         }
         return file;
-    }
-
-    /**
-     * 下载文件
-     *
-     * @param response HttpServletResponse
-     * @param file     File
-     */
-    public static boolean downloadFile(HttpServletResponse response, File file, String fileName) {
-        FileInputStream fileInputStream = null;
-        BufferedInputStream bufferedInputStream = null;
-        OutputStream os = null;
-        try {
-            // 设置csv文件下载头信息
-            response.setContentType("application/octet-stream");
-            response.addHeader("Content-Disposition", "attachment; filename=" + new String(fileName.getBytes(StandardCharsets.UTF_8), "ISO8859-1") + ".csv");
-            fileInputStream = new FileInputStream(file);
-            bufferedInputStream = new BufferedInputStream(fileInputStream);
-            os = response.getOutputStream();
-            //MS产本头部需要插入BOM
-            //如果不写入这几个字节，会导致用Excel打开时，中文显示乱码
-            os.write(new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF});
-            byte[] buffer = new byte[1024];
-            int i = bufferedInputStream.read(buffer);
-            while (i != -1) {
-                os.write(buffer, 0, i);
-                i = bufferedInputStream.read(buffer);
-            }
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            //关闭流
-            if (os != null) {
-                try {
-                    os.flush();
-                    os.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (bufferedInputStream != null) {
-                try {
-                    bufferedInputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (fileInputStream != null) {
-                try {
-                    fileInputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            boolean delete = file.delete();
-        }
-        return false;
     }
 
     private static <R> R records(InputStream inputStream, String charset, Function<List<CSVRecord>, R> recordsHandler) throws IOException {
