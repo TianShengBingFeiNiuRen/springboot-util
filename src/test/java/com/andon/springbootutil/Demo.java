@@ -41,6 +41,15 @@ import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKN
 public class Demo {
 
     @Test
+    public void test65() {
+        List<String> list = Arrays.asList("hello", "world", "java", "springboot");
+        LinkedList<String> linkedList = new LinkedList<>(list);
+        log.info("linkedList:{}", JSONObject.toJSONString(linkedList));
+        String first = linkedList.getFirst();
+        String last = linkedList.getLast();
+    }
+
+    @Test
     public void test64() throws JsonProcessingException {
         String str = "{\"key\":\"spring\",\"name\":\"java\"}";
         ObjectMapper mapper = new ObjectMapper();
