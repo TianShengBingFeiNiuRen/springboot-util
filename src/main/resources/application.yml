@@ -23,8 +23,8 @@ spring:
         web-allow-others: true
   jpa:
     # 更新表结构，可以在控制台执行修改表结构的SQL语句
-    #    hibernate:
-    #      ddl-auto: update
+    hibernate:
+      ddl-auto: update
     show-sql: true
   mvc:
     pathmatch:
