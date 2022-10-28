@@ -3,11 +3,13 @@ package com.andon.springbootutil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-@EnableAsync //启用异步
+@EnableAsync
 @EnableScheduling
+@EnableJpaAuditing
 @ServletComponentScan
 @SpringBootApplication
 public class SpringBootUtilApplication {

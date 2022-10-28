@@ -5,6 +5,27 @@ server:
 spring:
   profiles:
     active: dev
+  datasource:
+    # 内存模式，进程关闭数据丢失
+    # url: jdbc:h2:mem:data_h2
+    # 嵌入模式，当前项目目录，进程关闭数据保留
+    url: jdbc:h2:./data_h2
+    username: root
+    password: root
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      # 开启web控制台
+      enabled: true
+      # 访问路径url+/h2
+      path: /h2
+      settings:
+        web-allow-others: true
+  jpa:
+    # 更新表结构，可以在控制台执行修改表结构的SQL语句
+    #    hibernate:
+    #      ddl-auto: update
+    show-sql: true
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
