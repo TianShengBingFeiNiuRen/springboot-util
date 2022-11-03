@@ -1,5 +1,6 @@
 package com.andon.springbootutil;
 
+import com.alibaba.fastjson.JSONObject;
 import com.andon.springbootutil.util.CSVUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVRecord;
@@ -8,7 +9,6 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -18,6 +18,24 @@ import java.util.concurrent.CompletableFuture;
  */
 @Slf4j
 public class CSVUtilTest {
+
+    @Test
+    public void test03() throws IOException {
+        String filePath = "D:\\IdeaProjects\\springboot-util\\target\\test_table.csv";
+        CSVUtil.recordIterator(filePath, csvRecordIterator -> {
+            int row = 0;
+            while (csvRecordIterator.hasNext()) {
+                CSVRecord csvRecord = csvRecordIterator.next();
+                if (csvRecord.getRecordNumber() == 1) {
+                    continue;
+                }
+                List<String> list = csvRecord.toList();
+                log.info("{}", JSONObject.toJSONString(list));
+                row++;
+            }
+            log.info("row:{}", row);
+        });
+    }
 
     @Test
     public void test02() {

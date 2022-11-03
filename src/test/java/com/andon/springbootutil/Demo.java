@@ -18,13 +18,13 @@ import org.springframework.util.Assert;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.*;
@@ -39,6 +39,65 @@ import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKN
  */
 @Slf4j
 public class Demo {
+
+    @Test
+    public void test71() {
+    }
+
+    @Test
+    public void test70() {
+        List<String> list1 = Arrays.asList("a,s,d,k".split(","));
+        List<String> list2 = Arrays.asList("k,z,x,c,k".split(","));
+        List<List<String>> list = new ArrayList<>(2);
+        list.add(list1);
+        list.add(list2);
+        log.info("{}", JSONObject.toJSONString(list));
+        List<String> collect = list.stream().flatMap(Collection::stream).collect(Collectors.toList());
+        log.info("{}", JSONObject.toJSONString(collect));
+        long k = list.stream().flatMap(Collection::stream).filter(s -> s.equals("k")).count();
+        log.info("{}", k);
+    }
+
+    @Test
+    public void test69() {
+        int len = 1024 - 1;
+        StringBuilder value = new StringBuilder(UUID.randomUUID().toString().replaceAll("-", ""));
+        while (value.length() < len) {
+            value.append(UUID.randomUUID().toString().replaceAll("-", ""));
+        }
+        String substring = value.toString().substring(0, len);
+        log.info("{}", substring.length());
+        log.info("{}", substring);
+    }
+
+    @Test
+    public void test68() {
+        List<String> list = Arrays.asList("asd,qaz,zxc,wsx,uio".split(","));
+        List<String> list2 = Arrays.asList("asd,jkl,zxc,bnm,uio".split(","));
+        List<String> sorted = list2.stream().sorted((s1, s2) -> list.contains(s1) ? -1 : list.contains(s2) ? 1 : 0).collect(Collectors.toList());
+        log.info("{}", JSONObject.toJSONString(list));
+        log.info("{}", JSONObject.toJSONString(list2));
+        log.info("{}", JSONObject.toJSONString(sorted));
+    }
+
+    @Test
+    public void test67() {
+        try {
+            String location = "F:\\Downloads\\seckey";
+            Path path = Paths.get(location);
+            byte[] bytes = Files.readAllBytes(path);
+            String string = new String(bytes, StandardCharsets.UTF_8);
+            log.info("string:{}", string);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void test66() {
+        Clock systemUTC = Clock.systemUTC();
+        log.info("systemUTC:{}", systemUTC.instant());
+    }
 
     @Test
     public void test65() {
@@ -57,18 +116,21 @@ public class Demo {
         Pair pair = mapper.readValue(str, Pair.class);
         log.info("{}", pair.getKey());
         log.info("{}", pair.getValue());
+        log.info("pair:{}", mapper.writeValueAsString(pair));
         log.info("pair:{}", JSONObject.toJSONString(pair));
 
         Pair pair2 = mapper.readValue(str, new TypeReference<Pair>() {
         });
         log.info("{}", pair2.getKey());
         log.info("{}", pair2.getValue());
+        log.info("pair:{}", mapper.writeValueAsString(pair));
         log.info("pair:{}", JSONObject.toJSONString(pair2));
 
         Pair pair3 = JSONObject.parseObject(str, new com.alibaba.fastjson.TypeReference<Pair>() {
         }.getType());
         log.info("{}", pair3.getKey());
         log.info("{}", pair3.getValue());
+        log.info("pair:{}", mapper.writeValueAsString(pair));
         log.info("pair:{}", JSONObject.toJSONString(pair3));
     }
 

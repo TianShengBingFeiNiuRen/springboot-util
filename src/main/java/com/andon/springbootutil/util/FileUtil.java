@@ -209,9 +209,11 @@ public class FileUtil {
             fileInputStream = new FileInputStream(file);
             bufferedInputStream = new BufferedInputStream(fileInputStream);
             os = response.getOutputStream();
-            //MS产本头部需要插入BOM
-            //如果不写入这几个字节，会导致用Excel打开时，中文显示乱码
-            os.write(new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF});
+            if (fileName.endsWith(".csv") || fileName.endsWith(".xls") || fileName.endsWith(".xlsx")) {
+                // MS产本头部需要插入BOM
+                // 如果不写入这几个字节，会导致用Excel打开时，中文显示乱码
+                os.write(new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF});
+            }
             byte[] buffer = new byte[1024];
             int i = bufferedInputStream.read(buffer);
             while (i != -1) {

@@ -25,8 +25,8 @@ public class FileUtilTest {
         File file = FileUtil.createFile("createFile.csv");
         List<String> header = Collections.singletonList("id,name,value");
         FileUtil.appendContentToFile(file, header);
-        int total = 2000_0000;
-        int row = 100_0000;
+        int total = 50_0000;
+        int row = 10000;
         int shard = total / row;
 
         Semaphore semaphore = new Semaphore(50);

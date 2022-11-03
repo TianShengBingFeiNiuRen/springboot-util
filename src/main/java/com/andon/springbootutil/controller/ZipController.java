@@ -30,7 +30,7 @@ public class ZipController {
     public void zipDownload(@RequestParam String zipFileName, @ApiIgnore HttpServletResponse httpServletResponse) {
         zipFileName = String.format("%s_%s.zip", zipFileName, System.currentTimeMillis());
         String inputFilePath = "F:\\安恒\\MPC\\MPC 1.0.3\\test";
-        File zipFile = ZipUtil.zipFilePath(inputFilePath, zipFileName);
+        File zipFile = ZipUtil.compressToZip(inputFilePath, zipFileName);
         boolean b = FileUtil.downloadFile(httpServletResponse, zipFile, zipFileName);
     }
 }
