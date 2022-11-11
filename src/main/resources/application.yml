@@ -30,5 +30,11 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
+ip:
+  white:
+    ips:
+      - 127.0.0.1
+      - 127.0.0.2
+
 task:
   time-clear: "18:00:00"

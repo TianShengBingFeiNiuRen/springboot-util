@@ -2,6 +2,7 @@ package com.andon.springbootutil;
 
 import com.alibaba.fastjson.JSONObject;
 import com.andon.springbootutil.config.AndonAddConfig;
+import com.andon.springbootutil.config.IpWhiteListProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,6 +38,14 @@ public class DatabaseTest {
     private RestTemplate restTemplate;
     @Resource
     private AndonAddConfig andonAddConfig;
+    @Resource
+    private IpWhiteListProperties ipWhiteListProperties;
+
+    @Test
+    public void test07() {
+        List<String> ips = ipWhiteListProperties.getIps();
+        log.info("{}", JSONObject.toJSONString(ips));
+    }
 
     @Test
     public void test06() {
