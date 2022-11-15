@@ -30,6 +30,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.zip.CRC32;
 
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
@@ -41,7 +42,74 @@ import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKN
 public class Demo {
 
     @Test
+    public void test75() throws NoSuchAlgorithmException {
+        String str = "hello";
+        String sign = "F793C13E23CD0D1F7A066006B9223B6827CF5C429B1C9B91CEFFE7A7ECB25B7A\n" + "AGENT";
+
+        String algorithm = "MD5";
+        MessageDigest md = MessageDigest.getInstance(algorithm);
+        byte[] digest = md.digest((sign + str).getBytes());
+
+
+//        String encode = Base64.getEncoder().encodeToString(digest);
+//        log.info("{}", str);
+//        log.info("{}", encode);
+
+        String hex = parseByteToHexStr(digest);
+        log.info("{}", hex);
+    }
+
+    private String parseByteToHexStr(byte[] bytes) {
+        StringBuilder stringBuffer = new StringBuilder();
+        for (byte aByte : bytes) {
+            String hexString = Integer.toHexString(aByte & 0xFF);
+            if (hexString.length() == 1) {
+                hexString = '0' + hexString;
+            }
+            stringBuffer.append(hexString.toLowerCase());
+        }
+        return stringBuffer.toString();
+    }
+
+    @Test
+    public void test74() throws NoSuchAlgorithmException {
+        MessageDigest tiger = MessageDigest.getInstance("Tiger");
+
+        String str = "hello world 阿萨德";
+        byte[] digest = tiger.digest(str.getBytes());
+        String encode = Base64.getEncoder().encodeToString(digest);
+        log.info("{}", str);
+        log.info("{}", encode);
+    }
+
+    @Test
+    public void test73() {
+        CRC32 crc32 = new CRC32();
+        long value = crc32.getValue();
+        log.info("{}", value);
+
+        String str = "hello world 阿萨德";
+        crc32.update(str.getBytes());
+        long crc32Value = crc32.getValue();
+        log.info("{}", crc32Value);
+    }
+
+    @Test
+    public void test72() throws NoSuchAlgorithmException {
+        String str = "ec0160e4-60d1-4873-a7f5-20489f191029";
+        String algorithm = "MD5";
+        String salt = "3D8871E0E60BE7A54F567EAD219668911EAC814516A832ECBEF39137B6ABE839" + "SERVER";
+        MessageDigest md = MessageDigest.getInstance(algorithm);
+        byte[] digest = md.digest((str + salt).getBytes());
+        String encode = Base64.getEncoder().encodeToString(digest);
+        log.info("{}", str);
+        log.info("{}", encode);
+    }
+
+    @Test
     public void test71() {
+        String str = "-----BEGIN RSA PRIVATE KEY-----\\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCORqo27xZwMIzngnl+G50IQsvt\\r\\nDifKixmyWccXud5rC/uxMMbLGS1TK2dJbkhWtUBbThjWzwNnMo0tggw6AV+iSvkucbv1eymT1BOj\\r\\ns1STvBj7P/xFgX+TvIOFN+5UZrSqYs++WhsJx/A6sGltCHxXp4Dg8g/c/Ze5Wp9k090ttH9+KD6i\\r\\n0yom6VYI5qOGWDvkHooOHmnyi20Tund18gBxEAYhU3OUVctc+OpTZYXGg6ERVaZJUsMgC+7RRBZA\\r\\nYdFjs4kDVuiZwTgqUA0vzL6RPsq5k5pVoZ6aXNPR1zSUwMmEkRn1Cpp24FU21vdJQATXTcnNiABu\\r\\n4i/eVur3cQYlAgMBAAECggEAJR9zElpX9HX2jgGRScJSuvES3Iuw/jxFPDAIrrwkuLGrvpQHir7L\\r\\nAMR2csZ/wYARhsFd4c6qCKc8Bv/DyO7K0UHWurOaY3b7ZkMTzMbh7ppJumT7ofckHpw1hPEPEp6p\\r\\nzTtzESvZmje9CtM07uoj54shKZB/ax4QFKD8rgZJ0765qUmF0QW158i5ARl2b0RIj790bOnZ3APU\\r\\nm2GGe7t0so29EB8Po6mm7NJp9AUZXT+0e2Hfxl8rqAmZGrJcImxerYBMSXZ31I3n5+6fHVdUirmd\\r\\nC9rpjo2gb1GW0zkPpi6QpT50evSpRFCwzyG0ZMmhK2ll1CioGDTnCS1SFe6NkQKBgQD6eQJxFGN0\\r\\nE1xRktPF2fNpvDbWkwB1KRq0l2e+jKRe58ncvmKWbRQdygc5y1aYjuhsEk82QevdMPM+55gxyUac\\r\\ncqBySe5tHhjMxSeu0jmkjZoR6nisEbGgIn7F2KlH3OvgxZ8n1JDBZbOnyBPyHFT4i+1eUVFo3+t7\\r\\nFRC+1vC+bwKBgQCRamwPJm02Us7RLI9t+woZxoj2qgf/W7WTq1v57O1VJ799jeAKUwMAakNywXDB\\r\\nOlhKsAEPjbxC0w1pfGSW2FlJ/hWjEFErIndO+6py5+1/L5C5chuCJ5Cs5LRYCVl5/lc7cnzolZcR\\r\\nSFt9Or7lOHH+vsru57naE1mk8is8bSROqwKBgQCT5eRlNS7MmaoHmPVnfJzYsISJC2BXzh+wxz5B\\r\\nK/ba+28c42Z/gIVCWcsOe1z01F21gtI3LZHCmGbpnAMoUrtZIe5Pzgv1brIiJ8CY4BWdbues8JC0\\r\\nufXyoqvM03SRtIerv8WM1V1sdUsyJVhxu/0IjkdpTAcQMDhyAyxSI8UgDQKBgHt8GRlgc1uvREuj\\r\\nAIXPqcsrqkF1MGdsFKy61tdMmFo478cKBNgfmCvxESfRFxQvnKyH+86eeOFyYjBS3wSt4l0QNIWN\\r\\npK/xi8l5s0vyod7goJCqUqvbN2Nqr68W+XG8R42G8oV8CpY1kOOuUE9M+JjwolnwVAXZasXElGyy\\r\\n7iMTAoGBAND2TQaelxQYFLsOEFglidCw0eekoEriHpMZvzxe/PRzRjFwbnxc3O6r9+5JkSDOYOE9\\r\\nY+joH8iBv6qsOcBMTBwFgxG6k7aKe4AATvvsI3g/tjYPBPPYI/oY3qmmdC9w6KnkWW5fEGIFDVHP\\r\\npSOTY+B6RGpVgDoMoXVq36ngApxY\\n-----END RSA PRIVATE KEY-----";
+        log.info("{}", str);
     }
 
     @Test
