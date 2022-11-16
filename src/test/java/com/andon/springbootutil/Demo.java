@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
+import org.springframework.util.ObjectUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -40,6 +41,13 @@ import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKN
  */
 @Slf4j
 public class Demo {
+
+    @Test
+    public void test76() {
+        String str1 = null;
+        String str2 = null;
+        log.info("{}", ObjectUtils.nullSafeEquals(str1, str2));
+    }
 
     @Test
     public void test75() throws NoSuchAlgorithmException {

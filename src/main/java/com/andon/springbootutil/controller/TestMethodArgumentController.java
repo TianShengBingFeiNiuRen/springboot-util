@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -55,6 +56,7 @@ public class TestMethodArgumentController {
         @NotBlank(message = "key不能为空")
         @ApiModelProperty(value = "键")
         private String key;
+        @Pattern(regexp = "^([0-9a-zA-Z_]){0,32}$", message = "字段名只能包含字母数字或者下划线，且长度最长允许32位")
         @ApiModelProperty(value = "值")
         private String value;
     }
