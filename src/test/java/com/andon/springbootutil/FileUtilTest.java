@@ -4,14 +4,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.andon.springbootutil.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
+import org.springframework.util.ObjectUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Andon
@@ -19,6 +18,47 @@ import java.util.concurrent.*;
  */
 @Slf4j
 public class FileUtilTest {
+
+    @Test
+    public void readHashTest() throws Exception {
+        String datasetId55 = "d8259e48-1691-4cb2-9ac5-516e8b02d176";
+        String datasetId79 = "c3c988c5-acf5-45c6-8229-69cfe180291b";
+        Map<String, Integer> hashNumber55 = readHash(datasetId55);
+        Map<String, Integer> hashNumber79 = readHash(datasetId79);
+
+        Set<String> hashRepeat55 = hashRepeat(hashNumber55, hashNumber79);
+        Set<String> hashRepeat79 = hashRepeat(hashNumber79, hashNumber55);
+        log.info("hashRepeat55.size:{}", hashRepeat55.size());
+        log.info("hashRepeat79.size:{}", hashRepeat79.size());
+    }
+
+    private Set<String> hashRepeat(Map<String, Integer> hashNumber1, Map<String, Integer> hashNumber2) {
+        return hashNumber1.keySet().stream().filter(key -> !ObjectUtils.isEmpty(hashNumber2.get(key)))
+                .collect(Collectors.toSet());
+    }
+
+    private Map<String, Integer> readHash(String datasetId) throws Exception {
+        Map<String, Integer> hashNumber = new HashMap<>();
+
+        String filePath = "F:\\anheng\\Mpc\\hash_" + datasetId + ".data";
+        FileUtil.readFileContentByLine(filePath, (bufferedReader) -> {
+            String line;
+            int shard = 0;
+            while (true) {
+                try {
+                    if ((line = bufferedReader.readLine()) == null) break;
+                } catch (Exception e) {
+                    break;
+                }
+                hashNumber.put(line, hashNumber.get(line) == null ? 1 : hashNumber.get(line) + 1);
+            }
+        });
+
+        Map<String, Integer> hashRepeat = hashNumber.entrySet().stream().filter(entry -> entry.getValue() > 1).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        log.info("{} - hashNumber.size:{}", datasetId, hashNumber.size());
+        log.info("{} - hashRepeat:{}", datasetId, JSONObject.toJSONString(hashRepeat));
+        return hashNumber;
+    }
 
     @Test
     public void appendContentToFile2() throws Exception {

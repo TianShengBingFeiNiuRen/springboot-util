@@ -23,7 +23,7 @@ import java.util.Optional;
  * 2021/11/10
  */
 @Slf4j
-@WebFilter(urlPatterns = "/*", filterName = "securityFilter")
+//@WebFilter(urlPatterns = "/*", filterName = "securityFilter")
 public class SecurityFilter implements Filter {
 
     @Override
@@ -40,7 +40,7 @@ public class SecurityFilter implements Filter {
         CustomHttpServletRequestWrapper requestWrapper = new CustomHttpServletRequestWrapper(httpServletRequest);
         String parameterJson = getParameterJson(requestWrapper);
         log.info("X-Real-IP:{} location:{} ipInfo:{} remoteHost:{} method:{} uri:{} parameterMap:{} parameterJson:{}", httpServletRequest.getHeader("X-Real-IP"), location, JSONObject.toJSONString(ipInfo), httpServletRequest.getRemoteHost(), httpServletRequest.getMethod(), httpServletRequest.getRequestURI(), JSONObject.toJSONString(parameterMap), parameterJson);
-        if (httpServletRequest.getRequestURI().equals("/filter")) {
+        if (httpServletRequest.getRequestURI().equals("/springboot-util/filter")) {
             httpServletRequest.setAttribute("code", 403);
             httpServletRequest.setAttribute("message", "没有权限!!");
             httpServletRequest.setAttribute("uri", httpServletRequest.getRequestURI());

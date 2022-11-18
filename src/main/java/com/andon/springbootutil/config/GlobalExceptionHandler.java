@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
         String error = e.getBindingResult().getAllErrors().stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(";"));
-        log.warn("request warn!! method:{} uri:{} error:{}", request.getMethod(), request.getRequestURI(), error);
+        log.warn("RemoteAddr:{} request warn!! Method:{} RequestURI:{} error:{}", request.getRemoteAddr(), request.getMethod(), request.getRequestURI(), error);
         return ResponseStandard.builder().code(-1).message(error).build();
     }
 
@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseStandard<Object> exception(IllegalArgumentException e, HttpServletRequest request) {
-        log.warn("request warn!! method:{} uri:{} error:{}", request.getMethod(), request.getRequestURI(), e.getMessage());
+        log.warn("RemoteAddr:{} request warn!! Method:{} RequestURI:{} error:{}", request.getRemoteAddr(), request.getMethod(), request.getRequestURI(), e.getMessage());
         return ResponseStandard.builder().code(-1).message(e.getMessage()).build();
     }
 
@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public ResponseStandard<Object> exception(Exception e, HttpServletRequest request) {
-        log.error("request error!! method:{} uri:{}", request.getMethod(), request.getRequestURI());
+        log.error("RemoteAddr:{} request warn!! Method:{} RequestURI:{} error:{}", request.getRemoteAddr(), request.getMethod(), request.getRequestURI(), e.getMessage());
         log.error(getExceptionDetail(e));
         return ResponseStandard.builder().code(-1).message(request.getMethod() + " " + request.getRequestURI() + " " + e.getMessage()).build();
     }

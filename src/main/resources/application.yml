@@ -2,6 +2,7 @@ server:
   port: 8866
   servlet:
     context-path: /springboot-util
+  forward-headers-strategy: native
 spring:
   profiles:
     active: dev
@@ -35,6 +36,13 @@ ip:
     ips:
       - 127.0.0.1
       - 127.0.0.2
+url:
+  white:
+    urls:
+      - ${server.servlet.context-path}/doc.html
+      - ${server.servlet.context-path}/webjars/**
+      - ${server.servlet.context-path}/swagger-resources
+      - ${server.servlet.context-path}/v2/**
 
 task:
   time-clear: "18:00:00"
