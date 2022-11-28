@@ -29,7 +29,7 @@ import java.util.Date;
  */
 @RestController
 @RequestMapping(value = "/test")
-public class TestMethodArgumentController {
+public class MethodArgumentTestController {
 
     @Data
     @Builder

@@ -20,7 +20,7 @@ import javax.annotation.Resource;
 @Api(tags = "测试swagger接口文档")
 @RestController
 @RequestMapping(value = "/swagger")
-public class TestSwaggerController {
+public class SwaggerTestController {
 
     @Resource
     private TestSwaggerService testSwaggerService;

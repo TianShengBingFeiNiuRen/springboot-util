@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomUtils;
 import org.junit.Test;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
@@ -43,6 +44,12 @@ import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKN
 public class Demo {
 
     @Test
+    public void test77(){
+        int i = RandomUtils.nextInt(0, 1);
+        log.info("{}", i);
+    }
+
+    @Test
     public void test76() {
         String str1 = null;
         String str2 = null;
@@ -51,8 +58,8 @@ public class Demo {
 
     @Test
     public void test75() throws NoSuchAlgorithmException {
-        String str = "hello";
-        String sign = "F793C13E23CD0D1F7A066006B9223B6827CF5C429B1C9B91CEFFE7A7ECB25B7A\n" + "AGENT";
+        String str = "139d906936d8181086f0ce2fb4ab2810";
+        String sign = "841A929936F65C25E1B897BC435B6EC963CA5E256278CC12192C0F2FA6267AA3\n" + "AGENT";
 
         String algorithm = "MD5";
         MessageDigest md = MessageDigest.getInstance(algorithm);

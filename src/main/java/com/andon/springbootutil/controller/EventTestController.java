@@ -21,7 +21,7 @@ import javax.annotation.Resource;
 @Slf4j
 @RestController
 @RequestMapping(value = "/event")
-public class TestEventController {
+public class EventTestController {
 
     @Resource
     private ApplicationEventPublisher applicationEventPublisher;

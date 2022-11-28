@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @Api(tags = "aop")
 @RestController
 @RequestMapping(value = "/aop")
-public class TestAopController {
+public class AopTestController {
 
     @DemoAnnotation(testValue = "test!!")
     @ApiOperation("测试")

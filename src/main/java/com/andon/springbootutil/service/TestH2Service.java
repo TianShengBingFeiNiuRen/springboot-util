@@ -1,6 +1,6 @@
 package com.andon.springbootutil.service;
 
-import com.andon.springbootutil.controller.TestH2Controller;
+import com.andon.springbootutil.controller.H2TestController;
 import com.andon.springbootutil.domain.ResponseStandard;
 import com.andon.springbootutil.dto.mapstruct.H2TableMapper;
 import com.andon.springbootutil.entity.H2Table;
@@ -25,7 +25,7 @@ public class TestH2Service {
     private final H2TableMapper h2TableMapper;
     private final H2TableRepository h2TableRepository;
 
-    public H2Table add(TestH2Controller.H2TableAddVO h2TableAddVO) {
+    public H2Table add(H2TestController.H2TableAddVO h2TableAddVO) {
         H2Table h2Table = h2TableMapper.h2TableAddVOToH2Table(h2TableAddVO);
         return h2TableRepository.saveAndFlush(h2Table);
     }
@@ -34,7 +34,7 @@ public class TestH2Service {
         h2TableRepository.deleteById(id);
     }
 
-    public H2Table update(TestH2Controller.H2TableUpdateVO h2TableUpdateVO) {
+    public H2Table update(H2TestController.H2TableUpdateVO h2TableUpdateVO) {
         H2Table h2Table = h2TableMapper.h2TableUpdateVOToH2Table(h2TableUpdateVO);
         return h2TableRepository.saveAndFlush(h2Table);
     }

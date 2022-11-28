@@ -16,7 +16,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping(value = "/globalExceptionHandler")
-public class TestGlobalExceptionHandlerController {
+public class GlobalExceptionHandlerTestController {
 
     @Resource
     private TestGlobalExceptionHandlerService testGlobalExceptionHandlerService;

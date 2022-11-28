@@ -23,7 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/h2-test")
 @RequiredArgsConstructor
-public class TestH2Controller {
+public class H2TestController {
 
     private final TestH2Service testH2Service;
 
