@@ -20,9 +20,52 @@ import java.util.stream.Collectors;
 public class FileUtilTest {
 
     @Test
+    public void createCsvFile() throws Exception {
+        String suffix = "55";
+        int row = 150_0000;
+        String fileName = String.format("psi_%s_%s", suffix, row);
+        String[] header = new String[]{"id", "x1_" + suffix, "x2_" + suffix, "x3_" + suffix, "x4_" + suffix, "x5_" + suffix, "x6_" + suffix};
+        File csvFile = createCsvFile(fileName, header, row);
+        log.info("csvFile:{}", csvFile.getAbsolutePath());
+    }
+
+    /**
+     * @param fileName 文件名
+     * @param header   表头
+     * @param row      数据行数
+     */
+    private File createCsvFile(String fileName, String[] header, int row) throws Exception {
+        File file = FileUtil.createFile(fileName + ".csv");
+        FileUtil.appendContentToFile(file, Collections.singletonList(String.join(",", header)));
+
+        int batchSize = 5000;
+        List<String> lines = new ArrayList<>(batchSize);
+        for (int i = 0; i < row; i++) {
+            List<String> list = new ArrayList<>(header.length);
+            for (int column = 0; column < header.length; column++) {
+                if (column == 0) {
+                    list.add(String.valueOf(i + 1));
+                } else {
+                    list.add(header[column] + "_" + i);
+                }
+            }
+            lines.add(String.join(",", list));
+            if (lines.size() == batchSize) {
+                FileUtil.appendContentToFile(file, lines);
+                lines.clear();
+            }
+        }
+        if (!lines.isEmpty()) {
+            FileUtil.appendContentToFile(file, lines);
+            lines.clear();
+        }
+        return file;
+    }
+
+    @Test
     public void readHashTest() throws Exception {
-        String datasetId55 = "d8259e48-1691-4cb2-9ac5-516e8b02d176";
-        String datasetId79 = "c3c988c5-acf5-45c6-8229-69cfe180291b";
+        String datasetId55 = "9c5836fa-1f2f-4589-b9ea-d0d518d0acc9";
+        String datasetId79 = "60ab6ee9-270c-4d29-89a8-0d369e44e946";
         Map<String, Integer> hashNumber55 = readHash(datasetId55);
         Map<String, Integer> hashNumber79 = readHash(datasetId79);
 
@@ -43,7 +86,6 @@ public class FileUtilTest {
         String filePath = "F:\\anheng\\Mpc\\hash_" + datasetId + ".data";
         FileUtil.readFileContentByLine(filePath, (bufferedReader) -> {
             String line;
-            int shard = 0;
             while (true) {
                 try {
                     if ((line = bufferedReader.readLine()) == null) break;

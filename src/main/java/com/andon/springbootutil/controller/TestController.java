@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Andon
@@ -19,6 +21,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TestController {
 
+    private static HashMap<String, String> taskMap = new HashMap<>();
     private final TestServiceImpl1 testService;
 
     @GetMapping(value = "/test/log")
@@ -39,5 +42,20 @@ public class TestController {
     public EnumSex getSex(@RequestParam("sex") EnumSex enumSex) {
         log.info("enumSex:{}", enumSex);
         return enumSex;
+    }
+
+    @GetMapping(value = "/sync")
+    public String sync(String value) throws InterruptedException {
+        synchronized (taskLock(value)) {
+            log.info("start - value:{}", value);
+            TimeUnit.SECONDS.sleep(3);
+            log.info("end - value:{}", value);
+        }
+        return value;
+    }
+
+    private synchronized String taskLock(String value) {
+        taskMap.putIfAbsent(value, value);
+        return taskMap.get(value);
     }
 }
