@@ -31,6 +31,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.zip.CRC32;
 
@@ -44,7 +46,54 @@ import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKN
 public class Demo {
 
     @Test
-    public void test77(){
+    public void test81(){
+        String url = "127.0.0.1:8080?a=1&b=2";
+        log.info("{}",url);
+        log.info("{}",url.split("\\?")[0]);
+    }
+
+    @Test
+    public void test80() {
+        int aaa = 1;
+        Integer bbb = 12800;
+        log.info("{}",aaa==SourceType.FILE.getType());
+        log.info("{}",bbb.equals(SourceType.DATABASE.getType()));
+    }
+
+    @Getter
+    enum SourceType {
+        FILE(1, "文件"),
+        DATABASE(12800, "数据库");
+
+        private final Integer type;
+        private final String desc;
+
+        SourceType(Integer type, String desc) {
+            this.type = type;
+            this.desc = desc;
+        }
+    }
+
+    @Test
+    public void test79() {
+        String string = "data.table";
+        String string2 = "table2";
+        String table = string.contains(".") ? string.split("\\.")[1] : string;
+        String table2 = string2.contains(".") ? string2.split("\\.")[1] : string2;
+        log.info("{}", table);
+        log.info("{}", table2);
+    }
+
+    @Test
+    public void test78() {
+        String string = "aaa";
+        Pattern pattern = Pattern.compile("[\\w+.]*");
+        Matcher matcher = pattern.matcher(string);
+        log.info("{}", matcher.matches());
+    }
+
+    @Test
+    public void test77() {
         int i = RandomUtils.nextInt(0, 1);
         log.info("{}", i);
     }

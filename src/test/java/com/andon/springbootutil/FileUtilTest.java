@@ -8,6 +8,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
@@ -21,11 +22,14 @@ public class FileUtilTest {
 
     @Test
     public void createCsvFile() throws Exception {
-        String suffix = "55";
-        int row = 150_0000;
-        String fileName = String.format("psi_%s_%s", suffix, row);
-        String[] header = new String[]{"id", "x1_" + suffix, "x2_" + suffix, "x3_" + suffix, "x4_" + suffix, "x5_" + suffix, "x6_" + suffix};
-        File csvFile = createCsvFile(fileName, header, row);
+        String suffix = "data";
+        int row = 1_0000;
+        int confuseRow = 5_000;
+        String fileName = String.format("%s_%s_%s", suffix, row, confuseRow);
+//        String[] header = new String[]{"id", "x1_" + suffix, "x2_" + suffix, "x3_" + suffix, "x4_" + suffix, "x5_" + suffix, "x6_" + suffix};
+        String[] header = new String[]{"id", "x1_" + suffix, "x2_" + suffix, "x3_" + suffix};
+//        String[] header = new String[]{"id"};
+        File csvFile = createCsvFile(fileName, header, row, confuseRow);
         log.info("csvFile:{}", csvFile.getAbsolutePath());
     }
 
@@ -34,19 +38,25 @@ public class FileUtilTest {
      * @param header   表头
      * @param row      数据行数
      */
-    private File createCsvFile(String fileName, String[] header, int row) throws Exception {
+    private File createCsvFile(String fileName, String[] header, int row, int confuseRow) throws Exception {
         File file = FileUtil.createFile(fileName + ".csv");
         FileUtil.appendContentToFile(file, Collections.singletonList(String.join(",", header)));
 
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyMMdd");
+        String date = simpleDateFormat.format(System.currentTimeMillis());
         int batchSize = 5000;
         List<String> lines = new ArrayList<>(batchSize);
         for (int i = 0; i < row; i++) {
             List<String> list = new ArrayList<>(header.length);
             for (int column = 0; column < header.length; column++) {
                 if (column == 0) {
-                    list.add(String.valueOf(i + 1));
+                    if (confuseRow > 0 && i >= confuseRow) {
+                        list.add((i + 1) + "_" + fileName);
+                    } else {
+                        list.add(date + "_" + (i + 1));
+                    }
                 } else {
-                    list.add(header[column] + "_" + i);
+                    list.add(header[column] + "_" + (i + 1));
                 }
             }
             lines.add(String.join(",", list));
