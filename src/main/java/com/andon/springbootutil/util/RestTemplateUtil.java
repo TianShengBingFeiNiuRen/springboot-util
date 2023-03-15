@@ -52,7 +52,7 @@ public class RestTemplateUtil {
      * url拼接params参数
      */
     private static String buildUrlParams(String url, Map<String, ?> params) {
-        if (!url.startsWith("http://") || !url.startsWith("https://")) {
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
             url = "http://" + url;
         }
         url = url.split("\\?")[0];
