@@ -1,2 +1,6 @@
 
 env: dev
+
+ip:
+  white:
+    open: false

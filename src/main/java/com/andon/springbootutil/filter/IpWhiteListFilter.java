@@ -46,7 +46,7 @@ public class IpWhiteListFilter extends OncePerRequestFilter {
             }
         }
         // ip白名单
-        if (!isWhiteUrl && !ipWhiteListProperties.getIps().contains(request.getRemoteAddr())) {
+        if (ipWhiteListProperties.isOpen() && !isWhiteUrl && !ipWhiteListProperties.getIps().contains(request.getRemoteAddr())) {
             log.warn("RemoteAddr:{} Method:{} RequestURI:{} ipWhiteListProperties getIps:{}", request.getRemoteAddr(), request.getMethod(), request.getRequestURI(), ipWhiteListProperties.getIps());
             // 非IP白名单，无权访问
             unWhiteIpAccess(request, response);

@@ -16,6 +16,11 @@ import java.util.List;
 public class IpWhiteListProperties {
 
     /**
+     * IP 白名单是否开启
+     */
+    private boolean open;
+
+    /**
      * IP 白名单
      */
     private List<String> ips;
