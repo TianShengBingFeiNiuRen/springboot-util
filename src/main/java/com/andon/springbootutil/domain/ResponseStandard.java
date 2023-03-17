@@ -31,6 +31,15 @@ public class ResponseStandard<T> implements Serializable {
         return response;
     }
 
+    public static <T> ResponseStandard<T> successResponse(T t, int total) {
+        ResponseStandard<T> response = new ResponseStandard<>();
+        response.setCode(0);
+        response.setMessage("success!!");
+        response.setData(t);
+        response.setTotal(total);
+        return response;
+    }
+
     public static <T> ResponseStandard<T> failureResponse(T t) {
         ResponseStandard<T> response = new ResponseStandard<>();
         response.setCode(-1);

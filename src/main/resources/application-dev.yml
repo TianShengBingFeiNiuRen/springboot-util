@@ -1,6 +1,9 @@
 
 env: dev
 
+token:
+  open: false
+
 ip:
   white:
     open: false

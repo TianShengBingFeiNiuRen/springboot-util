@@ -1,8 +1,8 @@
 package com.andon.springbootutil;
 
 import com.alibaba.fastjson.JSONObject;
-import com.andon.springbootutil.config.AndonAddConfig;
-import com.andon.springbootutil.config.IpWhiteListProperties;
+import com.andon.springbootutil.config.property.AndonAddConfig;
+import com.andon.springbootutil.config.property.IpWhiteListProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;

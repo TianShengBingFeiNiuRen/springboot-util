@@ -1,5 +1,7 @@
 package com.andon.springbootutil.config;
 
+import com.andon.springbootutil.config.property.TokenProperties;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -22,19 +24,22 @@ import java.util.List;
  */
 @EnableSwagger2
 @Configuration
+@RequiredArgsConstructor
 public class SwaggerConfig {
 
-    private static final String headerKey = "token"; //header参数的key
+    private final TokenProperties tokenProperties;
 
     @Bean
     public Docket createRestApi() {
         // 添加header参数headerKey
         ParameterBuilder parameterBuilder = new ParameterBuilder();
         List<Parameter> parameterList = new ArrayList<>();
-        parameterBuilder.name(headerKey).description(headerKey)
-                .modelRef(new ModelRef("string")).parameterType("header")
-                .required(false).build();
-        parameterList.add(parameterBuilder.build());
+        if (tokenProperties.isOpen()) {
+            parameterBuilder.name(tokenProperties.getHeaderKey()).description(tokenProperties.getHeaderKey())
+                    .modelRef(new ModelRef("string")).parameterType("header")
+                    .required(false).build();
+            parameterList.add(parameterBuilder.build());
+        }
         return new Docket(DocumentationType.SWAGGER_2)
                 .pathMapping("/")
                 .select()

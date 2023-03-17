@@ -1,27 +1,25 @@
-package com.andon.springbootutil.config;
+package com.andon.springbootutil.config.property;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 /**
  * @author Andon
- * 2022/11/11
+ * 2023/3/17
  */
 @Data
 @Component
-@ConfigurationProperties(prefix = "ip.white")
-public class IpWhiteListProperties {
+@ConfigurationProperties(prefix = "token")
+public class TokenProperties {
 
     /**
-     * IP 白名单是否开启
+     * token是否开启
      */
     private boolean open;
 
     /**
-     * IP 白名单
+     * token headerKey
      */
-    private List<String> ips;
+    private String headerKey;
 }

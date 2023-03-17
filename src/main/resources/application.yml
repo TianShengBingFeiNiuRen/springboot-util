@@ -31,6 +31,10 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
+token:
+  open: true
+  headerKey: token
+
 ip:
   white:
     open: true
