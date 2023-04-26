@@ -1,7 +1,10 @@
 package com.andon.springbootutil.util;
 
 import com.alibaba.fastjson.JSONObject;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.ssl.SSLContexts;
+import org.apache.http.ssl.TrustStrategy;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -12,6 +15,10 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestTemplate;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import java.net.HttpURLConnection;
+import java.security.KeyStore;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,11 +34,34 @@ public class RestTemplateUtil {
     private static final int READ_TIMEOUT = 60 * 1000;
 
     static {
-        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+        HttpClientHttpRequestFactory requestFactory = new HttpClientHttpRequestFactory();
         requestFactory.setConnectTimeout(CONNECT_TIMEOUT);
         requestFactory.setReadTimeout(READ_TIMEOUT);
         restTemplate = new RestTemplate();
         restTemplate.setRequestFactory(requestFactory);
+    }
+
+    @SuppressWarnings("NullableProblems")
+    static class HttpClientHttpRequestFactory extends SimpleClientHttpRequestFactory {
+        @SneakyThrows
+        @Override
+        protected void prepareConnection(HttpURLConnection connection, String httpMethod) {
+            if (connection instanceof HttpsURLConnection) {
+                KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+                // 信任任何链接忽略对证书的校验
+                TrustStrategy anyTrustStrategy = (x509Certificates, s) -> true;
+                // 自定义SSLContext
+                SSLContext ctx = SSLContexts.custom().loadTrustMaterial(trustStore, anyTrustStrategy).build();
+                // SSL问题
+                ((HttpsURLConnection) connection).setSSLSocketFactory(ctx.getSocketFactory());
+                // 解决No subject alternative names matching IP address xxx.xxx.xxx.xxx found问题
+                ((HttpsURLConnection) connection).setHostnameVerifier((s, sslSession) -> true);
+                HttpsURLConnection httpsConnection = (HttpsURLConnection) connection;
+                super.prepareConnection(httpsConnection, httpMethod);
+            } else {
+                super.prepareConnection(connection, httpMethod);
+            }
+        }
     }
 
     public static String sendHttp(String url, String method, Map<String, ?> params, String body, String bodyType, Map<String, ?> headers) {
