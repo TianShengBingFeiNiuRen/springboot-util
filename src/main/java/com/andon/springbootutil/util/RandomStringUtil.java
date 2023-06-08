@@ -33,7 +33,7 @@ public class RandomStringUtil {
             sb.append(stringGenerate("0123456789", average));
         }
         if (uppercaseLetter) {
-            sb.append(stringGenerate("ABCDEFGHIJKLMNOPQRSTUVWXYZ", average + remainder));
+            sb.append(stringGenerate("ABCDEFGHIJKLMNOPQRSTUVWXYZ", average));
         }
         if (lowercaseLetter) {
             sb.append(stringGenerate("abcdefghijklmnopqrstuvwxyz", average));
@@ -41,7 +41,16 @@ public class RandomStringUtil {
         if (symbol) {
             sb.append(stringGenerate("./*~!@#$%^&?-_=+[]{}", average));
         }
-        List<String> stringList = Arrays.asList(sb.substring(0, length).split(""));
+        if (remainder > 0) {
+            if (number) {
+                sb.append(stringGenerate("0123456789", remainder));
+            } else if (uppercaseLetter) {
+                sb.append(stringGenerate("ABCDEFGHIJKLMNOPQRSTUVWXYZ", remainder));
+            } else {
+                sb.append(stringGenerate("abcdefghijklmnopqrstuvwxyz", remainder));
+            }
+        }
+        List<String> stringList = Arrays.asList(sb.toString().split(""));
         Collections.shuffle(stringList);
         sb = new StringBuilder();
         for (String s : stringList) {

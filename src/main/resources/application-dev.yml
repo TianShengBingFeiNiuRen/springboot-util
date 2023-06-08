@@ -1,9 +1,8 @@
 
 env: dev
 
-token:
-  open: false
-
 ip:
   white:
     open: false
+
+swagger-enable: true

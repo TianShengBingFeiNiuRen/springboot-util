@@ -1,4 +1,4 @@
-package com.andon.springbootutil.config.property;
+package com.andon.springbootutil.config.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

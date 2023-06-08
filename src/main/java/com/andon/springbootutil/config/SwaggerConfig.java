@@ -1,7 +1,8 @@
 package com.andon.springbootutil.config;
 
-import com.andon.springbootutil.config.property.TokenProperties;
+import com.andon.springbootutil.config.properties.TokenProperties;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -27,6 +28,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SwaggerConfig {
 
+    @Value("${swagger-enable}")
+    private Boolean swaggerEnable;
+
     private final TokenProperties tokenProperties;
 
     @Bean
@@ -41,6 +45,7 @@ public class SwaggerConfig {
             parameterList.add(parameterBuilder.build());
         }
         return new Docket(DocumentationType.SWAGGER_2)
+                .enable(swaggerEnable)
                 .pathMapping("/")
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.andon.springbootutil.controller"))
@@ -50,7 +55,7 @@ public class SwaggerConfig {
                 .apiInfo(new ApiInfoBuilder()
                         .title("spring-boot-util")
                         .description("")
-                        .version("v1.0")
+                        .version("")
                         .contact(new Contact("", "", ""))
                         .license("")
                         .licenseUrl("")

@@ -348,7 +348,7 @@ public class ApiDataController {
             String id = String.valueOf(UUID.randomUUID());
             String key = RandomStringUtil.stringGenerate(5, false, true, false, false);
             String value = RandomStringUtil.stringGenerate(5, false, false, true, true);
-            Integer sequence = Integer.valueOf(RandomStringUtil.stringGenerate(6, true, false, false, true));
+            Integer sequence = Integer.valueOf(RandomStringUtil.stringGenerate(6, true, false, false, false));
             data.add(ApiDataResponse.builder().id(id).key(key).value(value).sequence(sequence).date(time).build());
         }
     }

@@ -1,7 +1,7 @@
 package com.andon.springbootutil.filter;
 
-import com.andon.springbootutil.config.property.IpWhiteListProperties;
-import com.andon.springbootutil.config.property.UrlWhiteListProperties;
+import com.andon.springbootutil.config.properties.IpWhiteListProperties;
+import com.andon.springbootutil.config.properties.UrlWhiteListProperties;
 import com.andon.springbootutil.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

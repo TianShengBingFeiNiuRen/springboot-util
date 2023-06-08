@@ -325,7 +325,7 @@ public class Demo {
 
     @Test
     public void test60() {
-        String stringGenerate = RandomStringUtil.stringGenerate(8, true, true, true, true);
+        String stringGenerate = RandomStringUtil.stringGenerate(5, false, false, true, true);
         log.info("stringGenerate:{}", stringGenerate);
     }
 
