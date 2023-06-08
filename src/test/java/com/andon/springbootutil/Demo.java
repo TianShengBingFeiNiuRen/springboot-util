@@ -47,6 +47,12 @@ import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKN
 public class Demo {
 
     @Test
+    public void test83() throws IOException {
+        String imageCode = ImageCodeUtil.generate("2wsxVFR_");
+        log.info("imageCode:{}", imageCode);
+    }
+
+    @Test
     public void test82() {
         Path path = Paths.get(System.getProperty("user.dir"));
         log.info("path:{}", path.toString());
