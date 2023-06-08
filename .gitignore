@@ -31,4 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
 *.log
+*.csv
+*.db

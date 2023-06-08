@@ -46,18 +46,18 @@ import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKN
 public class Demo {
 
     @Test
-    public void test81(){
+    public void test81() {
         String url = "127.0.0.1:8080?a=1&b=2";
-        log.info("{}",url);
-        log.info("{}",url.split("\\?")[0]);
+        log.info("{}", url);
+        log.info("{}", url.split("\\?")[0]);
     }
 
     @Test
     public void test80() {
         int aaa = 1;
         Integer bbb = 12800;
-        log.info("{}",aaa==SourceType.FILE.getType());
-        log.info("{}",bbb.equals(SourceType.DATABASE.getType()));
+        log.info("{}", aaa == SourceType.FILE.getType());
+        log.info("{}", bbb.equals(SourceType.DATABASE.getType()));
     }
 
     @Getter
@@ -1232,18 +1232,14 @@ public class Demo {
 
     @Test
     public void test02() {
-        String username = "java";
-        log.info("username:{}", username);
-        Map<String, Object> map = JWTUtil.tokenGenerate(username);
-        String token = String.valueOf(map.get("token"));
-        String timestamp_expiration = String.valueOf(map.get("timestamp_expiration"));
-        long timestamp = Long.parseLong(timestamp_expiration);
-        log.info("map:{}", JSONObject.toJSONString(map));
+        String userId = "hello world";
+        String secretKey = "SecretKeySecretKeySecretKeySecretKeySecretKeySecretKeySecretKeySecretKey";
+        long tokenExpirationHour = 6;
+        log.info("userId:{} secretKey:{} tokenExpirationHour:{}", userId, secretKey, tokenExpirationHour);
+        String token = JWTUtil.generateToken(userId, secretKey, tokenExpirationHour);
         log.info("token:{}", token);
-        log.info("timestamp_expiration:{}", timestamp_expiration);
-        log.info("timestamp:{}", timestamp);
-        String resolveUsername = JWTUtil.tokenResolveUsername(token);
-        log.info("resolveUsername:{}", resolveUsername);
+        String resolveUserId = JWTUtil.getUserId(token, secretKey);
+        log.info("resolveUserId:{}", resolveUserId);
     }
 
     @Test
