@@ -1,4 +1,4 @@
-package com.andon.springbootutil.domain;
+package com.andon.springbootutil.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,21 +9,21 @@ import java.io.Serializable;
 
 /**
  * @author Andon
- * 2021/11/10
+ * 2023/5/17
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResponseStandard<T> implements Serializable {
+public class CommonResponse<T> implements Serializable {
 
     private int code;
     private String message;
     private T data;
     private int total;
 
-    public static <T> ResponseStandard<T> successResponse(T t) {
-        ResponseStandard<T> response = new ResponseStandard<>();
+    public static <T> CommonResponse<T> successResponse(T t) {
+        CommonResponse<T> response = new CommonResponse<>();
         response.setCode(0);
         response.setMessage("success!!");
         response.setData(t);
@@ -31,8 +31,8 @@ public class ResponseStandard<T> implements Serializable {
         return response;
     }
 
-    public static <T> ResponseStandard<T> successResponse(T t, int total) {
-        ResponseStandard<T> response = new ResponseStandard<>();
+    public static <T> CommonResponse<T> successResponse(T t, int total) {
+        CommonResponse<T> response = new CommonResponse<>();
         response.setCode(0);
         response.setMessage("success!!");
         response.setData(t);
@@ -40,8 +40,8 @@ public class ResponseStandard<T> implements Serializable {
         return response;
     }
 
-    public static <T> ResponseStandard<T> failureResponse(T t) {
-        ResponseStandard<T> response = new ResponseStandard<>();
+    public static <T> CommonResponse<T> failureResponse(T t) {
+        CommonResponse<T> response = new CommonResponse<>();
         response.setCode(-1);
         response.setMessage("failure!!");
         response.setData(t);

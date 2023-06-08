@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RocksDBVo implements Serializable {
+public class RocksDBDTO implements Serializable {
 
     @NonNull
     @ApiModelProperty(value = "列族", required = true)

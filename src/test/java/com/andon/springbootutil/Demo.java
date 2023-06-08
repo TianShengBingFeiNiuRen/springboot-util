@@ -1,8 +1,8 @@
 package com.andon.springbootutil;
 
 import com.alibaba.fastjson.JSONObject;
-import com.andon.springbootutil.dto.RocksDBVo;
-import com.andon.springbootutil.dto.TestSwaggerTestResp;
+import com.andon.springbootutil.dto.RocksDBDTO;
+import com.andon.springbootutil.response.TestSwaggerTestResp;
 import com.andon.springbootutil.util.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -575,9 +575,9 @@ public class Demo {
 
     @Test
     public void test39() {
-        RocksDBVo rocksDBVo = RocksDBVo.builder().cfName("cfName").key("key").value("value").build();
-        log.info("rocksDBVo:{}", JSONObject.toJSONString(rocksDBVo));
-        Map<String, Object> map = JSONObject.parseObject(JSONObject.toJSONString(rocksDBVo), new com.alibaba.fastjson.TypeReference<Map<String, Object>>() {
+        RocksDBDTO rocksDBDTO = RocksDBDTO.builder().cfName("cfName").key("key").value("value").build();
+        log.info("rocksDBVo:{}", JSONObject.toJSONString(rocksDBDTO));
+        Map<String, Object> map = JSONObject.parseObject(JSONObject.toJSONString(rocksDBDTO), new com.alibaba.fastjson.TypeReference<Map<String, Object>>() {
         }.getType());
         log.info("map:{}", JSONObject.toJSONString(map));
     }
@@ -682,11 +682,11 @@ public class Demo {
 
     @Test
     public void test33() {
-        RocksDBVo build = RocksDBVo.builder().cfName("cfName").key("key").value("value").build();
+        RocksDBDTO build = RocksDBDTO.builder().cfName("cfName").key("key").value("value").build();
         log.info("build:{}", JSONObject.toJSONString(build));
-        RocksDBVo rocksDBVo = RocksDBVo.builder().cfName("cfName").value("阿萨德阿萨德").build();
-        log.info("rocksDBVo:{}", JSONObject.toJSONString(rocksDBVo));
-        BeanUtils.copyProperties(rocksDBVo, build);
+        RocksDBDTO rocksDBDTO = RocksDBDTO.builder().cfName("cfName").value("阿萨德阿萨德").build();
+        log.info("rocksDBVo:{}", JSONObject.toJSONString(rocksDBDTO));
+        BeanUtils.copyProperties(rocksDBDTO, build);
         log.info("build:{}", JSONObject.toJSONString(build));
     }
 
@@ -714,13 +714,13 @@ public class Demo {
 
     @Test
     public void test31() {
-        RocksDBVo rocksDBVo = RocksDBVo.builder().cfName("test_cf_name").key("test_key").value("test_value").build();
-        RocksDBVo vo = new RocksDBVo();
-        log.info("rocksDBVo:{}", JSONObject.toJSONString(rocksDBVo));
+        RocksDBDTO rocksDBDTO = RocksDBDTO.builder().cfName("test_cf_name").key("test_key").value("test_value").build();
+        RocksDBDTO vo = new RocksDBDTO();
+        log.info("rocksDBVo:{}", JSONObject.toJSONString(rocksDBDTO));
         log.info("vo:{}", JSONObject.toJSONString(vo));
-        BeanUtils.copyProperties(rocksDBVo, vo);
+        BeanUtils.copyProperties(rocksDBDTO, vo);
         log.info("vo:{}", JSONObject.toJSONString(vo));
-        System.out.println(rocksDBVo == vo);
+        System.out.println(rocksDBDTO == vo);
     }
 
     @Test

@@ -1,10 +1,10 @@
 package com.andon.springbootutil.controller;
 
-import com.andon.springbootutil.domain.ResponseStandard;
+import com.andon.springbootutil.response.CommonResponse;
 import com.andon.springbootutil.service.TestSwaggerService;
-import com.andon.springbootutil.dto.TestSwaggerTest2Req;
-import com.andon.springbootutil.dto.TestSwaggerTest2Resp;
-import com.andon.springbootutil.dto.TestSwaggerTestResp;
+import com.andon.springbootutil.request.TestSwaggerTest2Req;
+import com.andon.springbootutil.response.TestSwaggerTest2Resp;
+import com.andon.springbootutil.response.TestSwaggerTestResp;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -31,13 +31,13 @@ public class SwaggerTestController {
             @ApiImplicitParam(name = "param2", value = "参数2", required = true, example = "world"),
     })
     @GetMapping(value = "/test")
-    public ResponseStandard<TestSwaggerTestResp> test(@RequestParam String param1, @RequestParam String param2) {
+    public CommonResponse<TestSwaggerTestResp> test(@RequestParam String param1, @RequestParam String param2) {
         return testSwaggerService.test(param1, param2);
     }
 
     @ApiOperation("测试2")
     @PostMapping(value = "/test2")
-    public ResponseStandard<TestSwaggerTest2Resp> test(@RequestBody TestSwaggerTest2Req testSwaggerTest2Req) {
+    public CommonResponse<TestSwaggerTest2Resp> test(@RequestBody TestSwaggerTest2Req testSwaggerTest2Req) {
         return testSwaggerService.test2(testSwaggerTest2Req);
     }
 }

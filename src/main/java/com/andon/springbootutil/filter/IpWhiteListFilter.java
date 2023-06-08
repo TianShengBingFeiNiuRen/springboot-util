@@ -2,7 +2,7 @@ package com.andon.springbootutil.filter;
 
 import com.andon.springbootutil.config.property.IpWhiteListProperties;
 import com.andon.springbootutil.config.property.UrlWhiteListProperties;
-import com.andon.springbootutil.domain.ResponseStandard;
+import com.andon.springbootutil.response.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -61,7 +61,7 @@ public class IpWhiteListFilter extends OncePerRequestFilter {
     private void unWhiteIpAccess(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ServletServerHttpResponse serverHttpResponse = new ServletServerHttpResponse(response);
         serverHttpResponse.setStatusCode(HttpStatus.FORBIDDEN);
-        ResponseStandard<Object> build = ResponseStandard.builder().code(HttpStatus.FORBIDDEN.value()).message(request.getRemoteAddr() + "非IP白名单，无权访问").build();
+        CommonResponse<Object> build = CommonResponse.builder().code(HttpStatus.FORBIDDEN.value()).message(request.getRemoteAddr() + "非IP白名单，无权访问").build();
         messageConverter.write(build, MediaType.APPLICATION_JSON, serverHttpResponse);
     }
 }

@@ -1,8 +1,8 @@
-package com.andon.springbootutil.dto.mapstruct;
+package com.andon.springbootutil.mapstruct;
 
-import com.andon.springbootutil.domain.Role;
-import com.andon.springbootutil.domain.User;
-import com.andon.springbootutil.dto.UserVO;
+import com.andon.springbootutil.dto.UserDTO;
+import com.andon.springbootutil.entity.Role;
+import com.andon.springbootutil.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.*;
 
@@ -26,10 +26,10 @@ public abstract class UserMapper {
             @Mapping(source = "role.name", target = "roleName"), //取自定义类型的属性值
             @Mapping(target = "createTime", dateFormat = "yyyy-MM-dd HH:mm:ss"),
     })
-    public abstract UserVO toUserVo(User user);
+    public abstract UserDTO toUserVo(User user);
 
     @AfterMapping //对象转换后对MappingTarget目标对象再处理
-    public void randomID(@MappingTarget UserVO.UserVOBuilder userVOBuilder) {
+    public void randomID(@MappingTarget UserDTO.UserDTOBuilder userVOBuilder) {
         userVOBuilder.id(UUID.randomUUID().toString());
     }
 
@@ -48,5 +48,5 @@ public abstract class UserMapper {
             @Mapping(source = "role.name", target = "roleName"), //取自定义类型的属性值
             @Mapping(source = "user.createTime", target = "createTime", dateFormat = "yyyy-MM-dd HH:mm:ss"), // LocalDateTime类型指定格式化
     })
-    public abstract UserVO toUserVo(User user, Role role);
+    public abstract UserDTO toUserVo(User user, Role role);
 }

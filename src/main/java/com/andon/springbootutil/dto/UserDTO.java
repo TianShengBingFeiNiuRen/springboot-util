@@ -16,7 +16,7 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserVO implements Serializable {
+public class UserDTO implements Serializable {
 
     private String id;
     private String userId;

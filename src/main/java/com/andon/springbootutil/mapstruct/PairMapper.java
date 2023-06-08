@@ -1,4 +1,4 @@
-package com.andon.springbootutil.dto.mapstruct;
+package com.andon.springbootutil.mapstruct;
 
 import com.andon.springbootutil.dto.Pair;
 import com.andon.springbootutil.dto.PairDTO;

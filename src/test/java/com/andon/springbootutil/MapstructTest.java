@@ -1,13 +1,12 @@
 package com.andon.springbootutil;
 
 import com.alibaba.fastjson.JSONObject;
-import com.andon.springbootutil.domain.Role;
-import com.andon.springbootutil.domain.User;
 import com.andon.springbootutil.dto.Pair;
 import com.andon.springbootutil.dto.PairDTO;
-import com.andon.springbootutil.dto.UserVO;
-import com.andon.springbootutil.dto.mapstruct.PairMapper;
-import com.andon.springbootutil.dto.mapstruct.UserMapper;
+import com.andon.springbootutil.dto.UserDTO;
+import com.andon.springbootutil.entity.Role;
+import com.andon.springbootutil.entity.User;
+import com.andon.springbootutil.mapstruct.*;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,8 +57,8 @@ public class MapstructTest {
         Role role = Role.builder().id(UUID.randomUUID().toString()).name("asd").build();
         User user = User.builder().id(UUID.randomUUID().toString()).name("阿萨德").age(18).sex("MALE").height(1.876).createTime(LocalDateTime.now()).build();
         log.info("user:{}", JSONObject.toJSONString(user));
-        UserVO userVO = userMapper.toUserVo(user, role);
-        log.info("userVO:{}", JSONObject.toJSONString(userVO));
+        UserDTO userDTO = userMapper.toUserVo(user, role);
+        log.info("userVO:{}", JSONObject.toJSONString(userDTO));
     }
 
     @Test
@@ -67,7 +66,7 @@ public class MapstructTest {
         Role role = Role.builder().id(UUID.randomUUID().toString()).name("asd").build();
         User user = User.builder().id(UUID.randomUUID().toString()).name("阿萨德").age(18).sex("MALE").height(1.876).role(role).createTime(LocalDateTime.now()).build();
         log.info("user:{}", JSONObject.toJSONString(user));
-        UserVO userVO = userMapper.toUserVo(user);
-        log.info("userVO:{}", JSONObject.toJSONString(userVO));
+        UserDTO userDTO = userMapper.toUserVo(user);
+        log.info("userVO:{}", JSONObject.toJSONString(userDTO));
     }
 }

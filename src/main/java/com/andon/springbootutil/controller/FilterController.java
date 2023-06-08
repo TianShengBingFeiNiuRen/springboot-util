@@ -1,7 +1,7 @@
 package com.andon.springbootutil.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.andon.springbootutil.domain.ResponseStandard;
+import com.andon.springbootutil.response.CommonResponse;
 import com.andon.springbootutil.filter.CustomHttpServletRequestWrapper;
 import com.andon.springbootutil.filter.SecurityFilter;
 import lombok.extern.slf4j.Slf4j;
@@ -25,8 +25,8 @@ public class FilterController {
      * 自定义403接口处理响应
      */
     @RequestMapping(value = "/403")
-    public ResponseStandard<String> filter() {
-        ResponseStandard<String> response = ResponseStandard.failureResponse(null);
+    public CommonResponse<String> filter() {
+        CommonResponse<String> response = CommonResponse.failureResponse(null);
         try {
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
             int code = (int) request.getAttribute("code");

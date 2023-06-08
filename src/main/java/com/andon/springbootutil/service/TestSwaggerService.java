@@ -1,10 +1,10 @@
 package com.andon.springbootutil.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.andon.springbootutil.domain.ResponseStandard;
-import com.andon.springbootutil.dto.TestSwaggerTest2Req;
-import com.andon.springbootutil.dto.TestSwaggerTest2Resp;
-import com.andon.springbootutil.dto.TestSwaggerTestResp;
+import com.andon.springbootutil.response.CommonResponse;
+import com.andon.springbootutil.request.TestSwaggerTest2Req;
+import com.andon.springbootutil.response.TestSwaggerTest2Resp;
+import com.andon.springbootutil.response.TestSwaggerTestResp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -18,17 +18,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class TestSwaggerService {
 
-    public ResponseStandard<TestSwaggerTestResp> test(String param1, String param2) {
+    public CommonResponse<TestSwaggerTestResp> test(String param1, String param2) {
         TestSwaggerTestResp data = TestSwaggerTestResp.builder().param1(param1).param2(param2).build();
         log.info("data:{}", JSONObject.toJSONString(data));
-        return ResponseStandard.successResponse(data);
+        return CommonResponse.successResponse(data);
     }
 
-    public ResponseStandard<TestSwaggerTest2Resp> test2(TestSwaggerTest2Req testSwaggerTest2Req) {
+    public CommonResponse<TestSwaggerTest2Resp> test2(TestSwaggerTest2Req testSwaggerTest2Req) {
         String param1 = testSwaggerTest2Req.getParam1();
         String param2 = testSwaggerTest2Req.getParam2();
         TestSwaggerTest2Resp data = TestSwaggerTest2Resp.builder().param1(param1).param2(param2).build();
         log.info("data:{}", JSONObject.toJSONString(data));
-        return ResponseStandard.successResponse(data);
+        return CommonResponse.successResponse(data);
     }
 }

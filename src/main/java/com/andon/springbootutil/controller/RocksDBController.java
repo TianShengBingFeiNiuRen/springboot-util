@@ -1,7 +1,7 @@
 package com.andon.springbootutil.controller;
 
-import com.andon.springbootutil.domain.ResponseStandard;
-import com.andon.springbootutil.dto.RocksDBVo;
+import com.andon.springbootutil.response.CommonResponse;
+import com.andon.springbootutil.dto.RocksDBDTO;
 import com.andon.springbootutil.util.RocksDBUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -27,9 +27,9 @@ public class RocksDBController {
             @ApiImplicitParam(name = "cfName", value = "列族", required = true),
     })
     @PostMapping("/cf")
-    public ResponseStandard<String> cfAdd(String cfName) throws RocksDBException {
+    public CommonResponse<String> cfAdd(String cfName) throws RocksDBException {
         RocksDBUtil.cfAddIfNotExist(cfName);
-        return ResponseStandard.successResponse(cfName);
+        return CommonResponse.successResponse(cfName);
     }
 
     @ApiOperation("列族，删除（如果存在）")
@@ -37,37 +37,37 @@ public class RocksDBController {
             @ApiImplicitParam(name = "cfName", value = "列族", required = true),
     })
     @DeleteMapping("/cf")
-    public ResponseStandard<String> cfDelete(String cfName) throws RocksDBException {
+    public CommonResponse<String> cfDelete(String cfName) throws RocksDBException {
         RocksDBUtil.cfDeleteIfExist(cfName);
-        return ResponseStandard.successResponse(cfName);
+        return CommonResponse.successResponse(cfName);
     }
 
     @ApiOperation("列族名（查询所有）")
     @GetMapping("/cf-all")
-    public ResponseStandard<Set<String>> cfAll() {
+    public CommonResponse<Set<String>> cfAll() {
         Set<String> cfNames = RocksDBUtil.columnFamilyHandleMap.keySet();
-        ResponseStandard<Set<String>> response = ResponseStandard.successResponse(cfNames);
+        CommonResponse<Set<String>> response = CommonResponse.successResponse(cfNames);
         response.setTotal(cfNames.size());
         return response;
     }
 
     @ApiOperation("增")
     @PostMapping("/put")
-    public ResponseStandard<RocksDBVo> put(@RequestBody RocksDBVo rocksDBVo) throws RocksDBException {
-        RocksDBUtil.put(rocksDBVo.getCfName(), rocksDBVo.getKey(), rocksDBVo.getValue());
-        return ResponseStandard.successResponse(rocksDBVo);
+    public CommonResponse<RocksDBDTO> put(@RequestBody RocksDBDTO rocksDBDTO) throws RocksDBException {
+        RocksDBUtil.put(rocksDBDTO.getCfName(), rocksDBDTO.getKey(), rocksDBDTO.getValue());
+        return CommonResponse.successResponse(rocksDBDTO);
     }
 
     @ApiOperation("增（批量）")
     @PostMapping("/batch-put")
-    public ResponseStandard<List<RocksDBVo>> batchPut(@RequestBody List<RocksDBVo> rocksDBVos) throws RocksDBException {
+    public CommonResponse<List<RocksDBDTO>> batchPut(@RequestBody List<RocksDBDTO> rocksDBDTOS) throws RocksDBException {
         Map<String, String> map = new HashMap<>();
-        for (RocksDBVo rocksDBVo : rocksDBVos) {
-            map.put(rocksDBVo.getKey(), rocksDBVo.getValue());
+        for (RocksDBDTO rocksDBDTO : rocksDBDTOS) {
+            map.put(rocksDBDTO.getKey(), rocksDBDTO.getValue());
         }
-        RocksDBUtil.batchPut(rocksDBVos.get(0).getCfName(), map);
-        ResponseStandard<List<RocksDBVo>> response = ResponseStandard.successResponse(rocksDBVos);
-        response.setTotal(rocksDBVos.size());
+        RocksDBUtil.batchPut(rocksDBDTOS.get(0).getCfName(), map);
+        CommonResponse<List<RocksDBDTO>> response = CommonResponse.successResponse(rocksDBDTOS);
+        response.setTotal(rocksDBDTOS.size());
         return response;
     }
 
@@ -77,11 +77,11 @@ public class RocksDBController {
             @ApiImplicitParam(name = "key", value = "键", required = true),
     })
     @DeleteMapping("/delete")
-    public ResponseStandard<RocksDBVo> delete(String cfName, String key) throws RocksDBException {
+    public CommonResponse<RocksDBDTO> delete(String cfName, String key) throws RocksDBException {
         String value = RocksDBUtil.get(cfName, key);
         RocksDBUtil.delete(cfName, key);
-        RocksDBVo rocksDBVo = RocksDBVo.builder().cfName(cfName).key(key).value(value).build();
-        return ResponseStandard.successResponse(rocksDBVo);
+        RocksDBDTO rocksDBDTO = RocksDBDTO.builder().cfName(cfName).key(key).value(value).build();
+        return CommonResponse.successResponse(rocksDBDTO);
     }
 
     @ApiOperation("查")
@@ -90,27 +90,27 @@ public class RocksDBController {
             @ApiImplicitParam(name = "key", value = "键", required = true),
     })
     @GetMapping("/get")
-    public ResponseStandard<RocksDBVo> get(String cfName, String key) throws RocksDBException {
+    public CommonResponse<RocksDBDTO> get(String cfName, String key) throws RocksDBException {
         String value = RocksDBUtil.get(cfName, key);
-        RocksDBVo rocksDBVo = RocksDBVo.builder().cfName(cfName).key(key).value(value).build();
-        return ResponseStandard.successResponse(rocksDBVo);
+        RocksDBDTO rocksDBDTO = RocksDBDTO.builder().cfName(cfName).key(key).value(value).build();
+        return CommonResponse.successResponse(rocksDBDTO);
     }
 
     @ApiOperation("查（多个键值对）")
     @PostMapping("/multiGetAsList")
-    public ResponseStandard<List<RocksDBVo>> multiGetAsList(@RequestBody List<RocksDBVo> rocksDBVos) throws RocksDBException {
-        List<RocksDBVo> list = new ArrayList<>();
-        String cfName = rocksDBVos.get(0).getCfName();
-        List<String> keys = new ArrayList<>(rocksDBVos.size());
-        for (RocksDBVo rocksDBVo : rocksDBVos) {
-            keys.add(rocksDBVo.getKey());
+    public CommonResponse<List<RocksDBDTO>> multiGetAsList(@RequestBody List<RocksDBDTO> rocksDBDTOS) throws RocksDBException {
+        List<RocksDBDTO> list = new ArrayList<>();
+        String cfName = rocksDBDTOS.get(0).getCfName();
+        List<String> keys = new ArrayList<>(rocksDBDTOS.size());
+        for (RocksDBDTO rocksDBDTO : rocksDBDTOS) {
+            keys.add(rocksDBDTO.getKey());
         }
         Map<String, String> map = RocksDBUtil.multiGetAsMap(cfName, keys);
         for (Map.Entry<String, String> entry : map.entrySet()) {
-            RocksDBVo rocksDBVo = RocksDBVo.builder().cfName(cfName).key(entry.getKey()).value(entry.getValue()).build();
-            list.add(rocksDBVo);
+            RocksDBDTO rocksDBDTO = RocksDBDTO.builder().cfName(cfName).key(entry.getKey()).value(entry.getValue()).build();
+            list.add(rocksDBDTO);
         }
-        ResponseStandard<List<RocksDBVo>> response = ResponseStandard.successResponse(list);
+        CommonResponse<List<RocksDBDTO>> response = CommonResponse.successResponse(list);
         response.setTotal(list.size());
         return response;
     }
@@ -120,15 +120,15 @@ public class RocksDBController {
             @ApiImplicitParam(name = "cfName", value = "列族", required = true),
     })
     @GetMapping("/get-all")
-    public ResponseStandard<List<RocksDBVo>> getAll(String cfName) throws RocksDBException {
-        List<RocksDBVo> rocksDBVos = new ArrayList<>();
+    public CommonResponse<List<RocksDBDTO>> getAll(String cfName) throws RocksDBException {
+        List<RocksDBDTO> rocksDBDTOS = new ArrayList<>();
         Map<String, String> all = RocksDBUtil.getAll(cfName);
         for (Map.Entry<String, String> entry : all.entrySet()) {
-            RocksDBVo rocksDBVo = RocksDBVo.builder().cfName(cfName).key(entry.getKey()).value(entry.getValue()).build();
-            rocksDBVos.add(rocksDBVo);
+            RocksDBDTO rocksDBDTO = RocksDBDTO.builder().cfName(cfName).key(entry.getKey()).value(entry.getValue()).build();
+            rocksDBDTOS.add(rocksDBDTO);
         }
-        ResponseStandard<List<RocksDBVo>> response = ResponseStandard.successResponse(rocksDBVos);
-        response.setTotal(rocksDBVos.size());
+        CommonResponse<List<RocksDBDTO>> response = CommonResponse.successResponse(rocksDBDTOS);
+        response.setTotal(rocksDBDTOS.size());
         return response;
     }
 
@@ -137,7 +137,7 @@ public class RocksDBController {
             @ApiImplicitParam(name = "cfName", value = "列族", required = true),
     })
     @GetMapping("/get-keys")
-    public ResponseStandard<List<String>> getKeysFrom(String cfName) throws RocksDBException {
+    public CommonResponse<List<String>> getKeysFrom(String cfName) throws RocksDBException {
         List<String> data = new ArrayList<>();
         List<String> keys;
         String lastKey = null;
@@ -150,7 +150,7 @@ public class RocksDBController {
             data.addAll(keys);
             keys.clear();
         }
-        ResponseStandard<List<String>> response = ResponseStandard.successResponse(data);
+        CommonResponse<List<String>> response = CommonResponse.successResponse(data);
         response.setTotal(data.size());
         return response;
     }
@@ -160,9 +160,9 @@ public class RocksDBController {
             @ApiImplicitParam(name = "cfName", value = "列族", required = true),
     })
     @GetMapping("/get-all-key")
-    public ResponseStandard<List<String>> getAllKey(String cfName) throws RocksDBException {
+    public CommonResponse<List<String>> getAllKey(String cfName) throws RocksDBException {
         List<String> allKey = RocksDBUtil.getAllKey(cfName);
-        ResponseStandard<List<String>> response = ResponseStandard.successResponse(allKey);
+        CommonResponse<List<String>> response = CommonResponse.successResponse(allKey);
         response.setTotal(allKey.size());
         return response;
     }
@@ -172,8 +172,8 @@ public class RocksDBController {
             @ApiImplicitParam(name = "cfName", value = "列族", required = true),
     })
     @GetMapping("/get-count")
-    public ResponseStandard<Integer> getCount(String cfName) throws RocksDBException {
+    public CommonResponse<Integer> getCount(String cfName) throws RocksDBException {
         int count = RocksDBUtil.getCount(cfName);
-        return ResponseStandard.successResponse(count);
+        return CommonResponse.successResponse(count);
     }
 }

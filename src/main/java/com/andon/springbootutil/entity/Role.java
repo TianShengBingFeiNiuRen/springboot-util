@@ -1,4 +1,4 @@
-package com.andon.springbootutil.domain;
+package com.andon.springbootutil.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * @author Andon
@@ -16,13 +15,8 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements Serializable {
+public class Role implements Serializable {
 
     private String id;
     private String name;
-    private int age;
-    private String sex;
-    private double height;
-    private Role role;
-    private LocalDateTime createTime;
 }

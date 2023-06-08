@@ -1,4 +1,4 @@
-package com.andon.springbootutil.dto;
+package com.andon.springbootutil.response;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -12,13 +12,13 @@ import java.io.Serializable;
  * @author Andon
  * 2021/11/10
  * <p>
- * test
+ * test2
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TestSwaggerTestResp implements Serializable {
+public class TestSwaggerTest2Resp implements Serializable {
 
     @ApiModelProperty(value = "param1")
     private String param1;

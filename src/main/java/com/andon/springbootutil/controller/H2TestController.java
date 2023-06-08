@@ -1,7 +1,7 @@
 package com.andon.springbootutil.controller;
 
 import com.andon.springbootutil.constant.DataType;
-import com.andon.springbootutil.domain.ResponseStandard;
+import com.andon.springbootutil.response.CommonResponse;
 import com.andon.springbootutil.entity.H2Table;
 import com.andon.springbootutil.service.TestH2Service;
 import io.swagger.annotations.*;
@@ -43,8 +43,8 @@ public class H2TestController {
 
     @ApiOperation("新增")
     @PostMapping("/add")
-    public ResponseStandard<H2Table> add(@Valid @RequestBody H2TableAddVO h2TableAddVO) {
-        return ResponseStandard.successResponse(testH2Service.add(h2TableAddVO));
+    public CommonResponse<H2Table> add(@Valid @RequestBody H2TableAddVO h2TableAddVO) {
+        return CommonResponse.successResponse(testH2Service.add(h2TableAddVO));
     }
 
     @ApiOperation("删除")
@@ -52,9 +52,9 @@ public class H2TestController {
             @ApiImplicitParam(name = "id", value = "ID", required = true, example = "asd-uio-zxc"),
     })
     @DeleteMapping("/delete")
-    public ResponseStandard<Boolean> delete(@RequestParam(name = "id") String id) {
+    public CommonResponse<Boolean> delete(@RequestParam(name = "id") String id) {
         testH2Service.delete(id);
-        return ResponseStandard.successResponse(true);
+        return CommonResponse.successResponse(true);
     }
 
     @Data
@@ -76,8 +76,8 @@ public class H2TestController {
 
     @ApiOperation("修改")
     @PostMapping("/update")
-    public ResponseStandard<H2Table> update(@Valid @RequestBody H2TableUpdateVO h2TableUpdateVO) {
-        return ResponseStandard.successResponse(testH2Service.update(h2TableUpdateVO));
+    public CommonResponse<H2Table> update(@Valid @RequestBody H2TableUpdateVO h2TableUpdateVO) {
+        return CommonResponse.successResponse(testH2Service.update(h2TableUpdateVO));
     }
 
     @ApiOperation("查询")
@@ -85,13 +85,13 @@ public class H2TestController {
             @ApiImplicitParam(name = "id", value = "ID", required = true, example = "asd-uio-zxc"),
     })
     @GetMapping("/query")
-    public ResponseStandard<H2Table> query(@RequestParam(name = "id") String id) {
-        return ResponseStandard.successResponse(testH2Service.query(id));
+    public CommonResponse<H2Table> query(@RequestParam(name = "id") String id) {
+        return CommonResponse.successResponse(testH2Service.query(id));
     }
 
     @ApiOperation("查询所有")
     @GetMapping("/queryAll")
-    public ResponseStandard<List<H2Table>> queryAll() {
+    public CommonResponse<List<H2Table>> queryAll() {
         return testH2Service.queryAll();
     }
 }

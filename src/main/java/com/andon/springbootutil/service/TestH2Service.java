@@ -1,8 +1,8 @@
 package com.andon.springbootutil.service;
 
 import com.andon.springbootutil.controller.H2TestController;
-import com.andon.springbootutil.domain.ResponseStandard;
-import com.andon.springbootutil.dto.mapstruct.H2TableMapper;
+import com.andon.springbootutil.response.CommonResponse;
+import com.andon.springbootutil.mapstruct.H2TableMapper;
 import com.andon.springbootutil.entity.H2Table;
 import com.andon.springbootutil.repository.H2TableRepository;
 import lombok.RequiredArgsConstructor;
@@ -45,9 +45,9 @@ public class TestH2Service {
         return h2TableOptional.get();
     }
 
-    public ResponseStandard<List<H2Table>> queryAll() {
+    public CommonResponse<List<H2Table>> queryAll() {
         List<H2Table> h2Tables = h2TableRepository.findAll();
-        ResponseStandard<List<H2Table>> response = ResponseStandard.successResponse(h2Tables);
+        CommonResponse<List<H2Table>> response = CommonResponse.successResponse(h2Tables);
         response.setTotal(h2Tables.size());
         return response;
     }

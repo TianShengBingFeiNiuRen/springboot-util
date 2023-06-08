@@ -1,6 +1,6 @@
 package com.andon.springbootutil.controller;
 
-import com.andon.springbootutil.domain.ResponseStandard;
+import com.andon.springbootutil.response.CommonResponse;
 import com.andon.springbootutil.service.TestGlobalExceptionHandlerService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +27,7 @@ public class GlobalExceptionHandlerTestController {
     }
 
     @GetMapping(value = "/test2")
-    public ResponseStandard<String> test2() {
+    public CommonResponse<String> test2() {
         return testGlobalExceptionHandlerService.test2();
     }
 }

@@ -1,7 +1,7 @@
 package com.andon.springbootutil.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.andon.springbootutil.domain.ResponseStandard;
+import com.andon.springbootutil.response.CommonResponse;
 import com.andon.springbootutil.util.JWTUtil;
 import com.andon.springbootutil.util.RandomStringUtil;
 import com.andon.springbootutil.util.TimeUtil;
@@ -263,15 +263,15 @@ public class ApiDataController {
     }
 
     @GetMapping(value = "/apiData/batchGet")
-    public ResponseStandard<ApiDataResponse> batchGet(String key, String value) {
+    public CommonResponse<ApiDataResponse> batchGet(String key, String value) {
         log.info("batchGet >> key:{} value:{}", key, value);
         String time = TimeUtil.FORMAT.get().format(System.currentTimeMillis());
         ApiDataResponse apiDataResponse = ApiDataResponse.builder().id("batchGet").key(key).value(value).sequence(1).date(time).build();
-        return ResponseStandard.successResponse(apiDataResponse);
+        return CommonResponse.successResponse(apiDataResponse);
     }
 
     @GetMapping(value = "/apiData/get")
-    public ResponseStandard<List<ApiDataResponse>> get(String key, String value) {
+    public CommonResponse<List<ApiDataResponse>> get(String key, String value) {
         log.info("get >> key:{} value:{}", key, value);
         List<ApiDataResponse> data = new ArrayList<>();
         String time = TimeUtil.FORMAT.get().format(System.currentTimeMillis());
@@ -280,11 +280,11 @@ public class ApiDataController {
         }
         logHeaders();
         addData(data, time);
-        return ResponseStandard.successResponse(data, data.size());
+        return CommonResponse.successResponse(data, data.size());
     }
 
     @PostMapping(value = "/apiData/post")
-    public ResponseStandard<List<ApiDataResponse>> post(BodyParam bodyParam) {
+    public CommonResponse<List<ApiDataResponse>> post(BodyParam bodyParam) {
         log.info("post >> bodyKey:{} bodyValue:{}", bodyParam.bodyKey, bodyParam.bodyValue);
         List<ApiDataResponse> data = new ArrayList<>();
         String time = TimeUtil.FORMAT.get().format(System.currentTimeMillis());
@@ -293,11 +293,11 @@ public class ApiDataController {
         }
         logHeaders();
         addData(data, time);
-        return ResponseStandard.successResponse(data, data.size());
+        return CommonResponse.successResponse(data, data.size());
     }
 
     @PostMapping(value = "/apiData/json")
-    public ResponseStandard<List<ApiDataResponse>> json(@RequestBody BodyParam bodyParam) {
+    public CommonResponse<List<ApiDataResponse>> json(@RequestBody BodyParam bodyParam) {
         log.info("json >> bodyKey:{} bodyValue:{}", bodyParam.bodyKey, bodyParam.bodyValue);
         List<ApiDataResponse> data = new ArrayList<>();
         String time = TimeUtil.FORMAT.get().format(System.currentTimeMillis());
@@ -306,11 +306,11 @@ public class ApiDataController {
         }
         logHeaders();
         addData(data, time);
-        return ResponseStandard.successResponse(data, data.size());
+        return CommonResponse.successResponse(data, data.size());
     }
 
     @PostMapping(value = "/apiData/header")
-    public ResponseStandard<List<ApiDataResponse>> header(@RequestHeader(required = false) String headerKey, @RequestHeader(required = false) String headerValue) {
+    public CommonResponse<List<ApiDataResponse>> header(@RequestHeader(required = false) String headerKey, @RequestHeader(required = false) String headerValue) {
         log.info("header >> headerKey:{} headerValue:{}", headerKey, headerValue);
         List<ApiDataResponse> data = new ArrayList<>();
         String time = TimeUtil.FORMAT.get().format(System.currentTimeMillis());
@@ -319,7 +319,7 @@ public class ApiDataController {
         }
         logHeaders();
         addData(data, time);
-        return ResponseStandard.successResponse(data, data.size());
+        return CommonResponse.successResponse(data, data.size());
     }
 
     @Data

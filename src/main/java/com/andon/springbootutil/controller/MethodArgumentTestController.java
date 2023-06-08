@@ -1,6 +1,6 @@
 package com.andon.springbootutil.controller;
 
-import com.andon.springbootutil.domain.ResponseStandard;
+import com.andon.springbootutil.response.CommonResponse;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
@@ -71,8 +71,8 @@ public class MethodArgumentTestController {
     }
 
     @PostMapping("/method-argument")
-    public ResponseStandard<JsonFormatVO> methodArgument(@RequestBody @Valid JsonFormatVO jsonFormatVO) {
+    public CommonResponse<JsonFormatVO> methodArgument(@RequestBody @Valid JsonFormatVO jsonFormatVO) {
         Assert.isTrue(jsonFormatVO.getJsonFormatVO2().key.equals("java"), "IllegalArgument：key");
-        return ResponseStandard.successResponse(jsonFormatVO);
+        return CommonResponse.successResponse(jsonFormatVO);
     }
 }

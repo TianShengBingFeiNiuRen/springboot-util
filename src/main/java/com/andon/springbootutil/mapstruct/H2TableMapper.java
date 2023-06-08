@@ -1,4 +1,4 @@
-package com.andon.springbootutil.dto.mapstruct;
+package com.andon.springbootutil.mapstruct;
 
 import com.andon.springbootutil.controller.H2TestController;
 import com.andon.springbootutil.entity.H2Table;
