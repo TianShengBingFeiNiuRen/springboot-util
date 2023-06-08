@@ -327,7 +327,7 @@ public class Demo {
 
     @Test
     public void test60() {
-        String stringGenerate = RandomStringUtil.stringGenerate(10, true, true, true);
+        String stringGenerate = RandomStringUtil.stringGenerate(8, true, true, true, true);
         log.info("stringGenerate:{}", stringGenerate);
     }
 
@@ -454,7 +454,7 @@ public class Demo {
     @Test
     public void test52() {
         for (int i = 1; i <= 10; i++) {
-            String stringGenerate = RandomStringUtil.stringGenerate(i, true, false, false);
+            String stringGenerate = RandomStringUtil.stringGenerate(i, true, false, false, false);
             log.info("i={} -> stringGenerate:{} length:{}", i, stringGenerate, stringGenerate.length());
         }
     }

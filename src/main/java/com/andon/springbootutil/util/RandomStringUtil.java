@@ -18,27 +18,30 @@ public class RandomStringUtil {
     }
 
     public static String numGenerate(int length) {
-        length = Math.max(length, 3);
+        length = Math.max(length, 4);
         return String.valueOf((int) ((Math.random() * 9 + 1) * (Math.pow(10, length - 1))));
     }
 
-    public static String stringGenerate(int length, boolean number, boolean letter, boolean symbol) {
-        length = Math.max(length, 3);
-        int divisor = ((number ? 1 : 0) + (letter ? 1 : 0) + (symbol ? 1 : 0));
+    public static String stringGenerate(int length, boolean number, boolean uppercaseLetter, boolean lowercaseLetter, boolean symbol) {
+        length = Math.max(length, 4);
+        int divisor = ((number ? 1 : 0) + (uppercaseLetter ? 1 : 0) + (lowercaseLetter ? 1 : 0) + (symbol ? 1 : 0));
         divisor = divisor == 0 ? 1 : divisor;
         int average = length / divisor;
-        boolean complete = length % divisor == 0;
+        int remainder = length % divisor;
         StringBuilder sb = new StringBuilder();
         if (number) {
             sb.append(stringGenerate("0123456789", average));
         }
-        if (letter) {
-            sb.append(stringGenerate("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", average = complete ? average : average + 1));
+        if (uppercaseLetter) {
+            sb.append(stringGenerate("ABCDEFGHIJKLMNOPQRSTUVWXYZ", average + remainder));
+        }
+        if (lowercaseLetter) {
+            sb.append(stringGenerate("abcdefghijklmnopqrstuvwxyz", average));
         }
         if (symbol) {
             sb.append(stringGenerate("./*~!@#$%^&?-_=+[]{}", average));
         }
-        List<String> stringList = Arrays.asList(sb.toString().substring(0, length).split(""));
+        List<String> stringList = Arrays.asList(sb.substring(0, length).split(""));
         Collections.shuffle(stringList);
         sb = new StringBuilder();
         for (String s : stringList) {
