@@ -37,8 +37,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.zip.CRC32;
 
-import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
-
 /**
  * @author Andon
  * 2021/11/10
@@ -631,9 +629,11 @@ public class Demo {
         list.add(schema4);
         log.info("list:{}", list);
 
-        String json = new String(SerializationUtil.serialize(list));
+        String json1 = SerializationUtil.toJSONString(list);
+        String json = SerializationUtil.toJSONString(list);
+//        String json = JSONObject.toJSONString(list, SerializerFeature.WriteMapNullValue);
         log.info("json:{}", json);
-        List<Schema> schemas = SerializationUtil.deserialize(json.getBytes(), new TypeReference<List<Schema>>() {
+        List<Schema> schemas = SerializationUtil.parseObject(json, new TypeReference<List<Schema>>() {
         });
         log.info("schemas:{}", JSONObject.toJSONString(schemas));
         List<String> indexs = new ArrayList<>();
@@ -678,80 +678,6 @@ public class Demo {
 
     private enum DataType {
         STRING, INT, FLOAT, DOUBLE, DECIMAL, TIMESTAMP, BOOLEAN
-    }
-
-    static class SerializationUtil {
-        private final static ObjectMapper mapper = new ObjectMapper();
-
-        static {
-            mapper.configure(FAIL_ON_UNKNOWN_PROPERTIES, false);
-        }
-
-        private SerializationUtil() {
-        }
-
-        /**
-         * 序列化(对象 -> 字节数组)
-         *
-         * @param obj 对象
-         * @return 字节数组
-         */
-        public static <T> byte[] serialize(T obj) {
-            try {
-                return mapper.writeValueAsBytes(obj);
-            } catch (JsonProcessingException e) {
-                log.error("序列化失败: ", e);
-                throw new IllegalStateException(e.getMessage(), e);
-            }
-        }
-
-        /**
-         * 反序列化(字节数组 -> 对象)
-         *
-         * @param data
-         * @param valueTypeRef
-         * @param <T>
-         */
-        public static <T> T deserialize(byte[] data, TypeReference<T> valueTypeRef) {
-            try {
-                return mapper.readValue(data, valueTypeRef);
-            } catch (IOException e) {
-                log.error("反序列化失败: ", e);
-                throw new IllegalStateException(e.getMessage(), e);
-            }
-        }
-
-        /**
-         * 反序列化(字节数组 -> 对象)
-         *
-         * @param data
-         * @param cls
-         * @param <T>
-         */
-        public static <T> T deserialize(byte[] data, Class<T> cls) {
-            try {
-                return mapper.readValue(data, cls);
-            } catch (IOException e) {
-                log.error("反序列化失败: ", e);
-                throw new IllegalStateException(e.getMessage(), e);
-            }
-        }
-
-        /**
-         * 反序列化(字节数组 -> 对象)
-         *
-         * @param jsonStr
-         * @param cls
-         * @param <T>
-         */
-        public static <T> T deserialize(String jsonStr, Class<T> cls) {
-            try {
-                return mapper.readValue(jsonStr, cls);
-            } catch (IOException e) {
-                log.error("反序列化失败: ", e);
-                throw new IllegalStateException(e.getMessage(), e);
-            }
-        }
     }
 
     @Test
