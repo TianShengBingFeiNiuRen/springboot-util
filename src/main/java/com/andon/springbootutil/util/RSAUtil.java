@@ -135,6 +135,91 @@ public class RSAUtil {
     }
 
     /**
+     * 私钥加密
+     */
+    public static String privateEncrypt(String data, String privateKeyStr) {
+        String encryptResult = null;
+        try {
+            // 私钥转换为PrivateKey对象
+            PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKeyStr));
+            KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
+            PrivateKey privateKey = keyFactory.generatePrivate(pkcs8EncodedKeySpec);
+            // 创建密码器
+            Cipher cipher = Cipher.getInstance(KEY_ALGORITHM);
+            // 初始化加密模式的密码器
+            cipher.init(Cipher.ENCRYPT_MODE, privateKey);
+            // 私钥加密
+            byte[] dataBytes = data.getBytes(StandardCharsets.UTF_8);
+            int inputLen = dataBytes.length;
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            int offSet = 0;
+            byte[] cache;
+            int i = 0;
+            // 对数据分段加密
+            while (inputLen - offSet > 0) {
+                if (inputLen - offSet > MAX_ENCRYPT_BLOCK) {
+                    cache = cipher.doFinal(dataBytes, offSet, MAX_ENCRYPT_BLOCK);
+                } else {
+                    cache = cipher.doFinal(dataBytes, offSet, inputLen - offSet);
+                }
+                out.write(cache, 0, cache.length);
+                i++;
+                offSet = i * MAX_ENCRYPT_BLOCK;
+            }
+            byte[] encryptByte = out.toByteArray();
+            out.close();
+            encryptByte = Base64.getEncoder().encode(encryptByte);
+            encryptResult = new String(encryptByte, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            log.error("privateEncrypt failure!! error:{}", e.getMessage());
+            e.printStackTrace();
+        }
+        return encryptResult;
+    }
+
+    /**
+     * 公钥解密
+     */
+    public static String publicDecrypt(String encryptContent, String publicKeyStr) {
+        String decryptResult = null;
+        try {
+            // 公钥转换为PublicKey对象
+            X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(Base64.getDecoder().decode(publicKeyStr));
+            KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
+            PublicKey publicKey = keyFactory.generatePublic(x509EncodedKeySpec);
+            // 创建密码器
+            Cipher cipher = Cipher.getInstance(KEY_ALGORITHM);
+            // 初始化加密模式的密码器
+            cipher.init(Cipher.DECRYPT_MODE, publicKey);
+            // 公钥解密
+            byte[] encryptByte = Base64.getDecoder().decode(encryptContent);
+            int inputLen = encryptByte.length;
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            int offSet = 0;
+            byte[] cache;
+            int i = 0;
+            // 对数据分段解密
+            while (inputLen - offSet > 0) {
+                if (inputLen - offSet > MAX_DECRYPT_BLOCK) {
+                    cache = cipher.doFinal(encryptByte, offSet, MAX_DECRYPT_BLOCK);
+                } else {
+                    cache = cipher.doFinal(encryptByte, offSet, inputLen - offSet);
+                }
+                out.write(cache, 0, cache.length);
+                i++;
+                offSet = i * MAX_DECRYPT_BLOCK;
+            }
+            byte[] decryptByte = out.toByteArray();
+            out.close();
+            decryptResult = new String(decryptByte, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            log.error("publicDecrypt failure!! error:{}", e.getMessage());
+            e.printStackTrace();
+        }
+        return decryptResult;
+    }
+
+    /**
      * 字节数组转换成16进制
      */
     public static String parseByteToHexStr(byte[] bytes) {
