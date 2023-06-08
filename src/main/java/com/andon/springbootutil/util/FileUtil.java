@@ -26,14 +26,15 @@ public class FileUtil {
         try {
             String osName = System.getProperty("os.name");
             log.info("osName:{}", osName);
-//            String fileRootPath; //文件存放目录
-//            if (osName.toLowerCase().contains("windows")) {
-//                fileRootPath = "D:\\apps\\file"; // 指定windows系统下RocksDB文件目录
-//            } else {
-//                fileRootPath = "/usr/local/apps/file"; // 指定linux系统下RocksDB文件目录
-//            }
-//            rootFilePath = Paths.get(fileRootPath);
-            rootFilePath = Paths.get(System.getProperty("user.dir"));
+            String userDir = Paths.get(System.getProperty("user.dir")).toString();
+            String directoryName = userDir.substring(userDir.lastIndexOf(File.separator) + 1);
+            String fileRootPath; //文件存放目录
+            if (osName.toLowerCase().contains("windows")) {
+                fileRootPath = "C:\\apps\\file\\" + directoryName; // 指定windows系统下文件目录
+            } else {
+                fileRootPath = "/data/apps/file" + directoryName; // 指定linux系统下文件目录
+            }
+            rootFilePath = Paths.get(fileRootPath);
             if (!Files.exists(rootFilePath)) {
                 Files.createDirectories(rootFilePath);
             }

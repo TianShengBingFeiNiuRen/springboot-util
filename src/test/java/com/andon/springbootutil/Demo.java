@@ -17,6 +17,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
@@ -44,6 +45,14 @@ import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKN
  */
 @Slf4j
 public class Demo {
+
+    @Test
+    public void test82() {
+        Path path = Paths.get(System.getProperty("user.dir"));
+        log.info("path:{}", path.toString());
+        String pathString = path.toString();
+        log.info("endDirectory:{}", pathString.substring(pathString.lastIndexOf(File.separator) + 1));
+    }
 
     @Test
     public void test81() {
