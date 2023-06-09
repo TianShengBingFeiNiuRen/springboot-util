@@ -32,7 +32,7 @@ public class FileUtil {
             if (osName.toLowerCase().contains("windows")) {
                 fileRootPath = "C:\\apps\\file\\" + directoryName; // 指定windows系统下文件目录
             } else {
-                fileRootPath = "/data/apps/file" + directoryName; // 指定linux系统下文件目录
+                fileRootPath = "/data/apps/file/" + directoryName; // 指定linux系统下文件目录
             }
             rootFilePath = Paths.get(fileRootPath);
             if (!Files.exists(rootFilePath)) {

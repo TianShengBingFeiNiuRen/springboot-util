@@ -5,7 +5,7 @@ server:
   forward-headers-strategy: native
 spring:
   profiles:
-    active: dev
+    active: @profiles.active@
   datasource:
     # 内存模式，进程关闭数据丢失
     # url: jdbc:h2:mem:data_h2

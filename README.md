@@ -1,6 +1,8 @@
 # springboot-util
 工具类合集
 
+**CSDN**: [**maven 插件 assembly 打tar.gz包**](https://blog.csdn.net/weixin_39792935/article/details/131122555).
+
 **CSDN**: [**封装 RestTemplate 工具类**](https://blog.csdn.net/weixin_39792935/article/details/129423330).
 
 **CSDN**: [**达梦关系型数据库**](https://blog.csdn.net/weixin_39792935/article/details/129419198).
