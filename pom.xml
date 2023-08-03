@@ -29,9 +29,10 @@
         <guava.version>31.0.1-jre</guava.version>
         <commons-csv.version>1.9.0</commons-csv.version>
         <mapstruct.version>1.5.3.Final</mapstruct.version>
-        <jsoup.version>1.14.3</jsoup.version>
+        <jsoup.version>1.16.1</jsoup.version>
         <h2.version>2.1.214</h2.version>
         <DmJdbcDriver18.version>8.1.2.141</DmJdbcDriver18.version>
+        <dom4j.version>2.1.4</dom4j.version>
     </properties>
 
     <dependencies>
@@ -227,6 +228,13 @@
             <groupId>com.dameng</groupId>
             <artifactId>DmJdbcDriver18</artifactId>
             <version>${DmJdbcDriver18.version}</version>
+        </dependency>
+
+        <!-- dom4j -->
+        <dependency>
+            <groupId>org.dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>${dom4j.version}</version>
         </dependency>
     </dependencies>
 

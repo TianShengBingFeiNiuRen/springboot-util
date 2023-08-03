@@ -55,3 +55,8 @@ task:
   time-clear: "18:00:00"
 
 swagger-enable: false
+
+logging:
+  level:
+    root: info
+    org.springframework.web: debug

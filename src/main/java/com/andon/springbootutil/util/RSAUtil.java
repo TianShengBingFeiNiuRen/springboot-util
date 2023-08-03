@@ -9,6 +9,7 @@ import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
+import java.util.UUID;
 
 /**
  * @author Andon
@@ -282,5 +283,18 @@ public class RSAUtil {
             this.publicKey = publicKey;
             this.privateKey = privateKey;
         }
+    }
+
+    public static void main(String[] args) {
+        RsaKeyPair rsaKeyPair = generateKeyPair(UUID.randomUUID().toString());
+        String publicKey = rsaKeyPair.publicKey;
+        log.info("公钥:{}", publicKey);
+
+        String data = "hello world";
+        String encrypt = publicEncrypt(data, publicKey);
+        log.info("密文:{}", encrypt);
+
+        String decrypt = privateDecrypt(encrypt, rsaKeyPair.privateKey);
+        log.info("明文:{}", decrypt);
     }
 }

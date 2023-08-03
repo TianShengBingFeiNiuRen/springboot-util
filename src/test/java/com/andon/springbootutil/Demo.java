@@ -20,6 +20,10 @@ import org.springframework.util.ObjectUtils;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -43,6 +47,72 @@ import java.util.zip.CRC32;
  */
 @Slf4j
 public class Demo {
+
+    @Test
+    public void test88() {
+        List<String> list = Arrays.asList("hello", "world", "java", "springboot");
+        for (int i = 0; i < 10; i++) {
+            log.info("i:{} findAny:{}", i + 1, list.stream().findAny().get());
+            double random = Math.random();
+            Random random1 = new Random();
+            int i1 = random1.nextInt(list.size());
+            int index = (int) (random * list.size());
+            log.info("i:{} random:{} index:{} random:{}", i + 1, random, index, list.get(index));
+            log.info("i:{} index:{} get:{}", i + 1, i1, list.get(i1));
+        }
+    }
+
+    @Test
+    public void test87() throws MalformedURLException, URISyntaxException {
+        String jupyterUrls = "https://10.50.2.58:20006/jupyter/22636ce19d7ba4b58b95c804d29d467f_20006/tree?token=776fdedbd499474cb466f7a1704d39e7&key=hello";
+        URL url = new URL(jupyterUrls);
+        String path = url.getPath();
+        log.info("path:{}", path);
+        URI uri = new URI(jupyterUrls);
+        String query = uri.getQuery();
+        log.info("query:{}", query);
+
+        // 获取参数
+        Map<String, String> params = new HashMap<>();
+        Pattern pattern = Pattern.compile("([^&=]+)=([^&=]*)");
+        Matcher matcher = pattern.matcher(url.getQuery());
+        while (matcher.find()) {
+            params.put(matcher.group(1), matcher.group(2));
+        }
+        log.info("params:{}", JSONObject.toJSONString(params));
+    }
+
+    @Test
+    public void test86() {
+        String str = "http://127.0.0.1/agent/";
+        String str2 = "http://127.0.0.1/agent/hello";
+        System.out.println(str.endsWith("/") ? str.substring(0, str.length() - 1) : str);
+        System.out.println(str2.endsWith("/") ? str2.substring(0, str2.length() - 1) : str2);
+    }
+
+    @Test
+    public void test85() {
+        RSAUtil.RsaKeyPair rsaKeyPair = RSAUtil.generateKeyPair(null);
+        log.info("publicKey:{}", rsaKeyPair.publicKey);
+        log.info("privateKey:{}", rsaKeyPair.privateKey);
+
+        String data = "hello world";
+//        String data = rsaKeyPair.publicKey;
+        String encrypt = RSAUtil.privateEncrypt(data, rsaKeyPair.privateKey);
+        String decrypt = RSAUtil.publicDecrypt(encrypt, rsaKeyPair.publicKey);
+        log.info("data:{}", data);
+        log.info("encrypt:{}", encrypt);
+        log.info("decrypt:{}", decrypt);
+    }
+
+    @Test
+    public void test84() {
+        String str = "hello world";
+        boolean ell = str.contains("ell");
+        boolean lle = str.contains("lle");
+        log.info("ell:{}", ell);
+        log.info("lle:{}", lle);
+    }
 
     @Test
     public void test83() throws IOException {
