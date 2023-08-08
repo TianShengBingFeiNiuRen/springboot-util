@@ -179,6 +179,28 @@ public class FileUtil {
     }
 
     /**
+     * 读小文件
+     *
+     * @param filePath 文件绝对路径
+     */
+    public static String readContent(String filePath) throws Exception {
+        StringBuilder stringBuilder = new StringBuilder();
+        readFileContentByLine(filePath, bufferedReader -> {
+            String line;
+            while (true) {
+                try {
+                    if ((line = bufferedReader.readLine()) == null) break;
+                } catch (Exception e) {
+                    break;
+                }
+                stringBuilder.append(line);
+            }
+        });
+        log.info("readFirstLine success!! --文件-> [{}]", filePath);
+        return stringBuilder.toString();
+    }
+
+    /**
      * 读取文件行数
      *
      * @param filePath 文件绝对路径
