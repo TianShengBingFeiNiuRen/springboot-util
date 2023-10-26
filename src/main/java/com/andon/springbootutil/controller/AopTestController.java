@@ -22,12 +22,19 @@ public class AopTestController {
 
     @DemoAnnotation(testValue = "test!!")
     @ApiOperation("测试")
+    @GetMapping(value = "/test")
+    public void test() {
+        log.info("test!!");
+    }
+
+    @DemoAnnotation(testValue = "test!!")
+    @ApiOperation("测试1")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "value", value = "值", required = true)
     })
-    @GetMapping(value = "/test")
-    public String test(String value) {
-        log.info("test!! value:{}", value);
+    @GetMapping(value = "/test1")
+    public String test1(String value) {
+        log.info("test1!! value:{}", value);
         return value;
     }
 
@@ -37,8 +44,8 @@ public class AopTestController {
             @ApiImplicitParam(name = "value", value = "值", required = true)
     })
     @GetMapping(value = "/test2")
-    public String test2(String value) throws Exception {
-        log.info("test!! value:{}", value);
+    public String test2(@RequestParam String value) throws Exception {
+        log.info("test2!! value:{}", value);
         throw new Exception("throw new Exception!!");
     }
 
@@ -47,6 +54,14 @@ public class AopTestController {
     @PostMapping(value = "/test3")
     public TestSwaggerTest2Req test3(@RequestBody TestSwaggerTest2Req test) {
         log.info("test3!! test:{}", JSONObject.toJSONString(test));
+        return test;
+    }
+
+    @DemoAnnotation
+    @ApiOperation("测试4")
+    @PostMapping(value = "/test4")
+    public TestSwaggerTest2Req test4(TestSwaggerTest2Req test) {
+        log.info("test4!! test:{}", JSONObject.toJSONString(test));
         return test;
     }
 }

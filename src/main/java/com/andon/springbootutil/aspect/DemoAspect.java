@@ -1,17 +1,23 @@
 package com.andon.springbootutil.aspect;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.andon.springbootutil.annotation.DemoAnnotation;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Andon
@@ -37,9 +43,12 @@ public class DemoAspect {
      */
     @Before("pointCut() && @annotation(demoAnnotation)")
     public void before(JoinPoint joinPoint, DemoAnnotation demoAnnotation) {
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        Method method = signature.getMethod();
         String testValue = demoAnnotation.testValue();
         Object[] args = joinPoint.getArgs();
-        log.info("before [{}-{}] 前置通知!! args:{} testValue:{}", Thread.currentThread().getName(), Thread.currentThread().getId(), JSONObject.toJSONString(args), testValue);
+        Map<String, Object> params = getParams(method, args);
+        log.info("before [{}-{}] 前置通知!! args:{} testValue:{} params:{}", Thread.currentThread().getName(), Thread.currentThread().getId(), JSONObject.toJSONString(args), testValue, JSONObject.toJSONString(params));
     }
 
     /**
@@ -94,5 +103,21 @@ public class DemoAspect {
         Object obj = pjp.proceed();
         log.info("around [{}-{}] 环绕通知end!!", Thread.currentThread().getName(), Thread.currentThread().getId());
         return obj;
+    }
+
+    private Map<String, Object> getParams(Method method, Object[] args) {
+        Map<String, Object> params = new HashMap<>(args.length);
+        Parameter[] parameters = method.getParameters();
+        for (int i = 0; i < args.length; i++) {
+            Object arg = args[i];
+            if (arg instanceof String) {
+                params.put(parameters[i].getName(), arg);
+            } else {
+                Map<String, Object> map = JSONObject.parseObject(JSONObject.toJSONString(args), new TypeReference<Map<String, Object>>() {
+                }.getType());
+                params.putAll(map);
+            }
+        }
+        return params;
     }
 }
