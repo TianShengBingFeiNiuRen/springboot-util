@@ -266,7 +266,8 @@ public class ApiDataController {
     public CommonResponse<ApiDataResponse> batchGet(String key, String value) {
         log.info("batchGet >> key:{} value:{}", key, value);
         String time = TimeUtil.FORMAT.get().format(System.currentTimeMillis());
-        ApiDataResponse apiDataResponse = ApiDataResponse.builder().id("batchGet").key(key).value(value).sequence(1).date(time).build();
+        Integer sequence = Integer.valueOf(RandomStringUtil.stringGenerate(6, true, false, false, false));
+        ApiDataResponse apiDataResponse = ApiDataResponse.builder().id("batchGet").key(key).value(value).sequence(sequence).date(time).build();
         return CommonResponse.successResponse(apiDataResponse);
     }
 
@@ -283,6 +284,15 @@ public class ApiDataController {
         return CommonResponse.successResponse(data, data.size());
     }
 
+    @PostMapping(value = "/apiData/batchPost")
+    public CommonResponse<ApiDataResponse> batchPost(BodyParam bodyParam) {
+        log.info("batchPost >> bodyKey:{} bodyValue:{}", bodyParam.bodyKey, bodyParam.bodyValue);
+        String time = TimeUtil.FORMAT.get().format(System.currentTimeMillis());
+        Integer sequence = Integer.valueOf(RandomStringUtil.stringGenerate(6, true, false, false, false));
+        ApiDataResponse apiDataResponse = ApiDataResponse.builder().id("batchPost").key(bodyParam.bodyKey).value(bodyParam.bodyValue).sequence(sequence).date(time).build();
+        return CommonResponse.successResponse(apiDataResponse);
+    }
+
     @PostMapping(value = "/apiData/post")
     public CommonResponse<List<ApiDataResponse>> post(BodyParam bodyParam) {
         log.info("post >> bodyKey:{} bodyValue:{}", bodyParam.bodyKey, bodyParam.bodyValue);
@@ -294,6 +304,15 @@ public class ApiDataController {
         logHeaders();
         addData(data, time);
         return CommonResponse.successResponse(data, data.size());
+    }
+
+    @PostMapping(value = "/apiData/batchJson")
+    public CommonResponse<ApiDataResponse> batchJson(@RequestBody BodyParam bodyParam) {
+        log.info("batchJson >> bodyKey:{} bodyValue:{}", bodyParam.bodyKey, bodyParam.bodyValue);
+        String time = TimeUtil.FORMAT.get().format(System.currentTimeMillis());
+        Integer sequence = Integer.valueOf(RandomStringUtil.stringGenerate(6, true, false, false, false));
+        ApiDataResponse apiDataResponse = ApiDataResponse.builder().id("batchJson").key(bodyParam.bodyKey).value(bodyParam.bodyValue).sequence(sequence).date(time).build();
+        return CommonResponse.successResponse(apiDataResponse);
     }
 
     @PostMapping(value = "/apiData/json")

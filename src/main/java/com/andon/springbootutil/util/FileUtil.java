@@ -118,7 +118,7 @@ public class FileUtil {
      */
     public static File createFileWithContent(List<String> lines, String... fileName) throws IOException {
         File file = createFile(fileName);
-        try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(file.toPath()), StandardCharsets.UTF_8))) {
             for (String line : lines) {
                 bufferedWriter.write(line);
                 bufferedWriter.newLine();

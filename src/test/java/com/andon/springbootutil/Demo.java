@@ -49,6 +49,48 @@ import java.util.zip.CRC32;
 public class Demo {
 
     @Test
+    public void test91() {
+        YearMonth yearMonthLast = YearMonth.now().minusMonths(1);
+        log.info("{}", yearMonthLast);
+    }
+
+    @Test
+    public void test90() throws IOException {
+        File file = FileUtil.createFile("a", "b", "c", "d", "hello world");
+        log.info(file.getAbsolutePath());
+    }
+
+    @Test
+    public void test89() throws IOException {
+        File file = new File("D:\\Downloads\\datasource");
+        String parent = file.getParent();
+        log.info("absolutePath:{}", file.getAbsolutePath());
+        log.info("parent:{}", parent);
+        long length = getDirectorySize(file);
+        log.info("length:{}", length);
+        long size = Files.walk(file.toPath())
+                .filter(path -> path.toFile().isFile())
+                .mapToLong(path -> path.toFile().length())
+                .sum();
+        log.info("size:{}", size);
+    }
+
+    public static long getDirectorySize(File directory) {
+        long size = 0;
+        if (directory.isFile()) {
+            size += directory.length();
+        } else {
+            File[] files = directory.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    size += getDirectorySize(file);
+                }
+            }
+        }
+        return size;
+    }
+
+    @Test
     public void test88() {
         List<String> list = Arrays.asList("hello", "world", "java", "springboot");
         for (int i = 0; i < 10; i++) {

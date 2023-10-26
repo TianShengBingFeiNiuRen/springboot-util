@@ -8,10 +8,14 @@ import org.springframework.util.ObjectUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Andon
@@ -19,6 +23,22 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class FileUtilTest {
+
+    @Test
+    public void delete() throws IOException {
+        String parent = "D:\\Temp\\ceshi";
+        try (Stream<Path> walk = Files.walk(Paths.get(parent))) {
+            walk.filter(path -> path.toFile().isFile())
+                    .forEach(path -> {
+                        try {
+                            Files.deleteIfExists(path);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+        } catch (Exception ignored) {
+        }
+    }
 
     @Test
     public void createCsvFile() throws Exception {
