@@ -14,4 +14,6 @@ import java.lang.annotation.*;
 public @interface DemoAnnotation {
 
     String testValue() default "testValue";
+
+    String message() default "";
 }

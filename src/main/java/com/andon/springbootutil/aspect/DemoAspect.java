@@ -48,7 +48,8 @@ public class DemoAspect {
         String testValue = demoAnnotation.testValue();
         Object[] args = joinPoint.getArgs();
         Map<String, Object> params = getParams(method, args);
-        log.info("before [{}-{}] 前置通知!! args:{} testValue:{} params:{}", Thread.currentThread().getName(), Thread.currentThread().getId(), JSONObject.toJSONString(args), testValue, JSONObject.toJSONString(params));
+        String message = mapMessage(demoAnnotation.message(), params);
+        log.info("before [{}-{}] 前置通知!! args:{} testValue:{} params:{} message:{}", Thread.currentThread().getName(), Thread.currentThread().getId(), JSONObject.toJSONString(args), testValue, JSONObject.toJSONString(params), message);
     }
 
     /**
@@ -119,5 +120,17 @@ public class DemoAspect {
             }
         }
         return params;
+    }
+
+    private String mapMessage(String message, Map<String, Object> params) {
+        message = message == null ? "" : message;
+        String[] split = message.split("\\{");
+        for (String s : split) {
+            if (s.contains("}")) {
+                String paramName = s.split("}")[0];
+                message = message.replace("{" + paramName + "}", String.valueOf(params.get(paramName)));
+            }
+        }
+        return message;
     }
 }

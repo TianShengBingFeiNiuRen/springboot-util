@@ -27,7 +27,7 @@ public class AopTestController {
         log.info("test!!");
     }
 
-    @DemoAnnotation(testValue = "test!!")
+    @DemoAnnotation(testValue = "test!!", message = "传递了参数 value:{value}")
     @ApiOperation("测试1")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "value", value = "值", required = true)
@@ -38,7 +38,7 @@ public class AopTestController {
         return value;
     }
 
-    @DemoAnnotation
+    @DemoAnnotation(message = "传递了参数 value:{value}")
     @ApiOperation("测试2")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "value", value = "值", required = true)
@@ -49,7 +49,7 @@ public class AopTestController {
         throw new Exception("throw new Exception!!");
     }
 
-    @DemoAnnotation
+    @DemoAnnotation(message = "传递了参数 param1:{param1} param2:{param2}")
     @ApiOperation("测试3")
     @PostMapping(value = "/test3")
     public TestSwaggerTest2Req test3(@RequestBody TestSwaggerTest2Req test) {
@@ -57,7 +57,7 @@ public class AopTestController {
         return test;
     }
 
-    @DemoAnnotation
+    @DemoAnnotation(message = "传递了参数 param1:{param1} param2:{param2}")
     @ApiOperation("测试4")
     @PostMapping(value = "/test4")
     public TestSwaggerTest2Req test4(TestSwaggerTest2Req test) {
