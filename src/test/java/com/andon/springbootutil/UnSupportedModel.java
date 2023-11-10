@@ -19,12 +19,10 @@ import java.util.stream.Collectors;
  * 无人抚养儿童模型
  */
 @Slf4j
-
-
 public class UnSupportedModel {
 
     public static void main(String[] args) throws IOException {
-        int isUnSupportedCount = 10000;
+        int isUnSupportedCount = 100000;
         int sum = isUnSupportedCount * 5 * 3;
         Set<String> idCards = new HashSet<>(sum);
         // 常驻人口
