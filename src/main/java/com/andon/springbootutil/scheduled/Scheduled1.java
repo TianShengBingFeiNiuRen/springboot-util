@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
  * 2022/8/10
  */
 @Slf4j
-@Component
+//@Component
 public class Scheduled1 {
 
-    @Scheduled(cron = "0 */10 * * * ?")
+//    @Scheduled(cron = "0 */10 * * * ?")
     public void scheduled1() {
         log.info("scheduled1 run!!");
     }

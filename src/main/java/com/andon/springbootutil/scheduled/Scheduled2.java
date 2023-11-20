@@ -11,10 +11,10 @@ import java.util.concurrent.TimeUnit;
  * 2022/8/10
  */
 @Slf4j
-@Component
+//@Component
 public class Scheduled2 {
 
-    @Scheduled(initialDelay = 5, fixedDelay = 10, timeUnit = TimeUnit.MINUTES)
+//    @Scheduled(initialDelay = 5, fixedDelay = 10, timeUnit = TimeUnit.MINUTES)
     public void scheduled2() {
         log.info("scheduled2 run!!");
     }

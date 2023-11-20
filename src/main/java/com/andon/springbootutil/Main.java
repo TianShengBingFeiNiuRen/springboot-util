@@ -56,6 +56,6 @@ public class Main implements ApplicationRunner {
         }
 
         // 定时任务启动（延时时间后周期执行）
-        scheduledExecutorService.scheduleAtFixedRate(taskService, initialDelay, period, TimeUnit.SECONDS);
+//        scheduledExecutorService.scheduleAtFixedRate(taskService, initialDelay, period, TimeUnit.SECONDS);
     }
 }

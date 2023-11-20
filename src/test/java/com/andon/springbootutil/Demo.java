@@ -49,6 +49,15 @@ import java.util.zip.CRC32;
 public class Demo {
 
     @Test
+    public void test92() {
+        Map<String, String> body = new HashMap<>(2);
+        body.put("appKey", "andon_trader220231108");
+        body.put("appSecret", "07d927be-2fb7-480f-aa25-b8ec380dea1e");
+        String response = RestTemplateUtil.sendHttp("https://10.50.2.166/_digital-certificate/open-api/current-token", "POST", null, JSONObject.toJSONString(body), "JSON", null);
+        log.info("response:{}", response);
+    }
+
+    @Test
     public void test91() {
         YearMonth yearMonthLast = YearMonth.now().minusMonths(1);
         log.info("{}", yearMonthLast);

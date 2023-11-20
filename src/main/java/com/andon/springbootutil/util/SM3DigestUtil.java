@@ -5,8 +5,8 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * @author Andon
@@ -14,12 +14,9 @@ import java.security.NoSuchAlgorithmException;
  */
 public class SM3DigestUtil {
 
-    public static void main(String[] args) throws NoSuchAlgorithmException {
-        File file = new File("C:\\Apps\\file\\springboot-util\\常驻人口.csv");
-        String fileHash = getHash(file);
-        System.out.println("fileHash:" + fileHash);
-    }
-
+    /**
+     * 文件Hash
+     */
     public static String getHash(File file) {
         FileInputStream fileInputStream = null;
         String hash = null;
@@ -47,6 +44,22 @@ public class SM3DigestUtil {
         return hash;
     }
 
+    /**
+     * 文本Hash
+     */
+    public static String getHash(String text) {
+        String hash = null;
+        try {
+            BouncyCastleProvider provider = new BouncyCastleProvider();
+            MessageDigest messageDigest = MessageDigest.getInstance("SM3", provider);
+            messageDigest.update(text.getBytes(StandardCharsets.UTF_8));
+            hash = byte2Hex(messageDigest.digest());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return hash;
+    }
+
     private static String byte2Hex(byte[] bytes) {
         StringBuilder stringBuffer = new StringBuilder();
         String temp;
@@ -58,5 +71,15 @@ public class SM3DigestUtil {
             stringBuffer.append(temp);
         }
         return stringBuffer.toString();
+    }
+
+    public static void main(String[] args) {
+        File file = new File("C:\\DingDing Files\\123.txt");
+        String fileHash = getHash(file);
+        System.out.println("文件:" + file.getName() + " >>>>>> 文件Hash:" + fileHash);
+
+        String text = "hello world";
+        String hash = getHash(text);
+        System.out.println("文本内容:" + text + " >>>>>> 文本Hash:" + hash);
     }
 }
