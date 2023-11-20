@@ -7,29 +7,37 @@ spring:
   profiles:
     active: @profiles.active@
   datasource:
-    # 内存模式，进程关闭数据丢失
-    # url: jdbc:h2:mem:data_h2
-    # 嵌入模式，当前项目目录，进程关闭数据保留
-    url: jdbc:h2:./data_h2
+    url: jdbc:mysql://127.0.0.1:3306/data?createDatabaseIfNotExist=true&charset=utf8mb4&useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=utf8
     username: root
     password: root
-    driver-class-name: org.h2.Driver
-  h2:
-    console:
-      # 开启web控制台
-      enabled: true
-      # 访问路径url+/h2
-      path: /h2
-      settings:
-        web-allow-others: true
-  jpa:
-    # 更新表结构，可以在控制台执行修改表结构的SQL语句
-    hibernate:
-      ddl-auto: update
-    show-sql: true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      minimum-idle: 10
+      maximum-pool-size: 50
+      idle-timeout: 60000
+      max-lifetime: 180000
+      connection-timeout: 30000
+      connection-test-query: select 1
+      connection-init-sql: select 2
+      leak-detection-threshold: 2000
+      test-on-borrow: true
+      test-on-connect: true
+      test-on-return: true
+      test-while-idle: true
+      time-between-eviction-runs-millis: 60000
+      use-disposable-connection-facade: true
+      validation-interval: 60000
+      validation-query: select 3
+      validation-query-timeout: 5000
+      validation-timeout: 3000
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+
+mybatis:
+  configuration:
+    call-setters-on-nulls: true
+  mapper-locations: classpath:mapperxml/*.xml
 
 token:
   open: true

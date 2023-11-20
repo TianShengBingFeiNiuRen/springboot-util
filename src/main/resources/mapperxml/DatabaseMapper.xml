@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.andon.springbootutil.mapper.DatabaseMapper">
+    <resultMap id="User" type="com.andon.springbootutil.entity.AuthorityUser">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="real_name" jdbcType="VARCHAR" property="realName"/>
+        <result column="is_lock" jdbcType="TINYINT" property="isLock"/>
+        <result column="is_register" jdbcType="TINYINT" property="isRegister"/>
+        <result column="org_id" jdbcType="VARCHAR" property="orgId"/>
+        <result column="create_time" jdbcType="TIMESTAMP" javaType="Date" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" javaType="Date" property="updateTime"/>
+    </resultMap>
+    <sql id="User_Column_List">
+        `id`
+        ,`username`,`password`,`phone`,`real_name`,`is_lock`,`is_register`,`org_id`,`create_time`,`update_time`
+    </sql>
+    <select id="selectUser" resultMap="User">
+        SELECT
+        <include refid="User_Column_List"/>
+        FROM `authority_user`
+    </select>
+    <update id="dropTable">
+        DROP TABLE IF EXISTS `${tableName}`;
+    </update>
+    <update id="createTable">
+        CREATE TABLE `${tableName}`
+        (
+            `id`            BIGINT NOT NULL AUTO_INCREMENT,
+            PRIMARY KEY (`id`)
+        ) ENGINE = INNODB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '${table}';
+    </update>
+    <update id="addColumn">
+        ALTER TABLE `${tableName}`
+            ADD COLUMN `${column}` varchar(1000) COLLATE utf8mb4_bin DEFAULT NULL;
+    </update>
+    <insert id="insertInto">
+        INSERT INTO `${tableName}`(${column})
+        VALUES ${values};
+    </insert>
+</mapper>
