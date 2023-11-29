@@ -42,7 +42,7 @@
         <!--    将项目启动jar打包到boot目录    -->
         <fileSet>
             <directory>${basedir}/target</directory>
-            <outputDirectory>boot</outputDirectory>
+            <outputDirectory>lib</outputDirectory>
             <fileMode>0755</fileMode>
             <includes>
                 <include>${project.build.finalName}.jar</include>
