@@ -31,6 +31,8 @@ import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -47,6 +49,16 @@ import java.util.zip.CRC32;
  */
 @Slf4j
 public class Demo {
+
+    @Test
+    public void test93() throws ParseException {
+        String time = "2013/1/4";
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+        Date date = format.parse(time);
+        log.info("date:{}", date);
+        long timestamp = date.getTime();
+        log.info("timestamp:{}", timestamp/1000);
+    }
 
     @Test
     public void test92() {
