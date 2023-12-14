@@ -39,7 +39,7 @@
             <outputDirectory>lib</outputDirectory>
             <fileMode>0755</fileMode>
         </fileSet>
-        <!--    将项目启动jar打包到boot目录    -->
+        <!--    将项目启动jar打包到lib目录    -->
         <fileSet>
             <directory>${basedir}/target</directory>
             <outputDirectory>lib</outputDirectory>
