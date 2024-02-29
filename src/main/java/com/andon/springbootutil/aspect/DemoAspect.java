@@ -114,9 +114,12 @@ public class DemoAspect {
             if (arg instanceof String) {
                 params.put(parameters[i].getName(), arg);
             } else {
-                Map<String, Object> map = JSONObject.parseObject(JSONObject.toJSONString(args), new TypeReference<Map<String, Object>>() {
-                }.getType());
-                params.putAll(map);
+                try {
+                    Map<String, Object> map = JSONObject.parseObject(JSONObject.toJSONString(args), new TypeReference<Map<String, Object>>() {
+                    }.getType());
+                    params.putAll(map);
+                } catch (Exception ignored) {
+                }
             }
         }
         return params;
