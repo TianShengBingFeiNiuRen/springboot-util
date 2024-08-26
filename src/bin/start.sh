@@ -13,3 +13,5 @@ echo "$(date +'%Y-%m-%d %H:%M:%S') 等待启动 ${APPLICATION}..."
 nohup java ${JAVA_OPT} ${JVM_REMOTE_OPTS} -jar ./lib/${APPLICATION_JAR} > /dev/null 2>&1 &
 sleep 5s
 echo "$(date +'%Y-%m-%d %H:%M:%S') ${APPLICATION} started..."
+
+# sed -i 's/\r$//' filename.sh
