@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 @Slf4j
 public class FileUtil {
 
-    private static Path rootFilePath;
+    public static Path rootFilePath;
 
     static {
         try {
@@ -89,6 +89,7 @@ public class FileUtil {
         if (!Files.exists(path.getParent())) {
             Files.createDirectories(path.getParent());
         }
+        Files.deleteIfExists(path);
         Files.copy(multipartFile.getInputStream(), path);
         log.info("save success!! --文件-> [{}]", path.toAbsolutePath().toString());
         return path.toAbsolutePath().toString();
@@ -105,6 +106,7 @@ public class FileUtil {
         if (!Files.exists(path.getParent())) {
             Files.createDirectories(path.getParent());
         }
+        Files.deleteIfExists(path);
         Files.copy(new File(fromFilePath).toPath(), path);
         log.info("copy success!! --文件-> [{}]", path.toAbsolutePath().toString());
         return path.toAbsolutePath().toString();

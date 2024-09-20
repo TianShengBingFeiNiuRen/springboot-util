@@ -6,7 +6,8 @@ import com.andon.springbootutil.dto.PairDTO;
 import com.andon.springbootutil.dto.UserDTO;
 import com.andon.springbootutil.entity.Role;
 import com.andon.springbootutil.entity.User;
-import com.andon.springbootutil.mapstruct.*;
+import com.andon.springbootutil.mapstruct.PairMapper;
+import com.andon.springbootutil.mapstruct.UserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,6 +51,8 @@ public class MapstructTest {
         PairDTO pairDTO = pairMapper.pairToPairDTO(pair);
         log.info("pair:{}", JSONObject.toJSONString(pair));
         log.info("pairDTO:{}", JSONObject.toJSONString(pairDTO));
+        String testStatic = PairMapper.testStatic();
+        log.info("{}", testStatic);
     }
 
     @Test

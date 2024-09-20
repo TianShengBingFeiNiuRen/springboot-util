@@ -33,4 +33,8 @@ public abstract class PairMapper {
     })
     public abstract List<PairDTO> pairsToPairDTOS(List<Pair> pair);
 
+    public static String testStatic() {
+        return "testStatic";
+    }
+
 }

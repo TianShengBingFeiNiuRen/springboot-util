@@ -51,13 +51,188 @@ import java.util.zip.CRC32;
 public class Demo {
 
     @Test
+    public void test105() {
+//        String fileNamePath = "t_executor_certificate_org_header2.csv";
+        String fileNamePath = ".tmp/20240918/1726649693616_t_executor_certificate_org.csv";
+        Path path = Paths.get(FileUtil.rootFilePath.toAbsolutePath().toString(), fileNamePath);
+        File file = path.toFile();
+        File parentFile = file.getParentFile();
+        log.info("{}", file);
+        log.info("{}", parentFile.getAbsolutePath());
+        log.info("getPath:{}", Paths.get(file.getPath()));
+        log.info("getAbsolutePath:{}", Paths.get(file.getAbsolutePath()));
+    }
+
+    @Test
+    public void test104() {
+        String osName = System.getProperty("os.name");
+        log.info("osName:{}", osName);
+        String userDir = Paths.get(System.getProperty("user.dir")).toString();
+        String directoryName = userDir.substring(userDir.lastIndexOf(File.separator) + 1);
+        String fileRootPath; //文件存放目录
+        if (osName.toLowerCase().contains("windows")) {
+            fileRootPath = "C:\\apps\\file\\" + directoryName; // 指定windows系统下文件目录
+        } else {
+            fileRootPath = "/data/apps/file/" + directoryName; // 指定linux系统下文件目录
+        }
+        log.info("userDir:{}", userDir);
+        log.info("directoryName:{}", directoryName);
+        log.info("fileRootPath:{}", fileRootPath);
+    }
+
+    @Test
+    public void test103() {
+        String userName = "cm9vdA==";
+        String password = "U3pzaGF4aWFuZ0AxOTk=";
+
+        // 使用Base64的getDecoder()方法获取解码器
+        Base64.Decoder decoder = Base64.getDecoder();
+
+        log.info("{}", new String(decoder.decode(userName)));
+        log.info("{}", new String(decoder.decode(password)));
+    }
+
+    @Test
+    public void test102() {
+        String url = "https://sjsc-sit.szdex.com:443/jflzsx/_ailand/external/";
+        log.info("{}", url.split("/_ailand")[0]);
+    }
+
+    @Test
+    public void test101() {
+        String str = "HR.EMPLOYEES";
+        log.info("{}", str.replace(".", "_"));
+    }
+
+    @Test
+    public void test100() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("1", 1);
+        Object value = map.get("1");
+        log.info("{}", String.valueOf(value));
+        log.info("{}", (String) value);
+    }
+
+    @Test
+    public void test99() {
+        String jdbcUrl = "jdbc:mysql://localhost:3306/mydatabase?useSSL=false";
+        String[] jdbcUrlSplit = jdbcUrl.split("/");
+        log.info("jdbcUrlSplit:{}", JSONObject.toJSONString(jdbcUrlSplit));
+
+        String last = jdbcUrlSplit[jdbcUrlSplit.length - 1];
+        log.info("last:{}", last);
+
+        String database = last.split("\\?")[0];
+        log.info("database:{}", database);
+    }
+
+    @Test
+    public void test98() throws MalformedURLException {
+        String urlString = "http://www.example.com/path/to/resource";
+        String[] segments = urlString.split("/");
+        String lastSegment = "";
+        if (segments.length > 0) {
+            lastSegment = segments[segments.length - 1];
+            System.out.println("最后一段路径: " + lastSegment);
+        } else {
+            System.out.println("URL没有路径部分");
+        }
+        log.info("{}", urlString);
+        log.info("{}", lastSegment);
+    }
+
+    @Test
+    public void test97() {
+        String absolutePath = "/path/to/your/directory/filename.txt";
+        File file = new File(absolutePath);
+        String fileName = file.getName();
+        log.info("{}", absolutePath);
+        log.info("{}", fileName);
+        File parentFile = file.getParentFile();
+        if (!ObjectUtils.isEmpty(parentFile)) {
+            log.info("{}", parentFile.getPath());
+            log.info("{}", parentFile.getAbsolutePath());
+        }
+    }
+
+    @Test
+    public void test96() {
+        String o = "varchar";
+        String n = databaseTypeMapping(o);
+        log.info("{}-{}", o, n);
+        String o2 = "float";
+        String n2 = databaseTypeMapping(o2);
+        log.info("{}-{}", o2, n2);
+    }
+
+    public String databaseTypeMapping(String originalDataType) {
+        String type;
+        switch (originalDataType) {
+            case "char":
+            case "varchar":
+            case "mediumtext":
+            case "text":
+            case "datetime":
+            case "time":
+            case "timestamp":
+            case "string":
+                type = "STRING";
+                break;
+            case "int":
+            case "smallint":
+            case "tinyint":
+                type = "INT";
+                break;
+            case "double":
+            case "float":
+                type = "DOUBLE";
+                break;
+            case "binary":
+            case "varbinary":
+                type = "BINARY";
+                break;
+            case "bigint":
+                type = "BIGINT";
+                break;
+            case "decimal":
+                type = "DECIMAL";
+                break;
+            case "date":
+                type = "DATE";
+                break;
+            default:
+                type = "STRING";
+        }
+        return type;
+    }
+
+    @Test
+    public void test95() {
+        String uuid = UUID.randomUUID().toString();
+        String instanceId = String.format("%s-%s-%s", "DM", uuid.replace("-", "").substring(0, 15), System.currentTimeMillis());
+        log.info("uuid:{}", uuid);
+        log.info("instanceId:{}", instanceId);
+    }
+
+    @Test
+    public void test94() {
+        List<String> list = Arrays.asList("6", "v", "5", "h", "哈", "8", "嘿");
+        log.info("list:{}", list);
+        int count = 5;
+        for (int i = 0; i < count; i++) {
+            Collections.shuffle(list);
+            log.info("list:{}", list);
+        }
+    }
+
+    @Test
     public void test93() throws ParseException {
         String time = "2013/1/4";
         SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
         Date date = format.parse(time);
         log.info("date:{}", date);
         long timestamp = date.getTime();
-        log.info("timestamp:{}", timestamp/1000);
+        log.info("timestamp:{}", timestamp / 1000);
     }
 
     @Test
