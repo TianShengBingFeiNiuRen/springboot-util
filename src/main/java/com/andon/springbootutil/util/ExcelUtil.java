@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -100,14 +101,12 @@ public class ExcelUtil {
     /**
      * excel导出
      */
-    public static void exportExcel(HttpServletResponse httpServletResponse, List<List<String>> excelData, String sheetName, String fileName, int columnWidth) {
+    public static void exportExcel(HttpServletResponse httpServletResponse, List<List<String>> excelData, String sheetName, String fileName) throws IOException {
+        // 声明一个工作簿
+        HSSFWorkbook workbook = new HSSFWorkbook();
         try {
-            // 声明一个工作簿
-            HSSFWorkbook workbook = new HSSFWorkbook();
             // 生成一个表格,设置表格名称
             HSSFSheet sheet = workbook.createSheet(sheetName);
-            // 设置表格列宽度
-            sheet.setDefaultColumnWidth(columnWidth);
             // 写入List<List<String>>中的数据
             int rowIndex = 0;
             for (List<String> data : excelData) {
@@ -126,16 +125,17 @@ public class ExcelUtil {
             // Excel输入流通过response输出到页面下载
             httpServletResponse.setContentType("application/octet-stream");
             // 设置导出Excel的名称
-            httpServletResponse.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
+            httpServletResponse.addHeader("Content-Disposition", "attachment; filename=" + new String(fileName.getBytes(StandardCharsets.UTF_8), "ISO8859-1") + ".xlsx");
             // 刷新缓冲
             httpServletResponse.flushBuffer();
             // workbook讲Excel写入到response的输出流中,供页面下载Excel文件
             workbook.write(httpServletResponse.getOutputStream());
-            // 关闭workbook
-            workbook.close();
         } catch (IOException e) {
             log.error("exportExcel failure!! error={}", e.getMessage());
             e.printStackTrace();
+        } finally {
+            // 关闭workbook
+            workbook.close();
         }
     }
 }
