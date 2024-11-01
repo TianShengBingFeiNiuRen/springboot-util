@@ -1,9 +1,9 @@
 package com.andon.springbootutil.util;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.*;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -101,23 +101,22 @@ public class ExcelUtil {
     /**
      * excel导出
      */
-    public static void exportExcel(HttpServletResponse httpServletResponse, List<List<String>> excelData, String sheetName, String fileName) throws IOException {
+    public static void exportExcel(HttpServletResponse httpServletResponse, List<List<String>> excelData, String fileName) {
         // 声明一个工作簿
-        HSSFWorkbook workbook = new HSSFWorkbook();
-        try {
-            // 生成一个表格,设置表格名称
-            HSSFSheet sheet = workbook.createSheet(sheetName);
+        try (XSSFWorkbook workbook = new XSSFWorkbook()) {
+            // 生成一个表格
+            XSSFSheet sheet = workbook.createSheet();
             // 写入List<List<String>>中的数据
             int rowIndex = 0;
             for (List<String> data : excelData) {
                 // 创建一个row行,然后自增i
-                HSSFRow row = sheet.createRow(rowIndex++);
+                XSSFRow row = sheet.createRow(rowIndex++);
                 // 遍历添加本行数据
                 for (int i = 0; i < data.size(); i++) {
                     // 创建一个单元格
-                    HSSFCell cell = row.createCell(i);
+                    XSSFCell cell = row.createCell(i);
                     // 创建一个内容对象
-                    HSSFRichTextString text = new HSSFRichTextString(data.get(i));
+                    XSSFRichTextString text = new XSSFRichTextString(data.get(i));
                     // 将内容对象的文字内容写入单元格中
                     cell.setCellValue(text);
                 }
@@ -130,12 +129,8 @@ public class ExcelUtil {
             httpServletResponse.flushBuffer();
             // workbook讲Excel写入到response的输出流中,供页面下载Excel文件
             workbook.write(httpServletResponse.getOutputStream());
-        } catch (IOException e) {
-            log.error("exportExcel failure!! error={}", e.getMessage());
-            e.printStackTrace();
-        } finally {
-            // 关闭workbook
-            workbook.close();
+        } catch (Exception e) {
+            log.error("exportExcel failure!! error", e);
         }
     }
 }

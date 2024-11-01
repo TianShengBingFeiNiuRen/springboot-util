@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -27,13 +26,13 @@ public class ExcelController {
 
     @ApiOperation("导出")
     @GetMapping(value = "/export")
-    public void export(HttpServletResponse httpServletResponse) throws IOException {
+    public void export(HttpServletResponse httpServletResponse) {
         List<List<String>> data = new ArrayList<>();
         List<String> header = Arrays.asList("a", "b", "c");
         data.add(header);
-        for (int i = 0; i < 65535; i++) {
+        for (int i = 0; i < 10_0000; i++) {
             data.add(Arrays.asList(String.valueOf((i + 1)), String.valueOf(System.currentTimeMillis()), new Date().toString()));
         }
-        ExcelUtil.exportExcel(httpServletResponse, data, "log", "操作日志_" + System.currentTimeMillis());
+        ExcelUtil.exportExcel(httpServletResponse, data, "操作日志_" + System.currentTimeMillis());
     }
 }
