@@ -17,6 +17,7 @@
                 <include>**.sh</include>
                 <include>**.bat</include>
             </includes>
+            <lineEnding>unix</lineEnding>
         </fileSet>
         <!--    输出配置文件到config目录    -->
         <fileSet>
