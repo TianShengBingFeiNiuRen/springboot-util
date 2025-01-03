@@ -43,7 +43,7 @@ public class FileUtilTest {
     @Test
     public void createCsvFile() throws Exception {
         String suffix = "data";
-        int row = 1_0000;
+        int row = 5_0000;
         int confuseRow = 5_000;
         String fileName = String.format("%s_%s_%s", suffix, row, confuseRow);
 //        String[] header = new String[]{"id", "x1_" + suffix, "x2_" + suffix, "x3_" + suffix, "x4_" + suffix, "x5_" + suffix, "x6_" + suffix};

@@ -111,7 +111,7 @@ public class DemoAspect {
         Parameter[] parameters = method.getParameters();
         for (int i = 0; i < args.length; i++) {
             Object arg = args[i];
-            if (arg instanceof String) {
+            if (arg instanceof String || arg instanceof Long) {
                 params.put(parameters[i].getName(), arg);
             } else {
                 try {

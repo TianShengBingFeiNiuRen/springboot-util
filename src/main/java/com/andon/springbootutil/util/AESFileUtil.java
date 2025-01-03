@@ -94,9 +94,9 @@ public class AESFileUtil {
         String key = "A5DF13C1FBDC45DD88154B3C189D254BEACBC78947F150601D07827145B32EF6";
         log.info("key:{}", key);
 
-        String filePath = "C:\\Apps\\file\\springboot-util\\个人社保缴费信息.csv";
-        String encryptFilePath = "C:\\Apps\\file\\springboot-util\\个人社保缴费信息.encrypt";
-        String decryptFilePath = "C:\\Apps\\file\\springboot-util\\个人社保缴费信息.decrypt";
+        String filePath = "C:\\Apps\\file\\springboot-util\\data_ver_host.csv";
+        String encryptFilePath = "C:\\Apps\\file\\springboot-util\\data_ver_host.encrypt";
+        String decryptFilePath = "C:\\Apps\\file\\springboot-util\\data_ver_host.decrypt";
 
         // 加密
         encrypt(key, filePath, encryptFilePath);

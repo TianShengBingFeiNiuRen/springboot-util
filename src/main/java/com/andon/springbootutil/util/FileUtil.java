@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -90,8 +91,8 @@ public class FileUtil {
             Files.createDirectories(path.getParent());
         }
         Files.deleteIfExists(path);
-        Files.copy(multipartFile.getInputStream(), path);
-        log.info("save success!! --文件-> [{}]", path.toAbsolutePath().toString());
+        Files.copy(multipartFile.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+        log.info("save success!! --文件-> [{}]", path.toAbsolutePath());
         return path.toAbsolutePath().toString();
     }
 
@@ -107,8 +108,8 @@ public class FileUtil {
             Files.createDirectories(path.getParent());
         }
         Files.deleteIfExists(path);
-        Files.copy(new File(fromFilePath).toPath(), path);
-        log.info("copy success!! --文件-> [{}]", path.toAbsolutePath().toString());
+        Files.copy(new File(fromFilePath).toPath(), path, StandardCopyOption.REPLACE_EXISTING);
+        log.info("copy success!! --文件-> [{}]", path.toAbsolutePath());
         return path.toAbsolutePath().toString();
     }
 
