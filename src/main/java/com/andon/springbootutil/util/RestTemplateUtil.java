@@ -78,6 +78,17 @@ public class RestTemplateUtil {
         return restTemplate.exchange(url, httpMethod, httpEntity, String.class).getBody();
     }
 
+    public static String postFormData(String url, Map<String, ?> headers, MultiValueMap<String, Object> formData) {
+        // 请求方式
+        HttpMethod httpMethod = HttpMethod.POST;
+        // 构建请求头
+        HttpHeaders httpHeaders = buildHttpHeaders(headers, BodyTypeEnum.FORM_DATA.toString());
+        // 构建请求体
+        HttpEntity<?> httpEntity = buildFormDataHttpEntity(httpHeaders, formData);
+        log.info("call api now: url: {}  httpMethod: {}  httpEntity: {}", url, httpMethod, httpEntity);
+        return restTemplate.exchange(url, httpMethod, httpEntity, String.class).getBody();
+    }
+
     /**
      * url拼接params参数
      */
@@ -138,6 +149,10 @@ public class RestTemplateUtil {
             }
         }
         return new HttpEntity<>(body, httpHeaders);
+    }
+
+    private static HttpEntity<?> buildFormDataHttpEntity(HttpHeaders headers, MultiValueMap<String, Object> formData) {
+        return new HttpEntity<>(formData, headers);
     }
 
     enum BodyTypeEnum {
