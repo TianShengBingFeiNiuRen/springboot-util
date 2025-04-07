@@ -11,7 +11,7 @@
     <jmxConfigurator/>
 
     <!-- 定义日志文件 输出位置 -->
-    <property name="log_dir" value="log"/>
+    <property name="log_dir" value="${log_dir}"/>
 
     <!-- 日志最大的历史 10天 -->
     <property name="maxHistory" value="10"/>
