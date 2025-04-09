@@ -6,6 +6,12 @@ APPLICATION_JAR="${APPLICATION}.jar"
 
 workspace=$(cd $(dirname $0); pwd)
 
+PID=$(ps -ef | grep "${workspace}/lib/${APPLICATION_JAR}" | grep -v grep | awk '{print $2}')
+if [ -n "$PID" ]; then
+    echo "程序进程已存在，将不会执行启动操作"
+    exit 0
+fi
+
 LOG_DIR="${workspace}/log"
 mkdir -p ${LOG_DIR}
 
