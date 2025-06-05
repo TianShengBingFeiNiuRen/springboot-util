@@ -4,7 +4,7 @@ source /etc/profile
 APPLICATION="springboot-util"
 APPLICATION_JAR="${APPLICATION}.jar"
 
-workspace=$(cd $(dirname $0); pwd)
+workspace=$(cd "$(dirname "$0")" && pwd)
 
 PID=$(ps -ef | grep "${workspace}/lib/${APPLICATION_JAR}" | grep -v grep | awk '{print $2}')
 if [ -n "$PID" ]; then
@@ -21,8 +21,8 @@ JAVA_OPT="${JAVA_OPT} -XX:-OmitStackTraceInFastThrow"
 JVM_REMOTE_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=7766"
 
 echo "$(date +'%Y-%m-%d %H:%M:%S') 等待启动 ${APPLICATION}..."
-cd ${workspace} && \
-nohup java ${JAVA_OPT} ${JVM_REMOTE_OPTS} -Dlog_dir=${LOG_DIR} -jar ${workspace}/lib/${APPLICATION_JAR} > /dev/null 2>&1 &
+cd "${workspace}" && \
+nohup java ${JAVA_OPT} ${JVM_REMOTE_OPTS} -Dlog_dir="${LOG_DIR}" -jar "${workspace}"/lib/${APPLICATION_JAR} > /dev/null 2>&1 &
 sleep 5s
 echo "$(date +'%Y-%m-%d %H:%M:%S') ${APPLICATION} started..."
 

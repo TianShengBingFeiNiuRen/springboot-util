@@ -341,6 +341,23 @@ public class ApiDataController {
         return CommonResponse.successResponse(data, data.size());
     }
 
+    @PostMapping(value = "/apiData/headerAndJson")
+    public CommonResponse<List<ApiDataResponse>> headerAndJson(@RequestHeader(required = false) String headerKey, @RequestHeader(required = false) String headerValue, @RequestBody BodyParam bodyParam) {
+        log.info("header >> headerKey:{} headerValue:{}", headerKey, headerValue);
+        log.info("json >> bodyKey:{} bodyValue:{}", bodyParam.bodyKey, bodyParam.bodyValue);
+        List<ApiDataResponse> data = new ArrayList<>();
+        String time = TimeUtil.FORMAT.get().format(System.currentTimeMillis());
+        if (!ObjectUtils.isEmpty(headerKey) || !ObjectUtils.isEmpty(headerValue)) {
+            data.add(ApiDataResponse.builder().id("header").key(headerKey).value(headerValue).sequence(1).date(time).build());
+        }
+        if (!ObjectUtils.isEmpty(bodyParam.bodyKey) || !ObjectUtils.isEmpty(bodyParam.bodyValue)) {
+            data.add(ApiDataResponse.builder().id("json").key(bodyParam.bodyKey).value(bodyParam.bodyValue).sequence(2).date(time).build());
+        }
+        logHeaders();
+        addData(data, time);
+        return CommonResponse.successResponse(data, data.size());
+    }
+
     @Data
     @Builder
     @NoArgsConstructor

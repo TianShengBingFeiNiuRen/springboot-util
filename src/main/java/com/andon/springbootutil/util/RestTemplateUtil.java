@@ -19,7 +19,6 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import java.net.HttpURLConnection;
 import java.security.KeyStore;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -155,7 +154,7 @@ public class RestTemplateUtil {
         return new HttpEntity<>(formData, headers);
     }
 
-    enum BodyTypeEnum {
+    public enum BodyTypeEnum {
         NONE,
         FORM_DATA,
         JSON
@@ -165,24 +164,11 @@ public class RestTemplateUtil {
      * 测试
      */
     public static void main(String[] args) {
-        {
-            String url = "127.0.0.1:8866/springboot-util/swagger/test?param1=hello&param2=world";
-            String method = "GET";
-            Map<String, Object> params = new HashMap<>();
-            params.put("param1", "hello");
-            params.put("param2", "world");
-            String response = RestTemplateUtil.sendHttp(url, method, params, null, "NONE", null);
-            log.info("response:{}", response);
-        }
-        System.out.println();
-        {
-            String url = "127.0.0.1:8866/springboot-util/swagger/test2";
-            String method = "POST";
-            Map<String, Object> body = new HashMap<>();
-            body.put("param1", "java");
-            body.put("param2", "mysql");
-            String response = RestTemplateUtil.sendHttp(url, method, null, JSONObject.toJSONString(body), "JSON", null);
-            log.info("response:{}", response);
-        }
+        String url = "https://125.122.37.39:4443/_digital-certificate/open/compliance-scene-list";
+        JSONObject body = new JSONObject();
+        body.put("page", 1);
+        body.put("size", 10);
+        String response = RestTemplateUtil.sendHttp(url, HttpMethod.POST.name(), null, body.toJSONString(), RestTemplateUtil.BodyTypeEnum.JSON.name(), null);
+        log.info("response:{}", response);
     }
 }

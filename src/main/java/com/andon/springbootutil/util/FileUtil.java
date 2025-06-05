@@ -13,6 +13,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 /**
  * @author Andon
@@ -80,6 +81,23 @@ public class FileUtil {
     }
 
     /**
+     * 创建文件
+     *
+     * @param filePath 文件路径
+     */
+    public static File createAbsolutePathFile(String filePath) throws IOException {
+        File file = new File(filePath);
+        if (!Files.exists(file.toPath().getParent())) {
+            Files.createDirectories(file.toPath().getParent());
+        }
+        Files.deleteIfExists(file.toPath());
+        log.info("deleteFile success!! --文件-> [{}]", file.getAbsolutePath());
+        Files.createFile(file.toPath());
+        log.info("createFile success!! --文件-> [{}]", file.getAbsolutePath());
+        return file;
+    }
+
+    /**
      * 保存文件
      *
      * @param multipartFile multipartFile
@@ -94,6 +112,22 @@ public class FileUtil {
         Files.copy(multipartFile.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
         log.info("save success!! --文件-> [{}]", path.toAbsolutePath());
         return path.toAbsolutePath().toString();
+    }
+
+    /**
+     * 保存文件
+     *
+     * @param multipartFile multipartFile
+     * @param filePath      文件绝对路径
+     */
+    public static void saveToAbsolutePath(MultipartFile multipartFile, String filePath) throws IOException {
+        File file = new File(filePath);
+        if (!Files.exists(file.toPath().getParent())) {
+            Files.createDirectories(file.toPath().getParent());
+        }
+        Files.deleteIfExists(file.toPath());
+        Files.copy(multipartFile.getInputStream(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        log.info("saveToAbsolutePath success!! --文件-> [{}]", filePath);
     }
 
     /**
@@ -114,6 +148,84 @@ public class FileUtil {
     }
 
     /**
+     * 复制文件
+     *
+     * @param fromFilePath 源文件绝对路径
+     * @param toFilePath   目标文件绝对路径
+     */
+    public static void copyToAbsolutePath(String fromFilePath, String toFilePath) throws IOException {
+        File toFile = new File(toFilePath);
+        if (!Files.exists(toFile.toPath().getParent())) {
+            Files.createDirectories(toFile.toPath().getParent());
+        }
+        Files.copy(new File(fromFilePath).toPath(), toFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        log.info("copyToAbsolutePath success!! --文件-> [{}]", toFilePath);
+    }
+
+    /**
+     * 移动文件
+     *
+     * @param fromFilePath 源文件绝对路径
+     * @param fileNamePath 目标文件名称路径
+     */
+    public static String move(String fromFilePath, String... fileNamePath) throws IOException {
+        Path path = Paths.get(rootFilePath.toAbsolutePath().toString(), fileNamePath);
+        if (!Files.exists(path.getParent())) {
+            Files.createDirectories(path.getParent());
+        }
+        Files.deleteIfExists(path);
+        Files.move(new File(fromFilePath).toPath(), path, StandardCopyOption.REPLACE_EXISTING);
+        log.info("move success!! --文件-> [{}]", path.toAbsolutePath());
+        return path.toAbsolutePath().toString();
+    }
+
+    /**
+     * 移动文件
+     *
+     * @param fromFilePath 源文件绝对路径
+     * @param filePath     目标文件名称路径
+     */
+    public static void moveToAbsolutePath(String fromFilePath, String filePath) throws IOException {
+        File file = new File(filePath);
+        if (!Files.exists(file.toPath().getParent())) {
+            Files.createDirectories(file.toPath().getParent());
+        }
+        Files.deleteIfExists(file.toPath());
+        Files.move(new File(fromFilePath).toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        log.info("moveToAbsolutePath success!! --文件-> [{}]", filePath);
+    }
+
+    /**
+     * 删除临时文件目录
+     *
+     * @param tempFilePath 临时文件目录绝对路径
+     */
+    public static void deleteTempFilePath(Path tempFilePath) {
+        if (Files.exists(tempFilePath)) {
+            try (Stream<Path> walkStream = Files.walk(tempFilePath)) {
+                walkStream.sorted((p1, p2) -> -p1.compareTo(p2))
+                        .forEach(path -> {
+                            try {
+                                if (Files.isDirectory(path)) {
+                                    if (Files.isSymbolicLink(path)) {
+                                        Files.delete(path);
+                                    } else {
+                                        Files.delete(path);
+                                    }
+                                } else {
+                                    Files.delete(path);
+                                }
+                            } catch (Exception e) {
+                                log.error("deleteTempFilePath failure!! " + e);
+                            }
+                        });
+            } catch (Exception e) {
+                log.error("deleteTempFilePath failure!! " + e);
+            }
+        }
+    }
+
+    /**
      * 根据内容创建文件
      *
      * @param lines    文件内容
@@ -128,6 +240,23 @@ public class FileUtil {
             }
             log.info("createFileWithContent success!! --文件-> [{}]", file.getAbsolutePath());
             return file;
+        }
+    }
+
+    /**
+     * 根据内容创建文件
+     *
+     * @param lines    文件内容
+     * @param filePath 文件名路径
+     */
+    public static void createAbsolutePathFileWithContent(List<String> lines, String filePath) throws IOException {
+        File file = createAbsolutePathFile(filePath);
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(file.toPath()), StandardCharsets.UTF_8))) {
+            for (String line : lines) {
+                bufferedWriter.write(line);
+                bufferedWriter.newLine();
+            }
+            log.info("createAbsolutePathFileWithContent success!! --文件-> [{}]", filePath);
         }
     }
 

@@ -1,0 +1,127 @@
+{
+  "core": {
+    "container": {
+      "trace": {
+        "enable": "false"
+      },
+      "job": {
+        "reportInterval": 10000,
+        "id": ""
+      },
+      "taskGroup": {
+        "channel": 1
+      }
+    },
+    "transport": {
+      "exchanger": {
+        "class": "com.ailpha.ailand.collecotr.core.transport.exchanger.BufferedRecordExchanger",
+        "bufferSize": 32
+      },
+      "channel": {
+        "byteCapacity": 67108864,
+        "flowControlInterval": 20,
+        "class": "com.ailpha.ailand.collecotr.core.transport.channel.memory.MemoryChannel",
+        "speed": {
+          "byte": -1,
+          "record": -1
+        },
+        "capacity": 512
+      }
+    },
+    "statistics": {
+      "collector": {
+        "plugin": {
+          "taskClass": "com.ailpha.ailand.collecotr.core.statistics.plugin.task.StdoutPluginCollector",
+          "maxDirtyNumber": 10
+        }
+      }
+    }
+  },
+  "entry": {
+    "jvm": "-Xms1G -Xmx1G"
+  },
+  "common": {
+    "column": {
+      "dateFormat": "yyyy-MM-dd",
+      "datetimeFormat": "yyyy-MM-dd HH:mm:ss",
+      "timeFormat": "HH:mm:ss",
+      "extraFormats": [
+        "yyyyMMdd"
+      ],
+      "timeZone": "GMT+8",
+      "encoding": "utf-8"
+    }
+  },
+  "plugin": {
+    "reader": {
+      "httpreader": {
+        "path": "com.ailpha.ailand.plugin.reader.httpreader.HttpReader",
+        "name": "httpreader",
+        "description": "Use the http interface to import data.",
+        "developer": "ah",
+        "class": "com.ailpha.ailand.plugin.reader.httpreader.HttpReader"
+      }
+    },
+    "writer": {
+      "txtfilewriter": {
+        "path": "com.ailpha.ailand.collector.plugin.writer.txtfilewriter.TxtFileWriter",
+        "name": "txtfilewriter",
+        "description": "useScene: test. mechanism: use datax framework to transport data to txt file. warn: The more you know about the data, the less problems you encounter.",
+        "developer": "ah",
+        "class": "com.ailpha.ailand.plugin.writer.txtfilewriter.TxtFileWriter"
+      }
+    }
+  },
+  "job": {
+    "content": [
+      {
+        "reader": {
+          "parameter": {
+            "url": "",
+            "method": "",
+            "params": "",
+            "body": "",
+            "bodyType": "",
+            "headers": "",
+            "response": "",
+            "dataPath": "",
+            "extend": ""
+          },
+          "name": "httpreader"
+        },
+        "writer": {
+          "jobId": "",
+          "parameter": {
+            "fileName": "collector",
+            "fileNameIsRandom": false,
+            "debugDataSource": "sourceSampling",
+            "writeMode": "append",
+            "fieldDelimiter": ",",
+            "version": "",
+            "path": "",
+            "fullFirstTime": "true",
+            "createHiveTable": "false",
+            "datasetId": "",
+            "fileType": "text",
+            "fileFormat": "text",
+            "updateType": "0",
+            "syncWay": "2"
+          },
+          "name": "txtfilewriter",
+          "jobVersion": ""
+        }
+      }
+    ],
+    "setting": {
+      "errorLimit": {
+        "record": 0,
+        "percentage": 0.02
+      },
+      "speed": {
+        "byte": 10485760
+      }
+    },
+    "callbackUrl": ""
+  }
+}
+

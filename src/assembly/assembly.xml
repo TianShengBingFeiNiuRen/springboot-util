@@ -16,6 +16,7 @@
             <includes>
                 <include>**.sh</include>
                 <include>**.bat</include>
+                <include>**.md</include>
             </includes>
             <lineEnding>unix</lineEnding>
         </fileSet>
@@ -26,11 +27,12 @@
             <fileMode>0644</fileMode>
             <includes>
                 <include>application.yml</include>
+                <include>application.properties</include>
                 <include>application-${profiles.active}.yml</include>
+                <include>application-${profiles.active}.properties</include>
                 <include>mapperxml/*.xml</include>
                 <include>db/migration/*.sql</include>
                 <include>*.xml</include>
-                <include>*.properties</include>
                 <include>banner.txt</include>
             </includes>
         </fileSet>

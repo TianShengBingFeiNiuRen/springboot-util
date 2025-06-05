@@ -1,5 +1,6 @@
 package com.andon.springbootutil.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.io.File;
@@ -12,17 +13,22 @@ import java.security.MessageDigest;
  * @author Andon
  * 2023/11/2
  */
-public class SM3DigestUtil {
+@Slf4j
+public class DigestUtil {
+
+    // 摘要算法
+    public static final String SM3 = "SM3";
+    public static final String MD5 = "MD5";
 
     /**
      * 文件Hash
      */
-    public static String getHash(File file) {
+    public static String getHash(String algorithm, File file) {
         FileInputStream fileInputStream = null;
         String hash = null;
         try {
             BouncyCastleProvider provider = new BouncyCastleProvider();
-            MessageDigest messageDigest = MessageDigest.getInstance("SM3", provider);
+            MessageDigest messageDigest = MessageDigest.getInstance(algorithm, provider);
             fileInputStream = new FileInputStream(file);
             byte[] buffer = new byte[1024];
             int length;
@@ -41,22 +47,24 @@ public class SM3DigestUtil {
                 e.printStackTrace();
             }
         }
+        log.info("[{}] >>> {}:{}", file.getAbsolutePath(), algorithm, hash);
         return hash;
     }
 
     /**
      * 文本Hash
      */
-    public static String getHash(String text) {
+    public static String getHash(String algorithm, String text) {
         String hash = null;
         try {
             BouncyCastleProvider provider = new BouncyCastleProvider();
-            MessageDigest messageDigest = MessageDigest.getInstance("SM3", provider);
+            MessageDigest messageDigest = MessageDigest.getInstance(algorithm, provider);
             messageDigest.update(text.getBytes(StandardCharsets.UTF_8));
             hash = byte2Hex(messageDigest.digest());
         } catch (Exception e) {
             e.printStackTrace();
         }
+        log.info("[{}] >>> {}:{}", text, algorithm, hash);
         return hash;
     }
 
@@ -74,12 +82,12 @@ public class SM3DigestUtil {
     }
 
     public static void main(String[] args) {
-        File file = new File("C:\\DingDing Files\\123.txt");
-        String fileHash = getHash(file);
-        System.out.println("文件:" + file.getName() + " >>>>>> 文件Hash:" + fileHash);
+        String algorithm = MD5;
+
+        File file = new File("C:\\DingDing Files\\123.zip");
+        String fileHash = getHash(algorithm, file);
 
         String text = "hello world";
-        String hash = getHash(text);
-        System.out.println("文本内容:" + text + " >>>>>> 文本Hash:" + hash);
+        String hash = getHash(algorithm, text);
     }
 }

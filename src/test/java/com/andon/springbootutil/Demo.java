@@ -2,6 +2,7 @@ package com.andon.springbootutil;
 
 import com.alibaba.fastjson.JSONObject;
 import com.andon.springbootutil.dto.RocksDBDTO;
+import com.andon.springbootutil.dto.VersionInfo;
 import com.andon.springbootutil.response.TestSwaggerTestResp;
 import com.andon.springbootutil.util.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.Test;
 import org.springframework.beans.BeanUtils;
+import org.springframework.http.HttpMethod;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
@@ -49,6 +51,37 @@ import java.util.zip.CRC32;
  */
 @Slf4j
 public class Demo {
+
+    @Test
+    public void test109() throws Exception {
+        String upgradeTaskPath = "C:\\Apps\\file\\springboot-util\\PACKAGE\\version_info.json";
+        String versionInfoJson = FileUtil.readContent(upgradeTaskPath);
+        VersionInfo parseObject = JSONObject.parseObject(versionInfoJson, new com.alibaba.fastjson.TypeReference<VersionInfo>() {
+        }.getType());
+        log.info(JSONObject.toJSONString(parseObject));
+    }
+
+    @Test
+    public void test108() {
+        String zipFilePath = "C:\\Apps\\file\\springboot-util\\PACKAGE\\.tmp.zip";
+        ZipUtil.decompress(zipFilePath, "C:\\Apps\\file\\springboot-util\\PACKAGE\\.tmp");
+    }
+
+    @Test
+    public void test107() {
+        String inputFilePath = "C:\\Apps\\file\\springboot-util\\PACKAGE\\.tmp";
+        File zipFile = ZipUtil.compressToZip(inputFilePath, "C:\\Apps\\file\\springboot-util\\tmp.zip");
+    }
+
+    @Test
+    public void test106() {
+        String url = "https://125.122.37.39:4443/_digital-certificate/open/compliance-scene-list";
+        JSONObject body = new JSONObject();
+        body.put("page", 1);
+        body.put("size", 10);
+        String response = RestTemplateUtil.sendHttp(url, HttpMethod.POST.name(), null, body.toJSONString(), RestTemplateUtil.BodyTypeEnum.JSON.name(), null);
+        log.info("response:{}", response);
+    }
 
     @Test
     public void test105() {

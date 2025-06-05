@@ -42,6 +42,15 @@ public class TimeUtil {
         return parse;
     }
 
+    public static boolean checkFormat(String time, SimpleDateFormat simpleDateFormat) {
+        try {
+            Date parse = simpleDateFormat.parse(time);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public static void sleep(long timestamp) {
         try {
             Thread.sleep(timestamp);
