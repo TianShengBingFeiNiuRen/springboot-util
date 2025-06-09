@@ -5,7 +5,6 @@ package com.andon.springbootutil.constant;
  * 2025/5/28
  */
 public enum UploadMethod {
-
     /**
      * 页面
      */

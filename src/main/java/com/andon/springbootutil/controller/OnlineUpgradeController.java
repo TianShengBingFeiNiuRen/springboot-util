@@ -11,12 +11,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +41,7 @@ public class OnlineUpgradeController {
 
     @ApiOperation("包管理-创建")
     @PostMapping(value = "/package/create")
-    public CommonResponse<String> packageCreate(PackageUploadReq packageUploadReq) throws Exception {
+    public CommonResponse<String> packageCreate(@Valid @RequestBody PackageUploadReq packageUploadReq) throws Exception {
         String id = onlineUpgradeService.packageCreate(packageUploadReq);
         return CommonResponse.successResponse(id);
     }
@@ -64,7 +62,7 @@ public class OnlineUpgradeController {
 
     @ApiOperation("节点升级")
     @PostMapping(value = "/upgrade")
-    public CommonResponse<String> upgrade(UpgradeReq upgradeReq) throws Exception {
+    public CommonResponse<String> upgrade(@Valid @RequestBody UpgradeReq upgradeReq) throws Exception {
         String id = onlineUpgradeService.upgrade(upgradeReq);
         return CommonResponse.successResponse(id);
     }

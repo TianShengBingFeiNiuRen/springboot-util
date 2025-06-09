@@ -29,5 +29,5 @@ public class UpgradeReq implements Serializable {
     private Boolean immediately;
 
     @ApiModelProperty(value = "升级时间：yyyy-MM-dd HH:mm:ss")
-    String upgradeTime;
+    private String upgradeTime;
 }

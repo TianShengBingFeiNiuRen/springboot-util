@@ -36,10 +36,10 @@ public class PackageUploadReq implements Serializable {
     private UploadMethod uploadMethod;
 
     @ApiModelProperty(value = "升级包文件ID")
-    String fileId;
+    private String fileId;
 
     @ApiModelProperty(value = "服务器文件路径")
-    String serverFilePath;
+    private String serverFilePath;
 
     // TODO 私钥加密md5，后端校验
 }
