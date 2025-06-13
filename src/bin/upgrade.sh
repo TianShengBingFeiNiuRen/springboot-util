@@ -350,7 +350,7 @@ if [ -f "${executor_package}" ]; then
             fi
         fi
         # 等待进程退出
-        sleep 5
+        sleep 10
         if [ -e "/proc/${executor_pid}" ]; then
             append_log "ERROR 进程未终止（可能被其他进程托管），PID: [${executor_pid}]"
             set_upgrade_status "FAILURE"
@@ -414,7 +414,7 @@ if [ -f "${executor_package}" ]; then
     append_log "INFO 启动脚本执行完成"
     # 9. 检查端口是否启动
     append_log "INFO ->>> ix.等待检查端口 [${executor_port}] 状态"
-    sleep 15
+    sleep 30
     new_pid=$(ss -tlnp 2>/dev/null | grep -E ":${executor_port}\b" | awk -F'pid=' '{print $2}' | awk -F',' '{print $1}' | head -n1)
     [ -z "${new_pid}" ] && new_pid=$(netstat -tlnp 2>/dev/null | grep -E ":${executor_port}\b" | awk '{print $7}' | cut -d'/' -f1 | head -n1)
     if [ -z "${new_pid}" ] || [ ! -e "/proc/${new_pid}" ]; then
@@ -581,7 +581,7 @@ if [ -f "${back_package}" ]; then
             fi
         fi
         # 等待进程退出
-        sleep 5
+        sleep 10
         if [ -e "/proc/${back_pid}" ]; then
             append_log "ERROR 进程未终止（可能被其他进程托管），PID: [${back_pid}]"
             set_upgrade_status "FAILURE"
@@ -649,7 +649,7 @@ if [ -f "${back_package}" ]; then
     cp -f "${version_info_file}" "${back_deploy_path}/"
     # 10. 检查端口是否启动
     append_log "INFO ->>> x.等待检查端口 [${back_port}] 状态"
-    sleep 15
+    sleep 30
     new_pid=$(ss -tlnp 2>/dev/null | grep -E ":${back_port}\b" | awk -F'pid=' '{print $2}' | awk -F',' '{print $1}' | head -n1)
     [ -z "${new_pid}" ] && new_pid=$(netstat -tlnp 2>/dev/null | grep -E ":${back_port}\b" | awk '{print $7}' | cut -d'/' -f1 | head -n1)
     if [ -z "${new_pid}" ] || [ ! -e "/proc/${new_pid}" ]; then
