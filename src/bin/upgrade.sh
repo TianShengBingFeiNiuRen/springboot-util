@@ -443,12 +443,12 @@ if [ -f "${executor_package}" ]; then
         fi
         # 检查 PID 有效性：存在且进程目录可访问
         if [ -n "$new_pid" ] && [ -e "/proc/$new_pid" ]; then
-            append_log "INFO 前置机端口 [${executor_port}] 已启动，PID: [${new_pid}]"
+            append_log "INFO 前置机端口 [${executor_port}] 已启动，PID: [${new_pid}]，耗时[${elapsed_time}] 秒"
             break
         fi
         # 未检测到端口启动，等待后继续检查
-        append_log "INFO 前置机端口 [${executor_port}] 尚未启动，已等待 [${elapsed_time}/${max_wait}] 秒，继续等待"
-        sleep $check_interval
+        append_log "INFO 前置机端口 [${executor_port}] 尚未启动，已等待 [${elapsed_time}/${max_wait}] 秒，继续等待[${check_interval}] 秒"
+        sleep ${check_interval}
     done
     append_log "INFO 前置机升级完成 ---> [${executor_deploy_path}]"
 else
@@ -759,13 +759,13 @@ if [ -f "${back_package}" ]; then
 
         # 如果获取到 PID 且进程存在，则端口已启动
         if [ -n "$new_pid" ] && [ -e "/proc/$new_pid" ]; then
-            append_log "INFO 后端端口 [${back_port}] 已启动，PID: [${new_pid}]"
+            append_log "INFO 后端端口 [${back_port}] 已启动，PID: [${new_pid}]，耗时[${elapsed_time}] 秒"
             break
         fi
 
         # 未检测到端口启动，等待一段时间后继续检查
-        append_log "INFO 后端端口 [${back_port}] 尚未启动，已等待 [${elapsed_time}/${max_wait}] 秒，继续等待"
-        sleep $check_interval
+        append_log "INFO 后端端口 [${back_port}] 尚未启动，已等待 [${elapsed_time}/${max_wait}] 秒，继续等待[${check_interval}] 秒"
+        sleep ${check_interval}
     done
     append_log "INFO 后端升级完成 ---> [${back_deploy_path}]"
 else
