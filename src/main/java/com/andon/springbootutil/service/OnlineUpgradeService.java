@@ -204,6 +204,7 @@ public class OnlineUpgradeService {
         StringBuilder logBuilder = new StringBuilder(!ObjectUtils.isEmpty(upgradeTask.getLog()) ? upgradeTask.getLog() : "");
 
         try {
+            String userDir = System.getProperty("user.dir");
             // TODO 1.检查升级包是否存在
             log.info("[{}] 1. 检查升级包 [{}] 是否存在", upgradeTask.getId(), packageInfo.getVersion());
             upgradeTask.setLog(logBuilder.append(TimeUtil.FORMAT.get().format(System.currentTimeMillis())).append(" INFO ")
@@ -228,7 +229,7 @@ public class OnlineUpgradeService {
                 Path upgradePackagePath = Paths.get(upgradePackageParentPath.toString(), pacakgeFile.getName());
                 FileUtil.copyToAbsolutePath(pacakgeFile.getAbsolutePath(), upgradePackagePath.toString());
                 upgradeTask.setLog(logBuilder.append(TimeUtil.FORMAT.get().format(System.currentTimeMillis())).append(" INFO ")
-                        .append("->>> pull success!! --文件-> [").append(upgradePackagePath).append("]").append(System.lineSeparator()).toString());
+                        .append("->>> pull success!! ---> [").append(upgradePackagePath).append("]").append(System.lineSeparator()).toString());
                 // TODO 3.解压升级包
                 log.info("[{}] 3. 解压升级包 [{}]", upgradeTask.getId(), packageInfo.getVersion());
                 upgradeTask.setLog(logBuilder.append(TimeUtil.FORMAT.get().format(System.currentTimeMillis())).append(" INFO ")
@@ -248,7 +249,7 @@ public class OnlineUpgradeService {
                 saveUpgradeTask(upgradeTask);
 
                 VersionInfo versionInfo = VersionInfo.builder().id(upgradeTask.getId()).beforePackageId(VERSION_INFO.getAfterPackageId())
-                        .beforeVersion(VERSION_INFO.getAfterVersion()).beforePath(System.getProperty("user.dir"))
+                        .beforeVersion(VERSION_INFO.getAfterVersion()).beforePath(userDir)
                         .afterPackageId(packageInfo.getId()).afterVersion(packageInfo.getVersion())
                         .md5(packageInfo.getMd5()).upgradeTime(upgradeTask.getUpgradeTime()).status(upgradeTask.getStatus()).log(upgradeTask.getLog()).build();
                 FileUtil.createAbsolutePathFileWithContent(Collections.singletonList(JSONObject.toJSONString(versionInfo)), upgradePackageVersionPath.toString());
@@ -256,26 +257,42 @@ public class OnlineUpgradeService {
                 // TODO 5.执行升级脚本
                 if (System.getProperty("os.name").toLowerCase().contains("windows")) {
                     log.warn("[{}] windows系统跳过", upgradeTask.getId());
+                    throw new IllegalArgumentException("windows系统暂不支持在线升级");
                 } else {
                     Path upgradeScriptPath = Paths.get(upgradePackageParentPath.toString(), Constants.UPGRADE_SH);
+                    if (!Files.exists(upgradeScriptPath)) {
+                        log.warn("[{}] 5.1 升级包中未检测到升级脚本 [{}]，尝试使用已部署的升级脚本", upgradeTask.getId(), upgradeScriptPath);
+                        upgradeTask.setLog(logBuilder.append(TimeUtil.FORMAT.get().format(System.currentTimeMillis())).append(" WARN ")
+                                .append("5.1 升级包中未检测到升级脚本 [").append(upgradeScriptPath).append("]，尝试使用已部署的升级脚本").append(System.lineSeparator()).toString());
+                        Path deployUpgradeScriptPath = Paths.get(userDir, Constants.UPGRADE_SH);
+                        Assert.isTrue(Files.exists(deployUpgradeScriptPath), String.format("升级脚本[%s]不存在，请在升级包中加入升级脚本", deployUpgradeScriptPath));
 
-                    log.info("[{}] 5.1 赋权升级脚本  -> [chmod +x {}]", upgradeTask.getId(), upgradeScriptPath);
+                        FileUtil.copyToAbsolutePath(deployUpgradeScriptPath.toString(), upgradeScriptPath.toString());
+                        upgradeTask.setLog(logBuilder.append(TimeUtil.FORMAT.get().format(System.currentTimeMillis())).append(" INFO ")
+                                .append("->>> pull success!! ---> [").append(deployUpgradeScriptPath).append("] ---> [").append(upgradePackagePath).append("]").append(System.lineSeparator()).toString());
+                    }else {
+                        log.warn("[{}] 5.1 升级包中未检测到升级脚本 [{}]，将使用升级包中的升级脚本", upgradeTask.getId(), upgradeScriptPath);
+                        upgradeTask.setLog(logBuilder.append(TimeUtil.FORMAT.get().format(System.currentTimeMillis())).append(" INFO ")
+                                .append("5.1 升级包中未检测到升级脚本 [").append(upgradeScriptPath).append("]，将使用升级包中的升级脚本").append(System.lineSeparator()).toString());
+                    }
+
+                    log.info("[{}] 5.2 赋权升级脚本  -> [chmod +x {}]", upgradeTask.getId(), upgradeScriptPath);
                     upgradeTask.setLog(logBuilder.append(TimeUtil.FORMAT.get().format(System.currentTimeMillis())).append(" INFO ")
-                            .append("5.1 赋权升级脚本 -> [chmod +x ").append(upgradeScriptPath).append("]").append(System.lineSeparator()).toString());
+                            .append("5.2 赋权升级脚本 -> [chmod +x ").append(upgradeScriptPath).append("]").append(System.lineSeparator()).toString());
 
                     ProcessBuilder processBuilder = new ProcessBuilder("chmod", "+x", upgradeScriptPath.toString());
-                    Process process = processBuilder.start();
+                    processBuilder.start();
                     processBuilder = new ProcessBuilder("sed", "-i", "'s/\\r$//'", upgradeScriptPath.toString());
-                    process = processBuilder.start();
+                    processBuilder.start();
 
-                    log.info("[{}] 5.2 执行升级脚本 -> [/bin/sh {}]", upgradeTask.getId(), upgradeScriptPath);
+                    log.info("[{}] 5.3 执行升级脚本 -> [/bin/sh {}]", upgradeTask.getId(), upgradeScriptPath);
                     upgradeTask.setLog(logBuilder.append(TimeUtil.FORMAT.get().format(System.currentTimeMillis())).append(" INFO ")
-                            .append("5.2 执行升级脚本 -> [/bin/sh ").append(upgradeScriptPath).append("]").toString());
+                            .append("5.3 执行升级脚本 -> [/bin/sh ").append(upgradeScriptPath).append("]").toString());
                     processBuilder = new ProcessBuilder("/bin/sh", upgradeScriptPath.toString());
                     versionInfo.setLog(upgradeTask.getLog());
                     FileUtil.createAbsolutePathFileWithContent(Collections.singletonList(JSONObject.toJSONString(versionInfo)), upgradePackageVersionPath.toString());
                     saveUpgradeTask(upgradeTask);
-                    process = processBuilder.start();
+                    processBuilder.start();
 
                     boolean readLog = true;
                     long costTime = 2 * 60 * 60 * 1000L;

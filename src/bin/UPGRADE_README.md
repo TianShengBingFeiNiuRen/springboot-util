@@ -2,7 +2,7 @@
 
 #### 1. 升级脚本：【upgrade.sh】（必须）
 
-#### 2. 前端升级包（解压后为web目录）：【web.zip】（非必须）
+#### 2. 前端升级包：【web】（非必须）
 
 #### 3. 前置机升级包：【ailand-data-collector-executor-release.tar.gz】（非必须）
 
