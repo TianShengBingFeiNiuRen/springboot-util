@@ -447,7 +447,7 @@ if [ -f "${executor_package}" ]; then
             break
         fi
         # 未检测到端口启动，等待后继续检查
-        append_log "INFO 前置机端口 [${executor_port}] 尚未启动，已等待 [${elapsed_time}/${max_wait}] 秒，继续等待[${check_interval}] 秒"
+        append_log "TRACE 前置机端口 [${executor_port}] 尚未启动，已等待 [${elapsed_time}/${max_wait}] 秒，继续等待[${check_interval}] 秒"
         sleep ${check_interval}
     done
     append_log "INFO 前置机升级完成 ---> [${executor_deploy_path}]"
@@ -764,7 +764,7 @@ if [ -f "${back_package}" ]; then
         fi
 
         # 未检测到端口启动，等待一段时间后继续检查
-        append_log "INFO 后端端口 [${back_port}] 尚未启动，已等待 [${elapsed_time}/${max_wait}] 秒，继续等待[${check_interval}] 秒"
+        append_log "TRACE 后端端口 [${back_port}] 尚未启动，已等待 [${elapsed_time}/${max_wait}] 秒，继续等待[${check_interval}] 秒"
         sleep ${check_interval}
     done
     append_log "INFO 后端升级完成 ---> [${back_deploy_path}]"
