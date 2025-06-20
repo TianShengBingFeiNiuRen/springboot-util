@@ -432,7 +432,7 @@ if [ -f "${executor_package}" ]; then
         current_time=$(date +%s)
         elapsed_time=$((current_time - start_time))
         if [ $elapsed_time -ge $max_wait ]; then
-            append_log "ERROR 前置机端口 [${executor_port}] 启动超时（最长等待 ${max_wait} 秒），未成功启动"
+            append_log "ERROR 前置机端口 [${executor_port}] 启动超时（最长等待 ${max_wait} 秒），未成功启动，请联系运维检查服务的启动日志"
             set_upgrade_status "FAILURE"
             exit 1
         fi
@@ -745,7 +745,7 @@ if [ -f "${back_package}" ]; then
         current_time=$(date +%s)
         elapsed_time=$((current_time - start_time))
         if [ $elapsed_time -ge $max_wait ]; then
-            append_log "ERROR 后端端口 [${back_port}] 启动超时（最长等待 ${max_wait} 秒），未成功启动"
+            append_log "ERROR 后端端口 [${back_port}] 启动超时（最长等待 ${max_wait} 秒），未成功启动，请联系运维检查服务的启动日志"
             set_upgrade_status "FAILURE"
             cp -f "${version_info_file}" "${back_deploy_path}/" 2>/dev/null  # 复制版本信息（即使失败）
             exit 1
