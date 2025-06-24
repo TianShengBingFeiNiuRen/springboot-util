@@ -269,7 +269,7 @@ public class OnlineUpgradeService {
 
                         FileUtil.copyToAbsolutePath(deployUpgradeScriptPath.toString(), upgradeScriptPath.toString());
                         upgradeTask.setLog(logBuilder.append(TimeUtil.FORMAT.get().format(System.currentTimeMillis())).append(" INFO ")
-                                .append("->>> pull success!! ---> [").append(deployUpgradeScriptPath).append("] ---> [").append(upgradePackagePath).append("]").append(System.lineSeparator()).toString());
+                                .append("->>> pull success!! ---> [").append(deployUpgradeScriptPath).append("] ---> [").append(upgradeScriptPath).append("]").append(System.lineSeparator()).toString());
                     }else {
                         log.warn("[{}] 5.1 升级包中未检测到升级脚本 [{}]，将使用升级包中的升级脚本", upgradeTask.getId(), upgradeScriptPath);
                         upgradeTask.setLog(logBuilder.append(TimeUtil.FORMAT.get().format(System.currentTimeMillis())).append(" INFO ")
