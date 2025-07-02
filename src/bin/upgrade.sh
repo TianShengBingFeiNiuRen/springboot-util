@@ -191,8 +191,8 @@ if [ -d "${web_package}" ]; then
         exit 1
     fi
     # 4. 设置部署目录权限
-    append_log "INFO ->>> iv.正在设置部署目录权限 -> [chmod 777 ${web_deploy_path}]"
-    if ! chmod 777 "${web_deploy_path}"; then
+    append_log "INFO ->>> iv.正在设置部署目录权限 -> [chmod -R 777 ${web_deploy_path}]"
+    if ! chmod -R 777 "${web_deploy_path}"; then
         append_log "ERROR 部署目录权限设置失败 --文件-> [${web_deploy_path}]"
         set_upgrade_status "FAILURE"
         exit 1
